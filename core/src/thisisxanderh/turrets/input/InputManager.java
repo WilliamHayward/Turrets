@@ -3,13 +3,12 @@ package thisisxanderh.turrets.input;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.controllers.Controller;
-import com.badlogic.gdx.controllers.mappings.Xbox;
 
 public class InputManager {
 	private DeviceList device = DeviceList.KEYBOARD;
 	private Controller controller = null;
 	
-	private float controllerLeftX = 0;
+	private XboxListener controllerListener;
 	
 	public InputManager() {
 		
@@ -19,13 +18,48 @@ public class InputManager {
 		this.device = device;
 	}
 
+	public DeviceList getDevice() {
+		return device;
+	}
+	
 	public void setController(Controller controller) {
 		device = DeviceList.CONTROLLER;
 		this.controller = controller;
+		controllerListener = new XboxListener();
+		controller.addListener(controllerListener);
 	}
 	
 	public void setKeyboard() {
 		device = DeviceList.KEYBOARD;
+	}
+	
+	public boolean getJump() {
+		switch (device) {
+			case KEYBOARD:
+				return Gdx.input.isKeyJustPressed(Input.Keys.SPACE);
+			case CONTROLLER:
+				return controller.getButton(0);
+		}
+		return false;
+	}
+	
+	public boolean getFacing(boolean prevFacing) {
+		switch (device) {
+			case KEYBOARD:
+				return Gdx.input.getX() < (Gdx.graphics.getWidth() / 2f);
+			case CONTROLLER:
+				float position = controller.getAxis(3);
+				if (Math.abs(position) < 0.2f) {
+					float movement = getHorizontalController();
+					System.out.println(movement);
+					if (Math.abs(movement) > 0.2f) {
+						return movement < 0;
+					}
+				} else {
+					return position < 0;
+				}
+		}
+		return prevFacing;
 	}
 	
 	public float getHorizontal() {
@@ -46,6 +80,7 @@ public class InputManager {
 	}
 	
 	public float getHorizontalController() {
-		return controller.getAxis(Xbox.L_STICK_HORIZONTAL_AXIS);
+		float axis = controller.getAxis(0);
+		return Math.abs(axis) < 0.2 ? 0 : axis;
 	}
 }

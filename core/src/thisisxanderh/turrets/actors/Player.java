@@ -3,7 +3,6 @@ package thisisxanderh.turrets.actors;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.controllers.Controllers;
-import com.badlogic.gdx.controllers.mappings.Xbox;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -11,6 +10,7 @@ import com.badlogic.gdx.math.Rectangle;
 import thisisxanderh.turrets.core.Coordinate;
 import thisisxanderh.turrets.core.GameStage;
 import thisisxanderh.turrets.graphics.SpriteList;
+import thisisxanderh.turrets.input.DeviceList;
 import thisisxanderh.turrets.input.InputManager;
 import thisisxanderh.turrets.terrain.Tile;
 
@@ -57,13 +57,18 @@ public class Player extends GameActor {
 	private void handleInput() {
 		float horizontalSpeed = input.getHorizontal();
 		this.setXVelocity(horizontalSpeed * speed);
-		if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-			this.setYVelocity(5);
+		
+		if (input.getJump()) {
+			this.setYVelocity(10);
 		}
 		
-		if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
-			spawn();
+		if (Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
+			if (input.getDevice() == DeviceList.KEYBOARD) {
+				input.setController(Controllers.getControllers().first());
+			} else {
+				input.setKeyboard();
+			}
 		}
-		facingLeft = Gdx.input.getX() < (Gdx.graphics.getWidth() / 2f) + (this.getWidth() / 4f);
+		facingLeft = input.getFacing(facingLeft);
 	}
 }

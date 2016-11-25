@@ -1,6 +1,7 @@
 package thisisxanderh.turrets.actors;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
@@ -12,6 +13,8 @@ public class GameActor extends Actor {
 	protected float xVelocity = 0;
 	protected float yVelocity = 0;
 	protected Texture texture;
+	
+	public static final float MAX_SPEED = 50;
 	
 	public GameActor(Texture texture) {
 		this.texture = texture;
@@ -60,8 +63,9 @@ public class GameActor extends Actor {
 	
 	@Override
 	public void act(float delta) {
-		this.setPosition(this.getX() + this.getXVelocity(),
-				this.getY() + this.getYVelocity());
+		xVelocity = MathUtils.clamp(xVelocity, -MAX_SPEED, MAX_SPEED);
+		yVelocity = MathUtils.clamp(yVelocity, -MAX_SPEED, MAX_SPEED);
+		this.setPosition(getX() + xVelocity, getY() + yVelocity);
 	}
 	
 	public void moveToContact() {
@@ -85,52 +89,6 @@ public class GameActor extends Actor {
 		if (other != null) {
 			moveToContactVertical(bounds, other);
 		}
-		/*
-		Rectangle newPosition;
-		float posHeight = this.getHeight();
-		float posWidth = this.getWidth();
-		float posX = this.getX();
-		float posY = this.getY();
-		float newX = posX;
-		float newY = posY;
-		float newXVelocity = this.getXVelocity();
-		float newYVelocity = this.getYVelocity();
-		newPosition = new Rectangle(posX, posY, posWidth, posHeight);
-		if (this.getXVelocity() > 0) {
-			newX = other.getX() - this.getWidth();
-		} else if (this.getXVelocity() < 0) {
-			newX = other.getX() + other.getWidth();
-		}
-		
-		newPosition.setX(newX);
-		if (newPosition.overlaps(other)) {
-			newX = posX;
-		} else {
-			newXVelocity = 0;
-		}
-		this.setPosition(newX, newY);
-		this.setXVelocity(newXVelocity);
-		this.setYVelocity(newYVelocity);
-		for (int i = 0; i < 2; i++) {
-			return;
-		}
-		
-		newPosition = new Rectangle(posX, posY, posWidth, posHeight);
-		if (this.getYVelocity() > 0) {
-			newY = other.getY() - other.getHeight();
-			
-		} else if (this.getYVelocity() < 0){
-			newY = other.getY() + other.getHeight();
-		}
-		newPosition.setY(newY);
-		if (newPosition.overlaps(other)) {
-			newY = posY;
-		} else {
-			newYVelocity = 0;
-		}
-		this.setPosition(newX, newY);
-		this.setXVelocity(newXVelocity);
-		this.setYVelocity(newYVelocity);*/
 	}
 
 	private void moveToContactHorizontal(Rectangle bounds, Rectangle other) {
