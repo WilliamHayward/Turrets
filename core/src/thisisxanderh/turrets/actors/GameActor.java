@@ -1,14 +1,30 @@
 package thisisxanderh.turrets.actors;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import thisisxanderh.turrets.core.GameStage;
+import thisisxanderh.turrets.graphics.SpriteCache;
+import thisisxanderh.turrets.graphics.SpriteList;
 
 public class GameActor extends Actor {
 	protected float xVelocity = 0;
 	protected float yVelocity = 0;
+	protected Texture texture;
+	
+	public GameActor(Texture texture) {
+		this.texture = texture;
+		this.setHeight(texture.getHeight());
+		this.setWidth(texture.getWidth());
+	}
+	
+	public GameActor(SpriteList textureID) {
+		texture = SpriteCache.loadSprite(textureID);
+		this.setHeight(texture.getHeight());
+		this.setWidth(texture.getWidth());
+	}
+	
 	public Rectangle getBounds() {
 		float x = this.getX();
 		float y = this.getY();

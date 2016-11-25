@@ -1,6 +1,9 @@
 package thisisxanderh.turrets.core;
 
-import com.badlogic.gdx.graphics.Camera;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -13,9 +16,10 @@ import thisisxanderh.turrets.terrain.Terrain;
 
 public class GameStage extends Stage {
 	
-	TiledMap map;
-	TiledMapRenderer mapRenderer;
-	Terrain terrain;
+	private TiledMap map;
+	private TiledMapRenderer mapRenderer;
+	private Terrain terrain;
+	private List<Coordinate> spawns = new ArrayList<>();
 	public GameStage() {
 		
 	}
@@ -36,6 +40,21 @@ public class GameStage extends Stage {
 	
 	public TiledMap getMap() {
 		return map;
+	}
+	
+	public void addSpawn(float x, float y) {
+		Coordinate spawn = new Coordinate(x, y);
+		addSpawn(spawn);
+	}
+	
+	public void addSpawn(Coordinate spawn) {
+		spawns.add(spawn);
+	}
+	
+	public Coordinate getSpawn() {
+		Random random = new Random();
+		int index = random.nextInt(spawns.size());
+		return spawns.get(index);
 	}
 	
 	public Terrain getTerrain() {

@@ -15,6 +15,9 @@ public class Terrain implements Shape2D {
 	
 	public Terrain(TiledMap map) {
 		tiles = new ArrayList<>();
+		//TODO: Optimize this.
+		//		- Unreachable areas. A solid block surrounded by four solid blocks should never need
+		//		collision detection
 		for (MapLayer layerMask: map.getLayers()) {
 			TiledMapTileLayer layer = (TiledMapTileLayer) layerMask;
 			for (int x = 0; x < layer.getWidth(); x++) {

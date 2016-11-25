@@ -2,30 +2,42 @@ package thisisxanderh.turrets.actors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.controllers.mappings.Xbox;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
+import thisisxanderh.turrets.core.Coordinate;
 import thisisxanderh.turrets.core.GameStage;
+import thisisxanderh.turrets.graphics.SpriteList;
+import thisisxanderh.turrets.input.InputManager;
+import thisisxanderh.turrets.terrain.Tile;
 
 public class Player extends GameActor {
-	Texture texture;
 	private float speed = 10.5f;
 	private static final float GRAVITY = -9.8f;
+	private InputManager input;
+	private boolean facingLeft = false;
+	
 	public Player() {
-		texture = new Texture(Gdx.files.internal("sprites/player-blue-standing.png"));//TODO: Make this flyweight
-		this.setHeight(texture.getHeight());
-		this.setWidth(texture.getWidth());
-		
+		super(SpriteList.PLAYER_BLUE_STANDING);
+		input = new InputManager();
+	}
+	
+	public void spawn() {
+		GameStage stage = (GameStage) this.getStage();
+		Coordinate spawn = stage.getSpawn();
+		this.setX(spawn.getX() * Tile.SIZE);
+		this.setY(spawn.getY() * Tile.SIZE);
 	}
 	
 	@Override
 	public void draw(Batch batch, float alpha) {
-		batch.draw(texture, this.getX(), this.getY());
+		SpriteBatch spriteBatch = (SpriteBatch) batch;
+		spriteBatch.draw(texture, getX(), getY(), 0, 0, getWidth(), getHeight(),
+				1, 1, getRotation(), 0, 0, texture.getWidth(), texture.getHeight(), facingLeft, false);
 	}
-	
 	@Override
 	public void act(float delta) {
 		handleInput();
@@ -33,7 +45,7 @@ public class Player extends GameActor {
 		this.addYVelocity(GRAVITY * delta);
 		GameStage stage = (GameStage) this.getStage();
 		Rectangle bounds = this.getBounds();
-        if (stage.getTerrain().overlaps(this.getBounds())) {
+        if (stage.getTerrain().overlaps(bounds)) {
         	this.moveToContact();
         } else {
         }
@@ -43,12 +55,15 @@ public class Player extends GameActor {
 	}
 	
 	private void handleInput() {
-		float moveLeft = Gdx.input.isKeyPressed(Input.Keys.A) ? 1 : 0;
-		float moveRight = Gdx.input.isKeyPressed(Input.Keys.D) ? 1 : 0;
-		float horizontalSpeed = moveRight - moveLeft;
+		float horizontalSpeed = input.getHorizontal();
 		this.setXVelocity(horizontalSpeed * speed);
 		if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
 			this.setYVelocity(5);
 		}
+		
+		if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
+			spawn();
+		}
+		facingLeft = Gdx.input.getX() < (Gdx.graphics.getWidth() / 2f) + (this.getWidth() / 4f);
 	}
 }
