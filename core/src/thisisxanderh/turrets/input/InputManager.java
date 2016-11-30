@@ -1,42 +1,38 @@
 package thisisxanderh.turrets.input;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.controllers.Controller;
 
+import thisisxanderh.turrets.input.schemes.ControlScheme;
+import thisisxanderh.turrets.input.schemes.DefaultKeyboard;
+import thisisxanderh.turrets.input.schemes.KeyboardScheme;
+
 public class InputManager {
-	private DeviceList device = DeviceList.KEYBOARD;
+	private ControlScheme scheme;
 	private Controller controller = null;
 	
-	private XboxListener controllerListener;
-	
 	public InputManager() {
-		
-	}
-	
-	public InputManager(DeviceList device) {
-		this.device = device;
+		scheme = new DefaultKeyboard();
 	}
 
 	public DeviceList getDevice() {
-		return device;
+		return scheme.getDevice();
 	}
 	
 	public void setController(Controller controller) {
-		device = DeviceList.CONTROLLER;
+		//device = DeviceList.CONTROLLER;
 		this.controller = controller;
-		controllerListener = new XboxListener();
-		controller.addListener(controllerListener);
 	}
 	
 	public void setKeyboard() {
-		device = DeviceList.KEYBOARD;
+		scheme = new DefaultKeyboard();
 	}
 	
 	public boolean getJump() {
-		switch (device) {
+		switch (getDevice()) {
 			case KEYBOARD:
-				return Gdx.input.isKeyJustPressed(Input.Keys.SPACE);
+				return Gdx.input.isKeyJustPressed(
+						((KeyboardScheme) scheme).getJump());
 			case CONTROLLER:
 				return controller.getButton(0);
 		}
@@ -44,7 +40,7 @@ public class InputManager {
 	}
 	
 	public boolean getFacing(boolean prevFacing) {
-		switch (device) {
+		switch (getDevice()) {
 			case KEYBOARD:
 				return Gdx.input.getX() < (Gdx.graphics.getWidth() / 2f);
 			case CONTROLLER:
@@ -63,7 +59,7 @@ public class InputManager {
 	}
 	
 	public float getHorizontal() {
-		switch (device) {
+		switch (getDevice()) {
 			case KEYBOARD:
 				return getHorizontalKeyboard();
 			case CONTROLLER:
@@ -74,8 +70,9 @@ public class InputManager {
 	}
 	
 	public float getHorizontalKeyboard() {
-		float left = Gdx.input.isKeyPressed(Input.Keys.A) ? 1 : 0;
-		float right = Gdx.input.isKeyPressed(Input.Keys.D) ? 1 : 0;
+		KeyboardScheme keyboard = (KeyboardScheme) scheme;
+		float left = Gdx.input.isKeyPressed(keyboard.getLeft()) ? 1 : 0;
+		float right = Gdx.input.isKeyPressed(keyboard.getRight()) ? 1 : 0;
 		return right - left;
 	}
 	

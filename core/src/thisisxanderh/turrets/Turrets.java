@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import thisisxanderh.turrets.actors.Player;
+import thisisxanderh.turrets.actors.enemies.Emitter;
 import thisisxanderh.turrets.core.GameStage;
 import thisisxanderh.turrets.graphics.SpriteCache;
 
@@ -23,6 +25,7 @@ public class Turrets extends ApplicationAdapter {
 	
 	private OrthographicCamera camera;
 	
+	
 	@Override
 	public void create () {
 		SpriteCache.loadAllSprites();
@@ -30,6 +33,8 @@ public class Turrets extends ApplicationAdapter {
         
 		stage = new GameStage();
 		stage.setMap(map);
+		
+		Emitter spawn = new Emitter();
 
         TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(0);
         for(int x = 0; x < layer.getWidth(); x++){
@@ -38,14 +43,22 @@ public class Turrets extends ApplicationAdapter {
                 if (cell == null) {
                 	continue;
                 }
-                Object property = cell.getTile().getProperties().get("spawn");
+                MapProperties properties = cell.getTile().getProperties();
+                Object property = properties.get("spawn");
                 if(property != null){
                 	stage.addSpawn(x, y);
                     cell.setTile(null);
                 }
+                property = properties.get("enemy_path");
+                if (property != null) {
+                	int pathPosition  = (int) property;
+                	System.out.println(pathPosition + " = " + x + ", " + y);
+                	spawn.addPosition(pathPosition, x, y);
+                }
             }
         }
-        
+        stage.addActor(spawn);
+        spawn.spawn();
 		Player player = new Player();
 		stage.addActor(player);
 		player.spawn();
@@ -70,6 +83,8 @@ public class Turrets extends ApplicationAdapter {
 		stage.getBatch().begin();
 		Camera cam = stage.getCamera();
 		float x = cam.position.x - cam.viewportWidth;
+        TiledMapTileLayer layer = (TiledMapTileLayer) stage.getMap().getLayers().get(0);
+		x -= (cam.position.x / layer.getWidth()) * 5;
 		float y = cam.position.y - cam.viewportHeight;
 		while (x < cam.position.x + cam.viewportWidth) {
 			stage.getBatch().draw(background, x, y);
@@ -83,5 +98,11 @@ public class Turrets extends ApplicationAdapter {
 	@Override
 	public void dispose () {
 		stage.dispose();
+	}
+	
+	@Override
+	public void resize(int width, int height) {
+		stage.getViewport().update(width, height, true);
+		
 	}
 }

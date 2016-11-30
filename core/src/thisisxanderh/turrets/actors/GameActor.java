@@ -1,6 +1,8 @@
 package thisisxanderh.turrets.actors;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -8,13 +10,16 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import thisisxanderh.turrets.core.GameStage;
 import thisisxanderh.turrets.graphics.SpriteCache;
 import thisisxanderh.turrets.graphics.SpriteList;
+import thisisxanderh.turrets.terrain.Tile;
 
 public class GameActor extends Actor {
 	protected float xVelocity = 0;
 	protected float yVelocity = 0;
 	protected Texture texture;
 	
-	public static final float MAX_SPEED = 50;
+	protected boolean solid = true;
+	
+	public static final float MAX_SPEED = Tile.SIZE;
 	
 	public GameActor(Texture texture) {
 		this.texture = texture;
@@ -26,6 +31,16 @@ public class GameActor extends Actor {
 		texture = SpriteCache.loadSprite(textureID);
 		this.setHeight(texture.getHeight());
 		this.setWidth(texture.getWidth());
+	}
+	
+	public boolean collides() {
+		return solid;
+	}
+
+	@Override
+	public void draw(Batch batch, float alpha) {
+		SpriteBatch spriteBatch = (SpriteBatch) batch;
+		spriteBatch.draw(texture, getX(), getY());
 	}
 	
 	public Rectangle getBounds() {
@@ -63,18 +78,25 @@ public class GameActor extends Actor {
 	
 	@Override
 	public void act(float delta) {
-		xVelocity = MathUtils.clamp(xVelocity, -MAX_SPEED, MAX_SPEED);
-		yVelocity = MathUtils.clamp(yVelocity, -MAX_SPEED, MAX_SPEED);
-		this.setPosition(getX() + xVelocity, getY() + yVelocity);
+		float xVelocityStep = MathUtils.clamp(xVelocity * delta, -MAX_SPEED * delta, MAX_SPEED * delta);
+		float yVelocityStep = MathUtils.clamp(yVelocity * delta, -MAX_SPEED * delta, MAX_SPEED * delta);
+		this.setPosition(getX() + xVelocityStep / delta, getY() + yVelocityStep / delta);
 	}
 	
+	/**
+	 * Move to touch the terrain as closely as possible without overlapping
+	 */
 	public void moveToContact() {
 		GameStage stage = (GameStage) this.getStage();
 		Rectangle bounds;
 		Rectangle other;
 		bounds = this.getBounds();
-		bounds.setHeight(bounds.getHeight() / 2);
-		bounds.setY(bounds.getY() + bounds.getHeight() / 2);
+		
+		// The x and y shrinkages are to ensure that only one axis is tested at a time
+		// This is achieved by discarding irrelevant velocity
+		float yShrinkage = this.getYVelocity();
+		bounds.setHeight(bounds.getHeight() - Math.abs(yShrinkage));
+		bounds.setY(bounds.getY() - yShrinkage);
 		other = stage.getTerrain().getOverlap(bounds);
 
 		if (other != null) {
@@ -82,8 +104,9 @@ public class GameActor extends Actor {
 		}
 		
 		bounds = this.getBounds();
-		bounds.setWidth(bounds.getWidth() / 2);
-		bounds.setX(bounds.getX() + bounds.getWidth() / 2);
+		float xShrinkage = this.getXVelocity();
+		bounds.setWidth(bounds.getWidth() - Math.abs(xShrinkage));
+		bounds.setX(bounds.getX() - xShrinkage);
 		other = stage.getTerrain().getOverlap(bounds);
 
 		if (other != null) {
@@ -100,6 +123,7 @@ public class GameActor extends Actor {
 		this.setX(bounds.getX());
 		this.setXVelocity(0);
 	}
+	
 	private void moveToContactVertical(Rectangle bounds, Rectangle other) {
 		if (this.getYVelocity() > 0) {
 			bounds.setY(other.getY() - this.getHeight());
@@ -108,5 +132,23 @@ public class GameActor extends Actor {
 		}
 		this.setY(bounds.getY());
 		this.setYVelocity(0);
+	}
+	
+	public boolean inWorld() {
+		return (this.getX() > 0 && this.getX() < GameStage.SIZE * Tile.SIZE &&
+				this.getY() > 0 && this.getY() < GameStage.SIZE * Tile.SIZE);
+	}
+	
+	public void collided(GameActor other) {
+		
+	}
+	
+	public void die() {
+		GameStage stage = (GameStage) this.getStage();
+		stage.kill(this);
+	}
+	
+	public void die(GameActor cause) {
+		die();
 	}
 }

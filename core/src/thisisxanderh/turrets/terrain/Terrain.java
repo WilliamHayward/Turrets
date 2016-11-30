@@ -74,4 +74,8 @@ public class Terrain implements Shape2D {
 		}
 		return null;
 	}
+	
+	public List<Tile> getTiles() {
+		return tiles;
+	}
 }
