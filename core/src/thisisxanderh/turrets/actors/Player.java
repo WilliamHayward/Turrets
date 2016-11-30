@@ -4,17 +4,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector3;
 
 import thisisxanderh.turrets.actors.enemies.Enemy;
 import thisisxanderh.turrets.core.Coordinate;
 import thisisxanderh.turrets.core.GameStage;
-import thisisxanderh.turrets.core.Line;
+import thisisxanderh.turrets.graphics.LayerList;
 import thisisxanderh.turrets.graphics.SpriteList;
 import thisisxanderh.turrets.input.DeviceList;
 import thisisxanderh.turrets.input.InputManager;
@@ -25,12 +25,17 @@ public class Player extends GameActor {
 	private static final float GRAVITY = -25f;
 	private InputManager input;
 	private boolean facingLeft = false;
-
+	private boolean doubleJumpAvailable = true;
+	private boolean groundPound = false;
+	private float stunnedTimer = 0f;
+	private OrthographicCamera camera;
 	private ShapeRenderer shapeRenderer = new ShapeRenderer();
 	
-	public Player() {
+	public Player(OrthographicCamera camera) {
 		super(SpriteList.PLAYER_BLUE_STANDING);
-		input = new InputManager();
+		this.camera = camera;
+		input = new InputManager(camera);
+		layer = LayerList.PLAYER;
 	}
 	
 	public void spawn() {
@@ -48,21 +53,11 @@ public class Player extends GameActor {
 		
 		
 		spriteBatch.end();
-		shapeRenderer.setProjectionMatrix(this.getStage().getCamera().combined);
-		Camera camera = this.getStage().getCamera();
-		Vector3 unprojected = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
-		float x = unprojected.x;
-		float y = unprojected.y;
-		Line line = new Line(x, y, getX() + getWidth() / 2, getY() + getHeight() / 2);
-		GameStage stage = (GameStage) this.getStage();
+		shapeRenderer.setProjectionMatrix(camera.combined);
 		
-		shapeRenderer.begin(ShapeType.Line);
-		if (line.intersects(stage.getTerrain())) {
-			shapeRenderer.setColor(1, 0, 0, 1);
-		} else {
-			shapeRenderer.setColor(0, 1, 0, 1);
-		}
-		shapeRenderer.line(getX() + getWidth() / 2, getY() + getHeight() / 2, x, y);
+		shapeRenderer.begin(ShapeType.Filled);
+		Coordinate cursor = input.getCursorPosition();
+		shapeRenderer.circle(cursor.getX(), cursor.getY(), 30);
 		shapeRenderer.end();
 		spriteBatch.begin();
 	}
@@ -71,27 +66,72 @@ public class Player extends GameActor {
 		if (!this.inWorld()) {
 			spawn();
 		}
-		handleInput();
+		
+		stunnedTimer -= delta;
+		if (stunnedTimer < 0 && !groundPound) {
+			handleInput();
+		}
+		
 		super.act(delta);
 		GameStage stage = (GameStage) this.getStage();
 		Rectangle bounds = this.getBounds();
+    	onGround = false;
         if (stage.getTerrain().overlaps(bounds)) {
         	this.moveToContact();
         } else {
         }
         
+        if (onGround) {
+        	if (groundPound) {
+        		stunnedTimer = 0.5f;
+        		setYVelocity(4f);
+        	}
+        	doubleJumpAvailable = true;
+        	groundPound = false;
+        }
+
+		for (GameActor other: stage.getGameActors()) {
+			if (!other.collides()) {
+				continue;
+			}
+			if (!this.equals(other)) {
+				if (bounds.overlaps(other.getBounds())) {
+					this.collided(other);
+					other.collided(this);
+				}
+			}
+		}
+        
 		this.addYVelocity(GRAVITY * delta);
+		
+		
 		
 		stage.getViewport().getCamera().position.x = this.getX();
 		stage.getViewport().getCamera().position.y = this.getY();
 	}
 	
 	private void handleInput() {
+		input.update();
 		float horizontalSpeed = input.getHorizontal();
 		this.setXVelocity(horizontalSpeed * speed);
 		
-		if (input.getJump()) {
-			this.setYVelocity(13);
+		if (onGround) {
+			if (input.getJump()) {
+				this.setYVelocity(13);
+			}
+		} else {
+			if (doubleJumpAvailable) {
+				if (input.getJump()) {
+					this.setYVelocity(13);
+					doubleJumpAvailable = false;
+				}
+			}
+			if (input.getPound()) {
+				this.setYVelocity(-20);
+				this.setXVelocity(0);
+				doubleJumpAvailable = false;
+				groundPound = true;
+			}
 		}
 		
 		if (Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
@@ -111,8 +151,10 @@ public class Player extends GameActor {
 		if (other instanceof Enemy) {
 			if (this.getYVelocity() < 0) {
 				if (bounds.getY() - this.getYVelocity() > other.getY() + other.getHeight()) {
-					other.die(this);
+					float damage = groundPound ? 5f : 2f;
+					other.damage(damage, this);
 					this.setYVelocity(13);
+					groundPound = false;
 				}
 			}
 		}

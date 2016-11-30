@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import thisisxanderh.turrets.core.GameStage;
+import thisisxanderh.turrets.graphics.LayerList;
 import thisisxanderh.turrets.graphics.SpriteCache;
 import thisisxanderh.turrets.graphics.SpriteList;
 import thisisxanderh.turrets.terrain.Tile;
@@ -16,8 +17,13 @@ public class GameActor extends Actor {
 	protected float xVelocity = 0;
 	protected float yVelocity = 0;
 	protected Texture texture;
+	protected float health;
+	protected float maxHealth;
+	protected boolean onGround;
 	
 	protected boolean solid = true;
+	
+	protected LayerList layer = LayerList.DEFAULT;
 	
 	public static final float MAX_SPEED = Tile.SIZE;
 	
@@ -28,9 +34,7 @@ public class GameActor extends Actor {
 	}
 	
 	public GameActor(SpriteList textureID) {
-		texture = SpriteCache.loadSprite(textureID);
-		this.setHeight(texture.getHeight());
-		this.setWidth(texture.getWidth());
+		this(SpriteCache.loadSprite(textureID));
 	}
 	
 	public boolean collides() {
@@ -41,6 +45,10 @@ public class GameActor extends Actor {
 	public void draw(Batch batch, float alpha) {
 		SpriteBatch spriteBatch = (SpriteBatch) batch;
 		spriteBatch.draw(texture, getX(), getY());
+	}
+	
+	public LayerList getLayer() {
+		return layer;
 	}
 	
 	public Rectangle getBounds() {
@@ -129,6 +137,7 @@ public class GameActor extends Actor {
 			bounds.setY(other.getY() - this.getHeight());
 		} else {
 			bounds.setY(other.getY() + other.getHeight());
+			onGround = true;
 		}
 		this.setY(bounds.getY());
 		this.setYVelocity(0);
@@ -141,6 +150,30 @@ public class GameActor extends Actor {
 	
 	public void collided(GameActor other) {
 		
+	}
+	
+	/**
+	 * @return true if killed
+	 */
+	public boolean damage(float damage) {
+		health -= damage;
+		if (health <= 0) {
+			die();
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * @return true if killed
+	 */
+	public boolean damage(float damage, GameActor cause) {
+		health -= damage;
+		if (health <= 0) {
+			die(cause);
+			return true;
+		}
+		return false;
 	}
 	
 	public void die() {

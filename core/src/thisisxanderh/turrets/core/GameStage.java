@@ -1,7 +1,11 @@
 package thisisxanderh.turrets.core;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -9,12 +13,13 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import thisisxanderh.turrets.actors.GameActor;
+import thisisxanderh.turrets.graphics.LayerList;
 import thisisxanderh.turrets.terrain.Terrain;
 
 public class GameStage extends Stage {
@@ -26,16 +31,28 @@ public class GameStage extends Stage {
 	private List<Coordinate> spawns = new ArrayList<>();
 	private List<GameActor> deadList = new ArrayList<>();
 	
+	private Map<LayerList, Group> layers = new HashMap<>();
+	
 	public GameStage() {
-		
+		init();
 	}
 
 	public GameStage(Viewport viewport) {
 		super(viewport);
+		init();
 	}
 
 	public GameStage(Viewport viewport, Batch batch) {
 		super(viewport, batch);
+		init();
+	}
+	
+	private void init() {
+		for (LayerList layer: LayerList.values()) {
+			Group layerGroup = new Group();
+			layers.put(layer, layerGroup);
+			this.addLayer(layerGroup);
+		}
 	}
 	
 	public void setMap(TiledMap map) {
@@ -83,6 +100,9 @@ public class GameStage extends Stage {
 		super.act(delta);
 		
 		// Process collisions between actors
+		/**
+		 * This is overkill for what Turrets need, but if all GameActors need to
+		 * be able to collide with all other GameActors, this will make that happen
 		List<GameActor> actors = this.getGameActors();
 		List<GameActor> others = this.getGameActors(); // Two lists to prevent concurrent modification
 		for (GameActor actor: actors) {
@@ -101,8 +121,8 @@ public class GameStage extends Stage {
 				}
 			}
 			others.remove(actor); // Collisions are already two way, don't need to be checked twice
-		}
-
+		}*/
+	
 		for(GameActor actor: deadList) {
 			actor.remove();
 		}
@@ -127,5 +147,18 @@ public class GameStage extends Stage {
 	        mapRenderer.render();
 		}
 		super.draw();
+	}
+	
+	private void addLayer(Group group) {
+		super.addActor(group);
+	}
+	
+	@Override
+	public void addActor(Actor actor) {
+		LayerList layer = LayerList.DEFAULT;
+		if (actor instanceof GameActor) {
+			layer = ((GameActor) actor).getLayer();
+		}
+		layers.get(layer).addActor(actor);
 	}
 }

@@ -6,12 +6,11 @@ import java.util.List;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import thisisxanderh.turrets.core.Coordinate;
-import thisisxanderh.turrets.graphics.SpriteList;
 
 public class Emitter extends Actor {
 	private List<Coordinate> positions;
 	private List<Enemy> children = new ArrayList<>();
-	private float delay = 0.5f;
+	private float delay = 3f;
 	public Emitter() {
 		positions = new ArrayList<>();
 		for (int i = 0; i < 10; i++) {
@@ -32,11 +31,9 @@ public class Emitter extends Actor {
 	@Override
 	public void act(float delta) {
 		delay -= delta;
-		if (delay <= 0 && children.size() < 1) {
+		if (delay <= 0 && children.size() < 5) {
 			delay = 3f;
 			spawn();
-		} else {
-			System.out.println(delay + ", " + children.size());
 		}
 	}
 	
@@ -44,7 +41,6 @@ public class Emitter extends Actor {
 		Enemy creep = new Creep(this);
 		this.getStage().addActor(creep);
 		children.add(creep);
-		System.out.println("000");
 	}
 	
 	public void childDeath(Enemy child) {

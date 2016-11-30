@@ -3,12 +3,16 @@ package thisisxanderh.turrets.actors.enemies;
 
 import java.util.List;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Vector3;
 
 import thisisxanderh.turrets.actors.GameActor;
 import thisisxanderh.turrets.core.Coordinate;
-import thisisxanderh.turrets.core.GameStage;
+import thisisxanderh.turrets.graphics.LayerList;
 import thisisxanderh.turrets.graphics.SpriteList;
 import thisisxanderh.turrets.terrain.Tile;
 
@@ -24,6 +28,7 @@ public abstract class Enemy extends GameActor {
 		this.setY(0);
 		this.parent = parent;
 		this.path = parent.getPath();
+		layer = LayerList.ENEMY;
 		spawn();
 	}
 	
@@ -73,6 +78,16 @@ public abstract class Enemy extends GameActor {
 		SpriteBatch spriteBatch = (SpriteBatch) batch;
 		spriteBatch.draw(texture, getX(), getY(), 0, 0, getWidth(), getHeight(),
 				1, 1, getRotation(), 0, 0, texture.getWidth(), texture.getHeight(), direction == -1, false);
+
+		spriteBatch.end();
+		ShapeRenderer shapeRenderer = new ShapeRenderer();
+		shapeRenderer.begin(ShapeType.Filled);
+		shapeRenderer.setColor(Color.GREEN);
+		
+		shapeRenderer.setProjectionMatrix(this.getStage().getCamera().combined);
+		shapeRenderer.rect(getX(), getY() + getHeight() + 2, getWidth() * (health / maxHealth), 10);
+		shapeRenderer.end();
+		spriteBatch.begin();
 	}
 	
 	@Override

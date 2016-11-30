@@ -1,8 +1,13 @@
 package thisisxanderh.turrets.input;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.controllers.Controller;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.MathUtils;
 
+import thisisxanderh.turrets.core.Coordinate;
 import thisisxanderh.turrets.input.schemes.ControlScheme;
 import thisisxanderh.turrets.input.schemes.DefaultKeyboard;
 import thisisxanderh.turrets.input.schemes.KeyboardScheme;
@@ -10,13 +15,38 @@ import thisisxanderh.turrets.input.schemes.KeyboardScheme;
 public class InputManager {
 	private ControlScheme scheme;
 	private Controller controller = null;
-	
-	public InputManager() {
+	private float cursorX;
+	private float cursorY;
+	private OrthographicCamera camera;
+	public InputManager(OrthographicCamera camera) {
+		this.camera = camera;
 		scheme = new DefaultKeyboard();
 	}
 
 	public DeviceList getDevice() {
 		return scheme.getDevice();
+	}
+	
+	public void update() {
+		switch (getDevice()) {
+			case KEYBOARD:
+				cursorX = Gdx.input.getX();
+				cursorY = Gdx.input.getY();
+				break;
+			case CONTROLLER:
+				float xDiff = controller.getAxis(3);
+				float yDiff = controller.getAxis(4);
+				if (Math.abs(xDiff) < 0.2f) {
+					xDiff = 0;
+				}
+				if (Math.abs(yDiff) < 0.2f) {
+					yDiff = 0;
+				}
+				cursorX += xDiff * 5;
+				cursorY += yDiff * 5;
+				cursorX = MathUtils.clamp(cursorX, 0, camera.viewportWidth);
+				cursorY = MathUtils.clamp(cursorY, 0, camera.viewportHeight);
+		}
 	}
 	
 	public void setController(Controller controller) {
@@ -28,6 +58,16 @@ public class InputManager {
 		scheme = new DefaultKeyboard();
 	}
 	
+	public Coordinate getCursor() {
+		return new Coordinate(cursorX, cursorY);
+	}
+	
+	public Coordinate getCursorPosition() {
+		float x = camera.position.x - camera.viewportWidth + cursorX * camera.zoom;
+		float y = camera.position.y + camera.viewportHeight - cursorY * camera.zoom;
+		return new Coordinate(x, y);
+	}
+	
 	public boolean getJump() {
 		switch (getDevice()) {
 			case KEYBOARD:
@@ -35,6 +75,15 @@ public class InputManager {
 						((KeyboardScheme) scheme).getJump());
 			case CONTROLLER:
 				return controller.getButton(0);
+		}
+		return false;
+	}
+	
+	public boolean getPound() {
+		switch (getDevice()) {
+			case KEYBOARD:
+				return Gdx.input.isKeyJustPressed(Input.Keys.SHIFT_LEFT);
+			case CONTROLLER:
 		}
 		return false;
 	}

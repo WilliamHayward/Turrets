@@ -32,6 +32,17 @@ public class Turrets extends ApplicationAdapter {
 		TiledMap map = new TmxMapLoader().load("tiles/test.tmx");
         
 		stage = new GameStage();
+		
+
+		camera = new OrthographicCamera(Gdx.graphics.getWidth(),
+				Gdx.graphics.getHeight());
+		camera.zoom = 2f;
+		
+		Viewport viewport = new ScreenViewport(camera);
+		
+		stage.setViewport(viewport);
+		
+		
 		stage.setMap(map);
 		
 		Emitter spawn = new Emitter();
@@ -52,24 +63,16 @@ public class Turrets extends ApplicationAdapter {
                 property = properties.get("enemy_path");
                 if (property != null) {
                 	int pathPosition  = (int) property;
-                	System.out.println(pathPosition + " = " + x + ", " + y);
                 	spawn.addPosition(pathPosition, x, y);
                 }
             }
         }
         stage.addActor(spawn);
         spawn.spawn();
-		Player player = new Player();
+		Player player = new Player(camera);
 		stage.addActor(player);
 		player.spawn();
 		
-		camera = new OrthographicCamera(Gdx.graphics.getWidth(),
-				Gdx.graphics.getHeight());
-		camera.zoom = 2f;
-		
-		Viewport viewport = new ScreenViewport(camera);
-		
-		stage.setViewport(viewport);
 		camera.position.x = player.getX() + player.getWidth() / 4f;
 		camera.position.y = player.getY() + player.getHeight() / 4f;
 		
