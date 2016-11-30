@@ -12,6 +12,7 @@ public class SpriteCache {
 	}
 	
 	public static void loadAllSprites() {
+		sprites.put(SpriteList.PLACEHOLDER, new Texture(Gdx.files.internal("PLACEHOLDER.png")));
 		sprites.put(SpriteList.PLAYER_BLUE_STANDING, new Texture(Gdx.files.internal("sprites/player-blue-standing.png")));
 		sprites.put(SpriteList.PLAYER_BLUE_WALKING, new Texture(Gdx.files.internal("sprites/player-blue-walking.png")));
 		sprites.put(SpriteList.SPIDER, new Texture(Gdx.files.internal("sprites/spider_small.png")));

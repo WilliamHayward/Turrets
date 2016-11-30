@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Vector3;
 
 import thisisxanderh.turrets.actors.GameActor;
 import thisisxanderh.turrets.core.Coordinate;
@@ -29,10 +28,9 @@ public abstract class Enemy extends GameActor {
 		this.parent = parent;
 		this.path = parent.getPath();
 		layer = LayerList.ENEMY;
-		spawn();
 	}
 	
-	private void spawn() {
+	protected void spawn() {
 		this.setX(path.get(0).getX() * Tile.SIZE);
 		this.setY(path.get(0).getY() * Tile.SIZE);
 	}

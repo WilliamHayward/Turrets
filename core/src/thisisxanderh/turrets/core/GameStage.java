@@ -1,8 +1,6 @@
 package thisisxanderh.turrets.core;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +14,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import thisisxanderh.turrets.actors.GameActor;
@@ -160,5 +159,16 @@ public class GameStage extends Stage {
 			layer = ((GameActor) actor).getLayer();
 		}
 		layers.get(layer).addActor(actor);
+	}
+	
+	@Override
+	public Array<Actor> getActors () {
+		Array<Actor> actors = new Array<>();
+		for (Group layer: layers.values()) {
+			for (Actor actor: layer.getChildren()) {
+				actors.add(actor);
+			}
+		}
+		return actors;
 	}
 }

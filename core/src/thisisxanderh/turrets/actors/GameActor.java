@@ -16,7 +16,7 @@ import thisisxanderh.turrets.terrain.Tile;
 public class GameActor extends Actor {
 	protected float xVelocity = 0;
 	protected float yVelocity = 0;
-	protected Texture texture;
+	protected Texture texture = SpriteCache.loadSprite(SpriteList.PLACEHOLDER);
 	protected float health;
 	protected float maxHealth;
 	protected boolean onGround;
@@ -26,6 +26,11 @@ public class GameActor extends Actor {
 	protected LayerList layer = LayerList.DEFAULT;
 	
 	public static final float MAX_SPEED = Tile.SIZE;
+	
+	public GameActor() {
+		this.setWidth(Tile.SIZE);
+		this.setHeight(Tile.SIZE);
+	}
 	
 	public GameActor(Texture texture) {
 		this.texture = texture;

@@ -45,7 +45,7 @@ public class Turrets extends ApplicationAdapter {
 		
 		stage.setMap(map);
 		
-		Emitter spawn = new Emitter();
+		Emitter spawn = new Emitter(null);
 
         TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(0);
         for(int x = 0; x < layer.getWidth(); x++){
@@ -68,7 +68,6 @@ public class Turrets extends ApplicationAdapter {
             }
         }
         stage.addActor(spawn);
-        spawn.spawn();
 		Player player = new Player(camera);
 		stage.addActor(player);
 		player.spawn();

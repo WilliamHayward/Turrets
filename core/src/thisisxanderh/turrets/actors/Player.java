@@ -3,7 +3,6 @@ package thisisxanderh.turrets.actors;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.controllers.Controllers;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -32,7 +31,8 @@ public class Player extends GameActor {
 	private ShapeRenderer shapeRenderer = new ShapeRenderer();
 	
 	public Player(OrthographicCamera camera) {
-		super(SpriteList.PLAYER_BLUE_STANDING);
+		//super(SpriteList.PLAYER_BLUE_STANDING);
+		super();
 		this.camera = camera;
 		input = new InputManager(camera);
 		layer = LayerList.PLAYER;
