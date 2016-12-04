@@ -14,8 +14,9 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import thisisxanderh.turrets.actors.Player;
-import thisisxanderh.turrets.actors.enemies.Emitter;
+import thisisxanderh.turrets.actors.enemies.Spawner;
 import thisisxanderh.turrets.core.GameStage;
+import thisisxanderh.turrets.core.commands.InvalidCommandException;
 import thisisxanderh.turrets.graphics.SpriteCache;
 
 public class Turrets extends ApplicationAdapter {
@@ -45,7 +46,13 @@ public class Turrets extends ApplicationAdapter {
 		
 		stage.setMap(map);
 		
-		Emitter spawn = new Emitter(null);
+		Spawner spawn = null;
+		try {
+			spawn = new Spawner("tiles/spawn.txt");
+		} catch (InvalidCommandException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
 
         TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(0);
         for(int x = 0; x < layer.getWidth(); x++){

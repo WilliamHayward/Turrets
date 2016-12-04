@@ -1,0 +1,7 @@
+display Hello, World
+wait 2
+spawn SPIDER,GIANT_SPIDER,SPIDER 3
+wait cleared
+spawn GIANT_SPIDER,SPIDER
+wait 1.5
+display Goodbye

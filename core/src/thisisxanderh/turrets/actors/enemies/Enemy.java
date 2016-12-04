@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 import thisisxanderh.turrets.actors.GameActor;
 import thisisxanderh.turrets.core.Coordinate;
+import thisisxanderh.turrets.core.commands.Commander;
 import thisisxanderh.turrets.graphics.LayerList;
 import thisisxanderh.turrets.graphics.SpriteList;
 import thisisxanderh.turrets.terrain.Tile;
@@ -20,8 +21,8 @@ public abstract class Enemy extends GameActor {
 	protected int destination = 0;
 	protected int direction = 1; // 1 for moving forward, -1 for moving back
 	protected float speed = 10f;
-	protected Emitter parent;
-	public Enemy(SpriteList textureID, Emitter parent) {
+	protected Commander parent;
+	public Enemy(SpriteList textureID, Commander parent) {
 		super(textureID);
 		this.setX(0);
 		this.setY(0);
