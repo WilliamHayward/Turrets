@@ -21,7 +21,7 @@ public class GameActor extends Actor {
 	protected float maxHealth;
 	protected boolean onGround;
 	
-	protected boolean solid = true;
+	protected boolean solid = false;
 	
 	protected LayerList layer = LayerList.DEFAULT;
 	

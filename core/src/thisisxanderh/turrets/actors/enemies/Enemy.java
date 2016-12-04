@@ -9,6 +9,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
+import thisisxanderh.turrets.actors.buildings.traps.EmptyEffect;
+import thisisxanderh.turrets.actors.buildings.traps.Trap;
+import thisisxanderh.turrets.actors.buildings.traps.TrapEffect;
 import thisisxanderh.turrets.core.Coordinate;
 import thisisxanderh.turrets.core.GameActor;
 import thisisxanderh.turrets.core.commands.Commander;
@@ -22,6 +25,7 @@ public abstract class Enemy extends GameActor {
 	protected int direction = 1; // 1 for moving forward, -1 for moving back
 	protected float speed = 10f;
 	protected Commander parent;
+	protected TrapEffect effects = new EmptyEffect();
 	public Enemy(SpriteList textureID, Commander parent) {
 		super(textureID);
 		this.setX(0);
@@ -29,6 +33,7 @@ public abstract class Enemy extends GameActor {
 		this.parent = parent;
 		this.path = parent.getPath();
 		layer = LayerList.ENEMY;
+		solid = true;
 	}
 	
 	protected void spawn() {
@@ -45,6 +50,8 @@ public abstract class Enemy extends GameActor {
 		
 		float xVel = 0;
 		float yVel = 0;
+		
+		float speed = this.speed * effects.getSpeedModifier();
 		
 		if (Math.abs(xDiff) <= speed * 2) {
 			this.setX(destinationX);
@@ -70,6 +77,8 @@ public abstract class Enemy extends GameActor {
 		
 		
 		super.act(delta);
+		this.damage(effects.getDPS() * delta);
+		effects = new EmptyEffect();
 	}
 	
 	@Override
@@ -95,5 +104,11 @@ public abstract class Enemy extends GameActor {
 		parent.childDeath(this);
 	}
 	
-	
+	@Override
+	public void collided(GameActor other) {
+		if (other instanceof Trap) {
+			Trap trap = (Trap) other;
+			effects.combine(trap.getEffect());
+		}
+	}
 }

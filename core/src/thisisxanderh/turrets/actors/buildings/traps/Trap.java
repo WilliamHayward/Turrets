@@ -19,6 +19,9 @@ public abstract class Trap extends Building {
 	}
 	
 	public TrapEffect getEffect() {
+		if (!built) {
+			return new EmptyEffect();
+		}
 		return effect;
 	}
 }

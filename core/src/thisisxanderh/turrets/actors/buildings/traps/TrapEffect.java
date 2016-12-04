@@ -9,7 +9,7 @@ public abstract class TrapEffect {
 	
 	public void combine(TrapEffect other) {
 		speedModifier *= other.getSpeedModifier();
-		dps += other.getSpeedModifier();
+		dps += other.getDPS();
 	}
 
 	public float getDPS() {

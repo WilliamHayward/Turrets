@@ -46,6 +46,7 @@ public abstract class Player extends GameActor {
 	
 	public Player(OrthographicCamera camera, SpriteList image) {
 		super(SpriteList.PLAYER_BLUE_STANDING);
+		solid = true;
 		this.camera = camera;
 		input = new InputManager(camera);
 		layer = LayerList.PLAYER;

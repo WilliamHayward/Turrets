@@ -12,7 +12,7 @@ import thisisxanderh.turrets.terrain.Terrain;
 import thisisxanderh.turrets.terrain.Tile;
 
 public abstract class Building extends GameActor {
-	private boolean built = false;
+	protected boolean built = false;
 	private boolean validPosition = false;
 	public Building(SpriteList texture) {
 		super(texture);
@@ -24,6 +24,7 @@ public abstract class Building extends GameActor {
 		if (!validPosition) {
 			return false;
 		}
+		solid = true;
 		this.setPosition(x, y);
 		built = true;
 		stage.addActor(this);
