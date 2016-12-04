@@ -1,5 +1,6 @@
 package thisisxanderh.turrets.core;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -48,7 +49,8 @@ public class GameActor extends Actor {
 	@Override
 	public void draw(Batch batch, float alpha) {
 		SpriteBatch spriteBatch = (SpriteBatch) batch;
-		spriteBatch.draw(texture, getX(), getY());
+		spriteBatch.draw(texture, getX(), getY(), 0, 0, getWidth(), getHeight(),
+				1, 1, getRotation(), 0, 0, texture.getWidth(), texture.getHeight(), false, false);
 	}
 	
 	public LayerList getLayer() {

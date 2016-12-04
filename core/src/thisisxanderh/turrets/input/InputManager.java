@@ -2,6 +2,7 @@ package thisisxanderh.turrets.input;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
@@ -10,6 +11,7 @@ import thisisxanderh.turrets.core.Coordinate;
 import thisisxanderh.turrets.input.schemes.ControlScheme;
 import thisisxanderh.turrets.input.schemes.DefaultKeyboard;
 import thisisxanderh.turrets.input.schemes.KeyboardScheme;
+import thisisxanderh.turrets.terrain.Tile;
 
 public class InputManager {
 	private ControlScheme scheme;
@@ -57,13 +59,29 @@ public class InputManager {
 		scheme = new DefaultKeyboard();
 	}
 	
+	/**
+	 * Get cursor position on screen
+	 */
 	public Coordinate getCursor() {
 		return new Coordinate(cursorX, cursorY);
 	}
 	
+	/**
+	 * Get cursor position in world
+	 */
 	public Coordinate getCursorPosition() {
 		float x = camera.position.x - camera.viewportWidth + cursorX * camera.zoom;
 		float y = camera.position.y + camera.viewportHeight - cursorY * camera.zoom;
+		return new Coordinate(x, y);
+	}
+	
+	/**
+	 * Get cursor tile position in world
+	 */
+	public Coordinate getCursorTile() {
+		Coordinate position = getCursorPosition();
+		float x = (float) Math.floor(position.getX() / Tile.SIZE) * Tile.SIZE;
+		float y = (float) Math.floor(position.getY() / Tile.SIZE) * Tile.SIZE;
 		return new Coordinate(x, y);
 	}
 	
@@ -76,6 +94,34 @@ public class InputManager {
 				return controller.getButton(0);
 		}
 		return false;
+	}
+	
+	public boolean getBuild() {
+		return Gdx.input.justTouched();
+	}
+	
+	public int getHotkey() {
+		if (Gdx.input.isKeyJustPressed(Keys.NUM_1)) {
+			return 0;
+		}
+		if (Gdx.input.isKeyJustPressed(Keys.NUM_2)) {
+			return 1;
+		}
+		if (Gdx.input.isKeyJustPressed(Keys.NUM_3)) {
+			return 2;
+		}
+		if (Gdx.input.isKeyJustPressed(Keys.NUM_4)) {
+			return 3;
+		}
+		return -1;
+	}
+
+	public boolean getPrev() {
+		return Gdx.input.isKeyJustPressed(Keys.Q);
+	}
+	
+	public boolean getNext() {
+		return Gdx.input.isKeyJustPressed(Keys.E);
 	}
 	
 	public boolean getPound() {

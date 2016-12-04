@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -18,6 +19,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import javafx.scene.paint.Color;
+import thisisxanderh.turrets.actors.buildings.Building;
 import thisisxanderh.turrets.graphics.LayerList;
 import thisisxanderh.turrets.terrain.Terrain;
 
@@ -100,6 +102,16 @@ public class GameStage extends Stage {
 		return actors;
 	}
 	
+	public List<Building> getBuildings() {
+		List<Building> buildings = new ArrayList<>();
+		for (Actor actor: this.getActors()) {
+			if (actor instanceof Building) {
+				buildings.add((Building) actor);
+			}
+		}
+		return buildings;
+	}
+	
 	@Override
 	public void act(float delta) {
 		
@@ -109,6 +121,7 @@ public class GameStage extends Stage {
 		/**
 		 * This is overkill for what Turrets need, but if all GameActors need to
 		 * be able to collide with all other GameActors, this will make that happen
+		 */
 		List<GameActor> actors = this.getGameActors();
 		List<GameActor> others = this.getGameActors(); // Two lists to prevent concurrent modification
 		for (GameActor actor: actors) {
@@ -127,7 +140,7 @@ public class GameStage extends Stage {
 				}
 			}
 			others.remove(actor); // Collisions are already two way, don't need to be checked twice
-		}*/
+		}
 	
 		for(GameActor actor: deadList) {
 			actor.remove();

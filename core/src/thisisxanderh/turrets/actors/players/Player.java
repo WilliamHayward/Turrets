@@ -1,5 +1,8 @@
 package thisisxanderh.turrets.actors.players;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.controllers.Controllers;
@@ -7,9 +10,14 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 
+import thisisxanderh.turrets.actors.buildings.Building;
+import thisisxanderh.turrets.actors.buildings.BuildingList;
+import thisisxanderh.turrets.actors.buildings.traps.Glue;
+import thisisxanderh.turrets.actors.buildings.traps.Spikes;
+import thisisxanderh.turrets.actors.buildings.turrets.Cannon;
+import thisisxanderh.turrets.actors.buildings.turrets.MachineGun;
 import thisisxanderh.turrets.actors.enemies.Enemy;
 import thisisxanderh.turrets.core.Coordinate;
 import thisisxanderh.turrets.core.GameActor;
@@ -32,12 +40,20 @@ public abstract class Player extends GameActor {
 	private OrthographicCamera camera;
 	private ShapeRenderer shapeRenderer = new ShapeRenderer();
 	protected Color color = null;
+	private List<BuildingList> buildings;
+	private int currentBuilding = -2;
+	private Building building;
 	
 	public Player(OrthographicCamera camera, SpriteList image) {
 		super(SpriteList.PLAYER_BLUE_STANDING);
 		this.camera = camera;
 		input = new InputManager(camera);
 		layer = LayerList.PLAYER;
+		buildings = new ArrayList<>();
+		buildings.add(BuildingList.MACHINE_GUN);
+		buildings.add(BuildingList.CANNON);
+		buildings.add(BuildingList.GLUE);
+		buildings.add(BuildingList.SPIKES);
 	}
 	
 	public void spawn() {
@@ -52,16 +68,6 @@ public abstract class Player extends GameActor {
 		SpriteBatch spriteBatch = (SpriteBatch) batch;
 		spriteBatch.draw(texture, getX(), getY(), 0, 0, getWidth(), getHeight(),
 				1, 1, getRotation(), 0, 0, texture.getWidth(), texture.getHeight(), facingLeft, false);
-		
-		
-		spriteBatch.end();
-		shapeRenderer.setProjectionMatrix(camera.combined);
-		
-		shapeRenderer.begin(ShapeType.Filled);
-		Coordinate cursor = input.getCursorPosition();
-		shapeRenderer.circle(cursor.getX(), cursor.getY(), 30);
-		shapeRenderer.end();
-		spriteBatch.begin();
 	}
 	@Override
 	public void act(float delta) {
@@ -92,7 +98,8 @@ public abstract class Player extends GameActor {
         	groundPound = false;
         }
 
-		for (GameActor other: stage.getGameActors()) {
+		/*for (GameActor other: stage.getGameActors()) {
+			
 			if (!other.collides()) {
 				continue;
 			}
@@ -102,11 +109,14 @@ public abstract class Player extends GameActor {
 					other.collided(this);
 				}
 			}
-		}
+		}*/
         
 		this.addYVelocity(GRAVITY * delta);
-		
-		
+		if (building != null) {
+			Coordinate position = input.getCursorTile();
+			building.setX(position.getX());
+			building.setY(position.getY());
+		}
 		
 		stage.getViewport().getCamera().position.x = this.getX();
 		stage.getViewport().getCamera().position.y = this.getY();
@@ -135,6 +145,33 @@ public abstract class Player extends GameActor {
 				groundPound = true;
 			}
 		}
+		int hotkey = input.getHotkey();
+		int newBuilding = currentBuilding;
+		if (hotkey!= -1) {
+			newBuilding = hotkey;
+		} else if (input.getNext()) {
+			newBuilding++;
+		} else if (input.getPrev()) {
+			newBuilding--;
+		}
+		if (newBuilding == -1) {
+			newBuilding = buildings.size() - 1;
+		} else if (newBuilding == buildings.size()) {
+			newBuilding = 0;
+		}
+		
+		if (newBuilding != currentBuilding) {
+			selectBuilding(newBuilding);
+		}
+		
+		if (input.getBuild() && building != null) {
+			Coordinate position = input.getCursorTile();
+			if (building.build(position.getX(), position.getY(), (GameStage) this.getStage())) {
+				building = null;
+				currentBuilding = -2;
+				selectBuilding(currentBuilding);
+			}
+		}
 		
 		if (Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
 			if (input.getDevice() == DeviceList.KEYBOARD) {
@@ -145,6 +182,39 @@ public abstract class Player extends GameActor {
 		}
 		
 		facingLeft = input.getFacing(facingLeft);
+	}
+	
+	private void selectBuilding(int newBuilding) {
+		if (building != null) {
+			building.remove();
+		}
+		if (newBuilding == -2) {
+			building = null;
+			return;
+		}
+		BuildingList buildingID = buildings.get(newBuilding);
+		switch (buildingID) {
+			case CANNON:
+				building = new Cannon();
+				break;
+			case GLUE:
+				building = new Glue();
+				break;
+			case MACHINE_GUN:
+				building = new MachineGun();
+				break;
+			case SPIKES:
+				building = new Spikes();
+				break;
+			default:
+				break;
+			
+		}
+		
+		currentBuilding = newBuilding;
+		if (building != null) {
+			this.getStage().addActor(building);
+		}
 	}
 	
 	@Override
