@@ -214,6 +214,10 @@ public abstract class Player extends GameActor {
 			selectBuilding(newBuilding);
 		}
 		
+		if (input.getExit()) {
+			deselectBuilding();
+		}
+		
 		if (input.getBuild() && building != null) {
 			if (building.build()) {
 				building = null;
@@ -230,6 +234,7 @@ public abstract class Player extends GameActor {
 			building.remove();
 		}
 		building = null;
+		currentBuilding = -2;
 	}
 	
 	private void selectBuilding(int newBuilding) {

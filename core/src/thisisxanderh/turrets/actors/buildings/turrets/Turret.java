@@ -16,6 +16,9 @@ public abstract class Turret extends Building {
 	
 	protected float cooldown;
 	private float timer = 0f;
+	
+	protected Bullet bullet;
+	
 	public Turret(SpriteList textureID) {
 		super(textureID);
 	}
@@ -55,9 +58,18 @@ public abstract class Turret extends Building {
 		timer -= delta;
 		if (timer <= 0 && target != null) {
 			timer = cooldown;
-			System.out.println("Fire " + getName());
+			shoot(target);
 		}
 	}
+	
+	private void shoot(Enemy target) {
+		reload();
+		bullet.setPosition(getX() + getWidth() / 2f, getY() + getHeight() / 2f);
+		bullet.fire(target);
+		this.getStage().addActor(bullet);
+	}
+	
+	protected abstract void reload();
 	
 	private Enemy getNearest() {
 		//TODO: This and some related functions are calibrated for the bottom left of the barrel/enemy. Fix that

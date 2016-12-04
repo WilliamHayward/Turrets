@@ -70,7 +70,6 @@ public class InputManager {
 	 * Get cursor position in world
 	 */
 	public Coordinate getCursorPosition() {
-		System.out.println(camera.zoom);
 		float x = camera.position.x - camera.viewportWidth + cursorX * camera.zoom;
 		float y = camera.position.y + camera.viewportHeight - cursorY * camera.zoom;
 		return new Coordinate(x, y);
@@ -134,6 +133,10 @@ public class InputManager {
 		return Gdx.input.isKeyJustPressed(Keys.E);
 	}
 	
+	public boolean getExit() {
+		return Gdx.input.isKeyJustPressed(Keys.ESCAPE);
+	}
+	
 	public boolean getPound() {
 		switch (getDevice()) {
 			case KEYBOARD:
@@ -151,7 +154,6 @@ public class InputManager {
 				float position = controller.getAxis(3);
 				if (Math.abs(position) < 0.2f) {
 					float movement = getHorizontalController();
-					System.out.println(movement);
 					if (Math.abs(movement) > 0.2f) {
 						return movement < 0;
 					}

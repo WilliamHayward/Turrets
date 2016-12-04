@@ -7,8 +7,10 @@ import com.badlogic.gdx.math.Rectangle;
 
 import thisisxanderh.turrets.core.GameActor;
 import thisisxanderh.turrets.core.GameStage;
+import thisisxanderh.turrets.graphics.LayerList;
 import thisisxanderh.turrets.graphics.SpriteList;
 import thisisxanderh.turrets.terrain.Terrain;
+import thisisxanderh.turrets.terrain.Tile;
 
 public abstract class Building extends GameActor {
 	protected boolean built = false;
@@ -26,6 +28,7 @@ public abstract class Building extends GameActor {
 		}
 		solid = true;
 		built = true;
+		layer = LayerList.BUILDING;
 		return true;
 	}
 
@@ -70,6 +73,13 @@ public abstract class Building extends GameActor {
 		bounds.setY(bounds.getY() + yBoundShift);
 		if (!terrain.overlaps(bounds)) {
 			return false;
+		}
+		for (int i = 0; i < Math.floor(getWidth() / Tile.SIZE); i++) {
+			// Ensure no overhang for longer buildings
+			bounds = new Rectangle(getX() + i * Tile.SIZE, getY() + yBoundShift, Tile.SIZE, getWidth());
+			if (!terrain.overlaps(bounds)) {
+				return false;
+			}
 		}
 		bounds = this.getBounds();
 		for (Building building: stage.getBuildings()) {

@@ -6,6 +6,8 @@ package thisisxanderh.turrets.graphics;
  */
 public enum LayerList {
 	DEFAULT,
+	BULLET,
+	BUILDING,
 	ENEMY,
 	PLAYER,
 }
