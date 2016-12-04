@@ -572,7 +572,7 @@
   </tile>
   <tile id="2">
    <properties>
-    <property name="spawn" value="YELLOW"/>
+    <property name="spawn" value="SOLDIER"/>
    </properties>
   </tile>
   <tile id="9">
@@ -587,7 +587,7 @@
   </tile>
   <tile id="18">
    <properties>
-    <property name="spawn" value="GREEN"/>
+    <property name="spawn" value="PILOT"/>
    </properties>
   </tile>
   <tile id="25">
@@ -597,12 +597,12 @@
   </tile>
   <tile id="26">
    <properties>
-    <property name="spawn" value="BLUE"/>
+    <property name="spawn" value="HERO"/>
    </properties>
   </tile>
   <tile id="28">
    <properties>
-    <property name="spawn" value="PINK"/>
+    <property name="spawn" value="SCOUT"/>
    </properties>
   </tile>
   <tile id="33">
@@ -612,7 +612,7 @@
   </tile>
   <tile id="34">
    <properties>
-    <property name="spawn" value="BROWN"/>
+    <property name="spawn" value="ENGINEER"/>
    </properties>
   </tile>
   <tile id="40">

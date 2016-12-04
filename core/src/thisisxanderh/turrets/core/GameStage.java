@@ -20,6 +20,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import javafx.scene.paint.Color;
 import thisisxanderh.turrets.actors.buildings.Building;
+import thisisxanderh.turrets.actors.players.PlayerTypes;
 import thisisxanderh.turrets.graphics.LayerList;
 import thisisxanderh.turrets.terrain.Terrain;
 
@@ -29,7 +30,7 @@ public class GameStage extends Stage {
 	private TiledMap map;
 	private TiledMapRenderer mapRenderer;
 	private Terrain terrain;
-	private Map<Color, List<Coordinate>> spawns = new HashMap<>();
+	private Map<PlayerTypes, List<Coordinate>> spawns = new HashMap<>();
 	private List<GameActor> deadList = new ArrayList<>();
 	
 	private Map<LayerList, Group> layers = new HashMap<>();
@@ -66,20 +67,20 @@ public class GameStage extends Stage {
 		return map;
 	}
 	
-	public void addSpawn(float x, float y, Color color) {
+	public void addSpawn(float x, float y, PlayerTypes type) {
 		Coordinate spawn = new Coordinate(x, y);
-		addSpawn(spawn, color);
+		addSpawn(spawn, type);
 	}
 	
-	public void addSpawn(Coordinate spawn, Color color) {
-		if (spawns.get(color) == null) {
-			spawns.put(color, new ArrayList<>());
+	public void addSpawn(Coordinate spawn, PlayerTypes type) {
+		if (spawns.get(type) == null) {
+			spawns.put(type, new ArrayList<>());
 		}
-		spawns.get(color).add(spawn);
+		spawns.get(type).add(spawn);
 	}
 	
-	public Coordinate getSpawn(Color color) {
-		List<Coordinate> list = spawns.get(color);
+	public Coordinate getSpawn(PlayerTypes type) {
+		List<Coordinate> list = spawns.get(type);
 		if (list == null) {
 			return null;
 		}

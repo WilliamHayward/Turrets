@@ -8,6 +8,9 @@ public abstract class KeyboardScheme extends ControlScheme {
 	protected int jump;
 	protected int left = Keys.A;
 	protected int right = Keys.D;
+	protected int up = Keys.W;
+	protected int down = Keys.S;
+	
 	public KeyboardScheme() {
 		device = DeviceList.KEYBOARD;
 	}
@@ -22,6 +25,14 @@ public abstract class KeyboardScheme extends ControlScheme {
 	
 	public int getRight() {
 		return right;
+	}
+	
+	public int getUp() {
+		return up;
+	}
+	
+	public int getDown() {
+		return down;
 	}
 	
 	public void setJump(int jump) {

@@ -85,6 +85,15 @@ public class InputManager {
 		return new Coordinate(x, y);
 	}
 	
+	public boolean getSwitch() {
+		switch (getDevice()) {
+			case KEYBOARD:
+				return Gdx.input.isKeyJustPressed(Keys.P);
+			case CONTROLLER:
+		}
+		return false;
+	}
+	
 	public boolean getJump() {
 		switch (getDevice()) {
 			case KEYBOARD:
@@ -172,6 +181,31 @@ public class InputManager {
 	
 	public float getHorizontalController() {
 		float axis = controller.getAxis(0);
+		return Math.abs(axis) < 0.2 ? 0 : axis;
+	}
+	
+
+	
+	public float getVertical() {
+		switch (getDevice()) {
+			case KEYBOARD:
+				return getVerticalKeyboard();
+			case CONTROLLER:
+				return getVerticalController();
+			default:
+		}
+		return 0;
+	}
+	
+	public float getVerticalKeyboard() {
+		KeyboardScheme keyboard = (KeyboardScheme) scheme;
+		float up = Gdx.input.isKeyPressed(keyboard.getUp()) ? 1 : 0;
+		float down = Gdx.input.isKeyPressed(keyboard.getDown()) ? 1 : 0;
+		return up - down;
+	}
+	
+	public float getVerticalController() {
+		float axis = controller.getAxis(1);
 		return Math.abs(axis) < 0.2 ? 0 : axis;
 	}
 }

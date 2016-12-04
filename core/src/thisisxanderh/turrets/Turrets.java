@@ -13,10 +13,10 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-import javafx.scene.paint.Color;
 import thisisxanderh.turrets.actors.enemies.Spawner;
-import thisisxanderh.turrets.actors.players.BluePlayer;
+import thisisxanderh.turrets.actors.players.*;
 import thisisxanderh.turrets.actors.players.Player;
+import thisisxanderh.turrets.actors.players.PlayerTypes;
 import thisisxanderh.turrets.core.GameStage;
 import thisisxanderh.turrets.core.commands.InvalidCommandException;
 import thisisxanderh.turrets.graphics.SpriteCache;
@@ -66,8 +66,8 @@ public class Turrets extends ApplicationAdapter {
                 MapProperties properties = cell.getTile().getProperties();
                 Object property = properties.get("spawn");
                 if(property != null){
-                	String color = (String) property;
-                	stage.addSpawn(x, y, Color.valueOf(color));
+                	String type = (String) property;
+                	stage.addSpawn(x, y, PlayerTypes.valueOf(type));
                     cell.setTile(null);
                 }
                 property = properties.get("enemy_path");
@@ -79,7 +79,7 @@ public class Turrets extends ApplicationAdapter {
             }
         }
         stage.addActor(spawn);
-		Player player = new BluePlayer(camera);
+		Player player = new Scout(camera);
 		stage.addActor(player);
 		player.spawn();
 		

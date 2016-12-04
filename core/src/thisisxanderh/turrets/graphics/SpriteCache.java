@@ -13,8 +13,22 @@ public class SpriteCache {
 	
 	public static void loadAllSprites() {
 		sprites.put(SpriteList.PLACEHOLDER, new Texture(Gdx.files.internal("PLACEHOLDER.png")));
-		sprites.put(SpriteList.PLAYER_BLUE_STANDING, new Texture(Gdx.files.internal("sprites/player_blue_standing.png")));
-		sprites.put(SpriteList.PLAYER_BLUE_WALKING, new Texture(Gdx.files.internal("sprites/player_blue_walking.png")));
+		
+		sprites.put(SpriteList.HERO_STANDING, new Texture(Gdx.files.internal("sprites/hero_standing.png")));
+		sprites.put(SpriteList.HERO_SHIP, new Texture(Gdx.files.internal("sprites/hero_ship.png")));
+		
+		sprites.put(SpriteList.PILOT_STANDING, new Texture(Gdx.files.internal("sprites/pilot_standing.png")));
+		sprites.put(SpriteList.PILOT_SHIP, new Texture(Gdx.files.internal("sprites/pilot_ship.png")));
+		
+		sprites.put(SpriteList.ENGINEER_STANDING, new Texture(Gdx.files.internal("sprites/engineer_standing.png")));
+		sprites.put(SpriteList.ENGINEER_SHIP, new Texture(Gdx.files.internal("sprites/engineer_ship.png")));
+		
+		sprites.put(SpriteList.SOLDIER_STANDING, new Texture(Gdx.files.internal("sprites/soldier_standing.png")));
+		sprites.put(SpriteList.SOLDIER_SHIP, new Texture(Gdx.files.internal("sprites/soldier_ship.png")));
+		
+		sprites.put(SpriteList.SCOUT_STANDING, new Texture(Gdx.files.internal("sprites/scout_standing.png")));
+		sprites.put(SpriteList.SCOUT_SHIP, new Texture(Gdx.files.internal("sprites/scout_ship.png")));
+		
 		sprites.put(SpriteList.SPIDER, new Texture(Gdx.files.internal("sprites/spider_small.png")));
 		sprites.put(SpriteList.SPIDER_GIANT, new Texture(Gdx.files.internal("sprites/spider_large.png")));
 

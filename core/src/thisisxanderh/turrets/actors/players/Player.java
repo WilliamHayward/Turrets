@@ -6,7 +6,9 @@ import java.util.List;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -23,14 +25,13 @@ import thisisxanderh.turrets.core.Coordinate;
 import thisisxanderh.turrets.core.GameActor;
 import thisisxanderh.turrets.core.GameStage;
 import thisisxanderh.turrets.graphics.LayerList;
+import thisisxanderh.turrets.graphics.SpriteCache;
 import thisisxanderh.turrets.graphics.SpriteList;
 import thisisxanderh.turrets.input.DeviceList;
 import thisisxanderh.turrets.input.InputManager;
 import thisisxanderh.turrets.terrain.Tile;
-import javafx.scene.paint.Color;
 
 public abstract class Player extends GameActor {
-	private float speed = 10.5f;
 	private static final float GRAVITY = -25f;
 	private InputManager input;
 	private boolean facingLeft = false;
@@ -43,9 +44,20 @@ public abstract class Player extends GameActor {
 	private List<BuildingList> buildings;
 	private int currentBuilding = -2;
 	private Building building;
+	private boolean shipMode = false;
+
+	protected float highDamage;
+	protected float lowDamage;
+	protected float speed;
+	
+	protected Texture standing;
+	protected Texture ship;
+	
+	protected PlayerTypes type = PlayerTypes.HERO;
 	
 	public Player(OrthographicCamera camera, SpriteList image) {
-		super(SpriteList.PLAYER_BLUE_STANDING);
+		super(image);
+		standing = SpriteCache.loadSprite(image);
 		solid = true;
 		this.camera = camera;
 		input = new InputManager(camera);
@@ -59,7 +71,7 @@ public abstract class Player extends GameActor {
 	
 	public void spawn() {
 		GameStage stage = (GameStage) this.getStage();
-		Coordinate spawn = stage.getSpawn(color);
+		Coordinate spawn = stage.getSpawn(type);
 		this.setX(spawn.getX() * Tile.SIZE);
 		this.setY(spawn.getY() * Tile.SIZE);
 	}
@@ -67,8 +79,11 @@ public abstract class Player extends GameActor {
 	@Override
 	public void draw(Batch batch, float alpha) {
 		SpriteBatch spriteBatch = (SpriteBatch) batch;
+		Color original = spriteBatch.getColor();
+		//spriteBatch.setColor(color);
 		spriteBatch.draw(texture, getX(), getY(), 0, 0, getWidth(), getHeight(),
 				1, 1, getRotation(), 0, 0, texture.getWidth(), texture.getHeight(), facingLeft, false);
+		spriteBatch.setColor(original);
 	}
 	@Override
 	public void act(float delta) {
@@ -87,37 +102,24 @@ public abstract class Player extends GameActor {
     	onGround = false;
         if (stage.getTerrain().overlaps(bounds)) {
         	this.moveToContact();
-        } else {
         }
-        
-        if (onGround) {
-        	if (groundPound) {
-        		stunnedTimer = 0.5f;
-        		setYVelocity(4f);
-        	}
-        	doubleJumpAvailable = true;
-        	groundPound = false;
+        if (!shipMode) {
+	        if (onGround) {
+	        	if (groundPound) {
+	        		stunnedTimer = 0.5f;
+	        		setYVelocity(4f);
+	        	}
+	        	doubleJumpAvailable = true;
+	        	groundPound = false;
+	        }
+	        
+			this.addYVelocity(GRAVITY * delta);
+			if (building != null) {
+				Coordinate position = input.getCursorTile();
+				building.setX(position.getX());
+				building.setY(position.getY());
+			}
         }
-
-		/*for (GameActor other: stage.getGameActors()) {
-			
-			if (!other.collides()) {
-				continue;
-			}
-			if (!this.equals(other)) {
-				if (bounds.overlaps(other.getBounds())) {
-					this.collided(other);
-					other.collided(this);
-				}
-			}
-		}*/
-        
-		this.addYVelocity(GRAVITY * delta);
-		if (building != null) {
-			Coordinate position = input.getCursorTile();
-			building.setX(position.getX());
-			building.setY(position.getY());
-		}
 		
 		stage.getViewport().getCamera().position.x = this.getX();
 		stage.getViewport().getCamera().position.y = this.getY();
@@ -125,6 +127,44 @@ public abstract class Player extends GameActor {
 	
 	private void handleInput() {
 		input.update();
+		if (input.getSwitch()) {
+			if (shipMode) {
+				this.texture = standing;
+				this.setRotation(0);
+			} else {
+				this.texture = ship;
+				deselectBuilding();
+			}
+			shipMode = !shipMode;
+			solid = !solid;
+			this.setSize(texture.getWidth(), texture.getHeight());
+		}
+		if (shipMode) {
+			this.handleShipInput();
+		} else {
+			this.handleFootInput();
+		}
+
+		
+		if (Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
+			if (input.getDevice() == DeviceList.KEYBOARD) {
+				input.setController(Controllers.getControllers().first());
+			} else {
+				input.setKeyboard();
+			}
+		}
+		
+	}
+	
+	private void handleShipInput() {
+		float horizontalSpeed = input.getHorizontal();
+		this.setXVelocity(horizontalSpeed * speed * 2);
+		//this.setRotation(-horizontalSpeed * 5);
+		float verticalSpeed = input.getVertical();
+		this.setYVelocity(verticalSpeed * speed * 2);
+	}
+	
+	private void handleFootInput() {
 		float horizontalSpeed = input.getHorizontal();
 		this.setXVelocity(horizontalSpeed * speed);
 		
@@ -146,6 +186,7 @@ public abstract class Player extends GameActor {
 				groundPound = true;
 			}
 		}
+
 		int hotkey = input.getHotkey();
 		int newBuilding = currentBuilding;
 		if (hotkey!= -1) {
@@ -174,15 +215,14 @@ public abstract class Player extends GameActor {
 			}
 		}
 		
-		if (Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
-			if (input.getDevice() == DeviceList.KEYBOARD) {
-				input.setController(Controllers.getControllers().first());
-			} else {
-				input.setKeyboard();
-			}
-		}
-		
 		facingLeft = input.getFacing(facingLeft);
+	}
+	
+	private void deselectBuilding() {
+		if (building != null) {
+			building.remove();
+		}
+		building = null;
 	}
 	
 	private void selectBuilding(int newBuilding) {
@@ -224,7 +264,7 @@ public abstract class Player extends GameActor {
 		if (other instanceof Enemy) {
 			if (this.getYVelocity() < 0) {
 				if (bounds.getY() - this.getYVelocity() > other.getY() + other.getHeight()) {
-					float damage = groundPound ? 5f : 2f;
+					float damage = groundPound ? highDamage : lowDamage;
 					other.damage(damage, this);
 					this.setYVelocity(13);
 					groundPound = false;
