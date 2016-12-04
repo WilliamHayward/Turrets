@@ -17,7 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-import thisisxanderh.turrets.actors.GameActor;
+import javafx.scene.paint.Color;
 import thisisxanderh.turrets.graphics.LayerList;
 import thisisxanderh.turrets.terrain.Terrain;
 
@@ -27,7 +27,7 @@ public class GameStage extends Stage {
 	private TiledMap map;
 	private TiledMapRenderer mapRenderer;
 	private Terrain terrain;
-	private List<Coordinate> spawns = new ArrayList<>();
+	private Map<Color, List<Coordinate>> spawns = new HashMap<>();
 	private List<GameActor> deadList = new ArrayList<>();
 	
 	private Map<LayerList, Group> layers = new HashMap<>();
@@ -64,19 +64,26 @@ public class GameStage extends Stage {
 		return map;
 	}
 	
-	public void addSpawn(float x, float y) {
+	public void addSpawn(float x, float y, Color color) {
 		Coordinate spawn = new Coordinate(x, y);
-		addSpawn(spawn);
+		addSpawn(spawn, color);
 	}
 	
-	public void addSpawn(Coordinate spawn) {
-		spawns.add(spawn);
+	public void addSpawn(Coordinate spawn, Color color) {
+		if (spawns.get(color) == null) {
+			spawns.put(color, new ArrayList<>());
+		}
+		spawns.get(color).add(spawn);
 	}
 	
-	public Coordinate getSpawn() {
+	public Coordinate getSpawn(Color color) {
+		List<Coordinate> list = spawns.get(color);
+		if (list == null) {
+			return null;
+		}
 		Random random = new Random();
-		int index = random.nextInt(spawns.size());
-		return spawns.get(index);
+		int index = random.nextInt(list.size());
+		return list.get(index);
 	}
 	
 	public Terrain getTerrain() {

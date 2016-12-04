@@ -1,4 +1,4 @@
-package thisisxanderh.turrets.actors;
+package thisisxanderh.turrets.actors.players;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -12,14 +12,16 @@ import com.badlogic.gdx.math.Rectangle;
 
 import thisisxanderh.turrets.actors.enemies.Enemy;
 import thisisxanderh.turrets.core.Coordinate;
+import thisisxanderh.turrets.core.GameActor;
 import thisisxanderh.turrets.core.GameStage;
 import thisisxanderh.turrets.graphics.LayerList;
 import thisisxanderh.turrets.graphics.SpriteList;
 import thisisxanderh.turrets.input.DeviceList;
 import thisisxanderh.turrets.input.InputManager;
 import thisisxanderh.turrets.terrain.Tile;
+import javafx.scene.paint.Color;
 
-public class Player extends GameActor {
+public abstract class Player extends GameActor {
 	private float speed = 10.5f;
 	private static final float GRAVITY = -25f;
 	private InputManager input;
@@ -29,10 +31,10 @@ public class Player extends GameActor {
 	private float stunnedTimer = 0f;
 	private OrthographicCamera camera;
 	private ShapeRenderer shapeRenderer = new ShapeRenderer();
+	protected Color color = null;
 	
-	public Player(OrthographicCamera camera) {
-		//super(SpriteList.PLAYER_BLUE_STANDING);
-		super();
+	public Player(OrthographicCamera camera, SpriteList image) {
+		super(SpriteList.PLAYER_BLUE_STANDING);
 		this.camera = camera;
 		input = new InputManager(camera);
 		layer = LayerList.PLAYER;
@@ -40,7 +42,7 @@ public class Player extends GameActor {
 	
 	public void spawn() {
 		GameStage stage = (GameStage) this.getStage();
-		Coordinate spawn = stage.getSpawn();
+		Coordinate spawn = stage.getSpawn(color);
 		this.setX(spawn.getX() * Tile.SIZE);
 		this.setY(spawn.getY() * Tile.SIZE);
 	}

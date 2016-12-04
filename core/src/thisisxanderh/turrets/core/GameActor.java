@@ -1,4 +1,4 @@
-package thisisxanderh.turrets.actors;
+package thisisxanderh.turrets.core;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -7,7 +7,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
-import thisisxanderh.turrets.core.GameStage;
 import thisisxanderh.turrets.graphics.LayerList;
 import thisisxanderh.turrets.graphics.SpriteCache;
 import thisisxanderh.turrets.graphics.SpriteList;

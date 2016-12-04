@@ -2,7 +2,7 @@ package thisisxanderh.turrets.actors.buildings;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 
-import thisisxanderh.turrets.actors.GameActor;
+import thisisxanderh.turrets.core.GameActor;
 import thisisxanderh.turrets.terrain.Tile;
 
 public abstract class Building extends GameActor {

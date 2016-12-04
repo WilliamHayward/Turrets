@@ -9,8 +9,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
-import thisisxanderh.turrets.actors.GameActor;
 import thisisxanderh.turrets.core.Coordinate;
+import thisisxanderh.turrets.core.GameActor;
 import thisisxanderh.turrets.core.commands.Commander;
 import thisisxanderh.turrets.graphics.LayerList;
 import thisisxanderh.turrets.graphics.SpriteList;
