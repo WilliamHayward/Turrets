@@ -20,6 +20,7 @@ import thisisxanderh.turrets.actors.buildings.traps.Glue;
 import thisisxanderh.turrets.actors.buildings.traps.Spikes;
 import thisisxanderh.turrets.actors.buildings.turrets.Cannon;
 import thisisxanderh.turrets.actors.buildings.turrets.MachineGun;
+import thisisxanderh.turrets.actors.buildings.turrets.Turret;
 import thisisxanderh.turrets.actors.enemies.Enemy;
 import thisisxanderh.turrets.core.Coordinate;
 import thisisxanderh.turrets.core.GameActor;
@@ -85,6 +86,7 @@ public abstract class Player extends GameActor {
 				1, 1, getRotation(), 0, 0, texture.getWidth(), texture.getHeight(), facingLeft, false);
 		spriteBatch.setColor(original);
 	}
+	
 	@Override
 	public void act(float delta) {
 		if (!this.inWorld()) {
@@ -116,8 +118,14 @@ public abstract class Player extends GameActor {
 			this.addYVelocity(GRAVITY * delta);
 			if (building != null) {
 				Coordinate position = input.getCursorTile();
+				float tileFraction = building.getHeight() / Tile.SIZE;
+				if (tileFraction < 1 && building instanceof Turret) {
+					tileFraction *= Tile.SIZE;
+				} else {
+					tileFraction = 0;
+				}
 				building.setX(position.getX());
-				building.setY(position.getY());
+				building.setY(position.getY() + tileFraction);
 			}
         }
 		
@@ -207,8 +215,7 @@ public abstract class Player extends GameActor {
 		}
 		
 		if (input.getBuild() && building != null) {
-			Coordinate position = input.getCursorTile();
-			if (building.build(position.getX(), position.getY(), (GameStage) this.getStage())) {
+			if (building.build()) {
 				building = null;
 				currentBuilding = -2;
 				selectBuilding(currentBuilding);

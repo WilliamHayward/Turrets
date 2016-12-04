@@ -79,7 +79,7 @@ public class Turrets extends ApplicationAdapter {
             }
         }
         stage.addActor(spawn);
-		Player player = new Scout(camera);
+		Player player = new Hero(camera);
 		stage.addActor(player);
 		player.spawn();
 		

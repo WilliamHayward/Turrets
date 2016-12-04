@@ -21,8 +21,12 @@ public enum SpriteList {
 	
 	SPIDER, 
 	SPIDER_GIANT, 
+	
 	BASE_MACHINE_GUN, 
+	BARREL_MACHINE_GUN,
+	
 	BASE_CANNON, 
+	BARREL_CANNON,
 	
 	GLUE,
 	SPIKES,

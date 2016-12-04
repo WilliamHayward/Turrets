@@ -18,8 +18,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-import javafx.scene.paint.Color;
 import thisisxanderh.turrets.actors.buildings.Building;
+import thisisxanderh.turrets.actors.enemies.Enemy;
 import thisisxanderh.turrets.actors.players.PlayerTypes;
 import thisisxanderh.turrets.graphics.LayerList;
 import thisisxanderh.turrets.terrain.Terrain;
@@ -102,7 +102,7 @@ public class GameStage extends Stage {
 		}
 		return actors;
 	}
-	
+
 	public List<Building> getBuildings() {
 		List<Building> buildings = new ArrayList<>();
 		for (Actor actor: this.getActors()) {
@@ -111,6 +111,16 @@ public class GameStage extends Stage {
 			}
 		}
 		return buildings;
+	}
+
+	public List<Enemy> getEnemies() {
+		List<Enemy> enemies = new ArrayList<>();
+		for (Actor actor: this.getActors()) {
+			if (actor instanceof Enemy) {
+				enemies.add((Enemy) actor);
+			}
+		}
+		return enemies;
 	}
 	
 	@Override

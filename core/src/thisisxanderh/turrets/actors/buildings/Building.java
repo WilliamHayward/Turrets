@@ -9,25 +9,23 @@ import thisisxanderh.turrets.core.GameActor;
 import thisisxanderh.turrets.core.GameStage;
 import thisisxanderh.turrets.graphics.SpriteList;
 import thisisxanderh.turrets.terrain.Terrain;
-import thisisxanderh.turrets.terrain.Tile;
 
 public abstract class Building extends GameActor {
 	protected boolean built = false;
 	private boolean validPosition = false;
+	protected String name;
 	public Building(SpriteList texture) {
 		super(texture);
 	}
 	
-	public boolean build(float x, float y, GameStage stage) {
+	public boolean build() {
 		//x = (float) Math.floor(x / Tile.SIZE);
 		//y = (float) Math.floor(y / Tile.SIZE);
 		if (!validPosition) {
 			return false;
 		}
 		solid = true;
-		this.setPosition(x, y);
 		built = true;
-		stage.addActor(this);
 		return true;
 	}
 
@@ -83,5 +81,9 @@ public abstract class Building extends GameActor {
 			}
 		}
 		return true;
+	}
+	
+	public String getName() {
+		return name;
 	}
 }

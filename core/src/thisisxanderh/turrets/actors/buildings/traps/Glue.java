@@ -9,6 +9,7 @@ public class Glue extends Trap {
 		super(SpriteList.GLUE);
 		this.setSize(Tile.SIZE * 2f, Tile.SIZE / 3f);
 		effect = new GlueEffect();
+		name = "Glue";
 	}
 
 }

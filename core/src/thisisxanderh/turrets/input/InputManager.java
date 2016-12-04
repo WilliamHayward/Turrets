@@ -70,6 +70,7 @@ public class InputManager {
 	 * Get cursor position in world
 	 */
 	public Coordinate getCursorPosition() {
+		System.out.println(camera.zoom);
 		float x = camera.position.x - camera.viewportWidth + cursorX * camera.zoom;
 		float y = camera.position.y + camera.viewportHeight - cursorY * camera.zoom;
 		return new Coordinate(x, y);

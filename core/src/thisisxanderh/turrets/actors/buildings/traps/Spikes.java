@@ -9,6 +9,7 @@ public class Spikes extends Trap {
 		super(SpriteList.SPIKES);
 		this.setSize(Tile.SIZE, Tile.SIZE / 2);
 		effect = new SpikesEffect();
+		name = "Spikes";
 	}
 
 }

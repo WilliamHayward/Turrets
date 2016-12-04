@@ -33,7 +33,10 @@ public class SpriteCache {
 		sprites.put(SpriteList.SPIDER_GIANT, new Texture(Gdx.files.internal("sprites/spider_large.png")));
 
 		sprites.put(SpriteList.BASE_MACHINE_GUN, new Texture(Gdx.files.internal("sprites/base_machine_gun.png")));
+		sprites.put(SpriteList.BARREL_MACHINE_GUN, new Texture(Gdx.files.internal("sprites/barrel_machine_gun.png")));
+
 		sprites.put(SpriteList.BASE_CANNON, new Texture(Gdx.files.internal("sprites/base_cannon.png")));
+		sprites.put(SpriteList.BARREL_CANNON, new Texture(Gdx.files.internal("sprites/barrel_cannon.png")));
 
 		sprites.put(SpriteList.GLUE, new Texture(Gdx.files.internal("sprites/glue.png")));
 		sprites.put(SpriteList.SPIKES, new Texture(Gdx.files.internal("sprites/spikes.png")));
