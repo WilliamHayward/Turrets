@@ -11,7 +11,6 @@ public class Engineer extends Player {
 		ship = SpriteCache.loadSprite(SpriteList.ENGINEER_SHIP);
 		color = Color.SKY;
 		
-
 		speed = 8f;
 		highDamage = 3f;
 		lowDamage = 1f;

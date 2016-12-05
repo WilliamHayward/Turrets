@@ -42,6 +42,8 @@ public abstract class Player extends GameActor {
 	private int currentBuilding = -2;
 	private Building building;
 	private boolean shipMode = false;
+	
+	private float pauseTimer = 0f;
 
 	protected float highDamage;
 	protected float lowDamage;
@@ -83,6 +85,17 @@ public abstract class Player extends GameActor {
 		if (!this.inWorld()) {
 			spawn();
 		}
+		GameStage stage = (GameStage) this.getStage();
+		pauseTimer -= delta;
+		if (input.getPause() && pauseTimer <= 0) {
+			stage.getController().togglePause();
+			pauseTimer = 0.05f; // Gdx input considers "just pressed" to last a moment or two, so spin the wheels for 0.05 seconds
+			return;
+		}
+		
+		if (stage.getController().isPaused()) {
+			return;
+		}
 		
 		stunnedTimer -= delta;
 		if (stunnedTimer < 0 && !groundPound) {
@@ -90,7 +103,6 @@ public abstract class Player extends GameActor {
 		}
 		
 		super.act(delta);
-		GameStage stage = (GameStage) this.getStage();
 		Rectangle bounds = this.getBounds();
     	onGround = false;
     	
@@ -136,6 +148,7 @@ public abstract class Player extends GameActor {
 	
 	private void handleInput() {
 		input.update();
+
 		
 		if (input.getSwitch()) {
 			if (shipMode) {
@@ -164,6 +177,10 @@ public abstract class Player extends GameActor {
 			}
 		}
 		
+	}
+	
+	public InputManager getInput() {
+		return input;
 	}
 	
 	private void handleShipInput() {

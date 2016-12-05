@@ -1,11 +1,14 @@
 package thisisxanderh.turrets.core;
 
+import javax.swing.GroupLayout.Alignment;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -32,7 +35,7 @@ public class UIStage extends Stage {
         build = new BuildUI(player, skin);
         play = new PlayUI(player, skin);
         
-        pause = new PauseUI(skin);
+        pause = new PauseUI(player, skin);
         active = play;
         this.addActor(active);
     }
@@ -154,27 +157,23 @@ public class UIStage extends Stage {
 	private class PlayUI extends UserInterface {
 		private PlayUI(Player player, Skin skin) {
 			super();
-			TextButton button = new TextButton("Machine Gun", skin, "default");
-	        button.setWidth(100f);
-	        button.setHeight(20f);
-	        button.setPosition(5, 5);
-
-	        button.addListener(new ClickListener(){
-	            @Override 
-	            public void clicked(InputEvent event, float x, float y) {
-	            	player.selectBuilding(0);
-	            }
-	        });
-	        
-	        this.addActor(button);
 			
 		}
 		
 	}
 	
 	private class PauseUI extends UserInterface {
-		private PauseUI(Skin skin) {
-			
+		Player player;
+		private PauseUI(Player player, Skin skin) {
+			super();
+			this.player = player;
+			Label label = new Label("Paused", skin);
+			this.addActor(label);
+		}
+		
+		@Override
+		public void act(float delta) {
+			player.act(delta);
 		}
 	}
 	

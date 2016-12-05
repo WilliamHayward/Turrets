@@ -114,6 +114,10 @@ public class InputManager {
 		}
 	}
 	
+	public boolean getPause() {
+		return Gdx.input.isKeyJustPressed(Keys.ESCAPE);
+	}
+	
 	public boolean getBuild() {
 		if (Gdx.input.justTouched()) {
 			Vector2 position = stage.screenToStageCoordinates(new Vector2(cursorX, cursorY));
