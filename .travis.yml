@@ -5,17 +5,15 @@ addons:
   sonarqube: true
 env:
   global:
-    - secure: ********* # defines SONAR_TOKEN=UrDGUAquUHvm6XSTRGZBbHcXumFQ5aqxG76gxYiCQIOmeHiOlX5hYr2HALeDe5VoAoBLXPoC/qd4q517zjPfMV/9A8ftdiAPw47Ypvlrj3sIQb/PbtKKLiGvwXad4epn0lsF16M26De4Up6BMBeDzSpsUp6LRt3Oci2ZrgiXLa+4H5QsFNiEaSReGUVBkRgE0vQmGlLBhPCx9l0KeLhqaLUbqs2Rup+0yVgVhJz9jhfJUxbA6UFbnbxgIDxITZTcRPxmej3GgBbAUnUOvV8HiSpAftHSgHqon2uyAScroPhzXRq6/f2f2ygHovXGU62+Z/MwsiQDzKK64ANpBLHvVEQ4L395lX1IB99ZRidk7xZv3R4khw7OeCfDDMFIXpcWPTvcsOL5KZJKFpBYzSnKQiu+kEG3UH5xrASgjv6SOAy8KMRQsXbr9yHAenympou0/QjX73fiUdpGsC7eVb7sPQPAf18JRCCitsdrHG7Hw2Ipxq2miugOljk5mTp2vWDdcdBz2kV97NPpEonpOi3A/pV5pbEY0p2GfsOadHh0cl2ryoiOGrBNuqx4ozxs8/YAgoBtZRfFdr7rPH+b9LGUvFK+Q0jOqnYlR9+rEeb3FfC2hztSzdInF+taJDuhurYZp9dtH14fsIgmGo3GchRI6V9BHhymeIBkBIguNtaeNiQ=
+  - secure: "$SONAR_TOKEN"
+  - secure: K5usKPeqtPdyHH4ynyzxeEFHkjoZQ+HhUc9wS6yxRlDLHWRPD9ku8/7YK7Lpk144Eo0dd+HHft0FMKzyCAlNWdZjeUz3boT0N2GnwT0y9xXmdB5JW5lIpU6w82iKyFDQZ58ZnOyKqTfWFuRKPTjVDoNIJg+7BtrSmBDJ//fun5abIZq61vJAnB6nDImiKiDUGr3YK7LhEpIMhJwCOT/hLXLhU9CsEsTqbTcaNKmEHlB7AbbMKaLa0p9fqBAKRTyUe7HseKHFbVxJ+wE33ROH6FjnBX509eDvnMYMH3vAJgo7vBtJLHyLRF/vJ0qlkafmRwA7GlUqiiIQpB4PvoPxGI/xH/g344yTz0VG8Lw8+WJr9KXEo/zILB69gCYuLyjFty8TvaVjyLHx05psH7+38csH8gHy0mTcxFfBGdmOlJUwAdSYbsetT0IsoS1J5ndzC9mG6y1VpzvlKCBZvJ06QQZSFPMS4ojHCqhMi4x6PCgUN2GWqre2+mADiwzl3asKag1N2LUxKW6PE7tAu+2UdMqhKFNc5akpa4MYpeyCPp1N868JwyXIrlZ5E0d+py/fjIa9fhuwYi5wrPHg8kd8kbFKXud+vEv+y/2s2jkPX59tUUtF3BvvUDiPUgAT35JZVxH6SJbJdzbyNBQ7JKCdrhi5Gb18oi87+CHXK670l50=
 script:
-  # other script steps might be done before running the actual SonarQube analysis
-  - sonar-scanner -Dsonar.login=$SONAR_TOKEN
+- "./gradlew sonarqube"
 jdk:
-  - oraclejdk8
-script:
-  - ./gradlew sonarqube
+- oraclejdk8
 cache:
   directories:
-    - '$HOME/.m2/repository'
-    - '$HOME/.sonar/cache'
-    - '$HOME/.gradle'
-    - '.gradle'
+  - "$HOME/.m2/repository"
+  - "$HOME/.sonar/cache"
+  - "$HOME/.gradle"
+  - ".gradle"
