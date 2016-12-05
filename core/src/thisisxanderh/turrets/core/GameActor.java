@@ -12,7 +12,7 @@ import thisisxanderh.turrets.graphics.SpriteCache;
 import thisisxanderh.turrets.graphics.SpriteList;
 import thisisxanderh.turrets.terrain.Tile;
 
-public class GameActor extends Actor {
+public abstract class GameActor extends Actor {
 	protected float xVelocity = 0;
 	protected float yVelocity = 0;
 	protected Texture texture = SpriteCache.loadSprite(SpriteList.PLACEHOLDER);
@@ -153,9 +153,7 @@ public class GameActor extends Actor {
 				this.getY() > 0 && this.getY() < GameStage.SIZE * Tile.SIZE);
 	}
 	
-	public void collided(GameActor other) {
-		
-	}
+	public abstract void collided(GameActor other);
 	
 	/**
 	 * @return true if killed

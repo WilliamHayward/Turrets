@@ -65,7 +65,7 @@ public abstract class Enemy extends GameActor {
 			yVel = (speed * Math.signum(yDiff));
 		}
 		
-		if (xVel == 0 && yVel == 0) {
+		if (xVel < speed && yVel < speed) {
 			destination += direction;
 			if (destination < 0 || path.get(destination) == null) {
 				direction *= -1;

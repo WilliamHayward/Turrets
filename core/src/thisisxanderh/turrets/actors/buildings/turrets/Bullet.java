@@ -21,8 +21,8 @@ public abstract class Bullet extends GameActor {
 		float xDiff = destinationX - this.getX();
 		float yDiff = destinationY - this.getY();
 		
-		float xVel = (speed * xDiff);
-		float yVel = (speed * yDiff);
+		float xVel = speed * xDiff;
+		float yVel = speed * yDiff;
 
 		this.setXVelocity(xVel);
 		this.setYVelocity(yVel);

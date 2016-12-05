@@ -136,18 +136,17 @@ public class GameStage extends Stage {
 		List<GameActor> actors = this.getGameActors();
 		List<GameActor> others = this.getGameActors(); // Two lists to prevent concurrent modification
 		for (GameActor actor: actors) {
-			if (actor.collides()) {
-				Rectangle bounds = actor.getBounds();
-				for (GameActor other: others) {
-					if (!other.collides()) {
-						continue;
-					}
-					if (!actor.equals(other)) {
-						if (bounds.overlaps(other.getBounds())) {
-							actor.collided(other);
-							other.collided(actor);
-						}
-					}
+			if (!actor.collides()) {
+				continue;
+			}
+			Rectangle bounds = actor.getBounds();
+			for (GameActor other: others) {
+				if (!other.collides() || actor.equals(other)) {
+					continue;
+				}
+				if (bounds.overlaps(other.getBounds())) {
+					actor.collided(other);
+					other.collided(actor);
 				}
 			}
 			others.remove(actor); // Collisions are already two way, don't need to be checked twice

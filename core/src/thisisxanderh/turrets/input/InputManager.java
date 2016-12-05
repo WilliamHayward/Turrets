@@ -47,6 +47,8 @@ public class InputManager {
 				cursorY += yDiff * 5;
 				cursorX = MathUtils.clamp(cursorX, 0, camera.viewportWidth);
 				cursorY = MathUtils.clamp(cursorY, 0, camera.viewportHeight);
+			default:
+				return;
 		}
 	}
 	
@@ -90,8 +92,9 @@ public class InputManager {
 			case KEYBOARD:
 				return Gdx.input.isKeyJustPressed(Keys.P);
 			case CONTROLLER:
+			default:
+				return false;
 		}
-		return false;
 	}
 	
 	public boolean getJump() {
@@ -101,8 +104,9 @@ public class InputManager {
 						((KeyboardScheme) scheme).getJump());
 			case CONTROLLER:
 				return controller.getButton(0);
+			default:
+				return false;
 		}
-		return false;
 	}
 	
 	public boolean getBuild() {
@@ -142,8 +146,9 @@ public class InputManager {
 			case KEYBOARD:
 				return Gdx.input.isKeyJustPressed(Input.Keys.SHIFT_LEFT);
 			case CONTROLLER:
+			default:
+				return false;
 		}
-		return false;
 	}
 	
 	public boolean getFacing(boolean prevFacing) {
@@ -160,6 +165,9 @@ public class InputManager {
 				} else {
 					return position < 0;
 				}
+				break;
+			default:
+				return false;
 		}
 		return prevFacing;
 	}
@@ -171,8 +179,8 @@ public class InputManager {
 			case CONTROLLER:
 				return getHorizontalController();
 			default:
+				return 0;
 		}
-		return 0;
 	}
 	
 	public float getHorizontalKeyboard() {
@@ -196,8 +204,8 @@ public class InputManager {
 			case CONTROLLER:
 				return getVerticalController();
 			default:
+				return 0;
 		}
-		return 0;
 	}
 	
 	public float getVerticalKeyboard() {

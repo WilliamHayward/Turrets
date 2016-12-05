@@ -15,26 +15,36 @@ public class Terrain implements Shape2D {
 	
 	public Terrain(TiledMap map) {
 		tiles = new ArrayList<>();
+		for (MapLayer layer: map.getLayers()) {
+			processLayer((TiledMapTileLayer) layer);
+		}
+	}
+	
+	private void processLayer(TiledMapTileLayer layer) {
 		//TODO: Optimize this.
 		//		- Unreachable areas. A solid block surrounded by four solid blocks should never need
 		//		collision detection
-		for (MapLayer layerMask: map.getLayers()) {
-			TiledMapTileLayer layer = (TiledMapTileLayer) layerMask;
-			for (int x = 0; x < layer.getWidth(); x++) {
-				for (int y = 0; y < layer.getHeight(); y++) {
-	                TiledMapTileLayer.Cell cell = layer.getCell(x,y);
-	                if (cell == null) {
-	                	continue;
-	                }
-					Object property = cell.getTile().getProperties().get("solid");
-	                if (property == null) {
-	                	continue;
-	                }
-	                Tile tile = new Tile(x, y);
-	                tiles.add(tile);
-				}
+		for (int x = 0; x < layer.getWidth(); x++) {
+			for (int y = 0; y < layer.getHeight(); y++) {
+                TiledMapTileLayer.Cell cell = layer.getCell(x,y);
+                if (cell == null) {
+                	continue;
+                }
+				Object property = cell.getTile().getProperties().get("solid");
+                if (property == null) {
+                	continue;
+                }
+                addTile(x, y);
 			}
 		}
+	}
+	
+	public void addTile(int x, int y) {
+		addTile(new Tile(x, y));
+	}
+	
+	public void addTile(Tile tile) {
+		tiles.add(tile);
 	}
 
 	@Override

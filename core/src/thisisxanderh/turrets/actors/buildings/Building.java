@@ -105,6 +105,11 @@ public abstract class Building extends GameActor {
 		return true;
 	}
 	
+	@Override
+	public void collided(GameActor other) {
+		// Do nothing
+	}
+	
 	public String getName() {
 		return name;
 	}

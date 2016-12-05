@@ -74,19 +74,17 @@ public class Line {
 		float top = rect.getY() + rect.getHeight();
 		float bottom = rect.getY();
 		
-		if ((start.getX() < left && end.getX() < left) ||
-				(start.getX() > right && end.getX() > right) ||
-				(start.getY() < bottom && end.getY() < bottom) ||
-				(start.getY() > top && end.getY() > top)) {
+		boolean leftValid = start.getX() < left && end.getX() < left;
+		boolean rightValid = start.getX() > right && end.getX() > right;
+		boolean topValid = start.getY() > top && end.getY() > top;
+		boolean bottomValid = start.getY() < bottom && end.getY() < bottom;
+		
+		boolean sidesValid = leftValid || rightValid;
+		if (sidesValid || topValid || bottomValid) {
 			for (Line edge: getLines(rect)) {
 				if (intersects(edge)) {
 					return true;
 				}
-			}
-		}
-		for (Line edge: getLines(rect)) {
-			if (intersects(edge)) {
-				return true;
 			}
 		}
 		return false;

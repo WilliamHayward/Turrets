@@ -9,9 +9,6 @@ public class Tile extends Rectangle {
 	private static final long serialVersionUID = -561878273190361184L;
 	public static final int SIZE = 128; // Width and height (in pixels) of all tiles 
 	
-	public Tile() {
-	}
-
 	public Tile(Rectangle rect) {
 		super(rect);
 	}
