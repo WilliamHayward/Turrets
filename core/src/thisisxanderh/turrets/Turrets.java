@@ -2,7 +2,6 @@ package thisisxanderh.turrets;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -83,18 +82,12 @@ public class Turrets extends ApplicationAdapter {
                 }
             }
         }
+        
         stage.addActor(spawn);
 		Player player = new Hero(camera);
 		stage.addActor(player);
 		player.spawn();
 
-        
-        /*button2.addListener(new ClickListener(){
-            @Override 
-            public void clicked(InputEvent event, float x, float y) {
-                button2.setText("You clicked the button");
-            }
-        });*/
         uiStage = new UIStage(stage, player);
         Gdx.input.setInputProcessor(uiStage);
 
@@ -110,20 +103,10 @@ public class Turrets extends ApplicationAdapter {
 	public void render () {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		stage.getBatch().begin();
-		OrthographicCamera cam = (OrthographicCamera) stage.getCamera();
-		float x = cam.position.x - cam.viewportWidth * cam.zoom;
-        TiledMapTileLayer layer = (TiledMapTileLayer) stage.getMap().getLayers().get(0);
-		x -= (cam.position.x / layer.getWidth()) * 5;
-		float y = cam.position.y - cam.viewportHeight;
-		/* This is causing freezes
-		while (x < cam.position.x + cam.viewportWidth * cam.zoom) {
-			stage.getBatch().draw(background, x, y);
-			x += background.getWidth();
-		}*/
-		stage.getBatch().end();
+		
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
+		
 		uiStage.act();
 		uiStage.draw();
 	}

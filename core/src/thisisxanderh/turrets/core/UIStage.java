@@ -17,6 +17,7 @@ public class UIStage extends Stage {
 	public UIStage(GameStage gameStage, Player player) {
 		super();
         this.gameStage = gameStage;
+        gameStage.setUiStage(this);
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 
         TextButton button = new TextButton("Machine Gun", skin, "default");

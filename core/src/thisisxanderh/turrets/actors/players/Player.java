@@ -96,9 +96,11 @@ public abstract class Player extends GameActor {
 		GameStage stage = (GameStage) this.getStage();
 		Rectangle bounds = this.getBounds();
     	onGround = false;
+    	
         if (stage.getTerrain().overlaps(bounds)) {
         	this.moveToContact();
         }
+        
         if (!shipMode) {
 	        if (onGround) {
 	        	if (groundPound) {
@@ -110,9 +112,12 @@ public abstract class Player extends GameActor {
 	        }
 	        
 			this.addYVelocity(GRAVITY * delta);
+			
 			if (building != null) {
+				
 				Coordinate position = input.getCursorTile();
 				float tileFraction = building.getHeight() / Tile.SIZE;
+				
 				if (tileFraction < 1 && building instanceof Turret) {
 					tileFraction *= Tile.SIZE;
 				} else {
@@ -120,6 +125,7 @@ public abstract class Player extends GameActor {
 				}
 				building.setX(position.getX());
 				building.setY(position.getY() + tileFraction);
+				
 			}
         }
 		
@@ -133,6 +139,7 @@ public abstract class Player extends GameActor {
 	
 	private void handleInput() {
 		input.update();
+		
 		if (input.getSwitch()) {
 			if (shipMode) {
 				this.texture = standing;
@@ -145,13 +152,13 @@ public abstract class Player extends GameActor {
 			solid = !solid;
 			this.setSize(texture.getWidth(), texture.getHeight());
 		}
+		
 		if (shipMode) {
 			this.handleShipInput();
 		} else {
 			this.handleFootInput();
 		}
 
-		
 		if (Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
 			if (input.getDevice() == DeviceList.KEYBOARD) {
 				input.setController(Controllers.getControllers().first());
@@ -165,7 +172,6 @@ public abstract class Player extends GameActor {
 	private void handleShipInput() {
 		float horizontalSpeed = input.getHorizontal();
 		this.setXVelocity(horizontalSpeed * speed * 2);
-		//this.setRotation(-horizontalSpeed * 5);
 		float verticalSpeed = input.getVertical();
 		this.setYVelocity(verticalSpeed * speed * 2);
 	}
@@ -270,17 +276,25 @@ public abstract class Player extends GameActor {
 	
 	@Override
 	public void collided(GameActor other) {
-		Rectangle bounds = getBounds();
 		if (other instanceof Enemy) {
-			if (this.getYVelocity() < 0) {
-				if (bounds.getY() - this.getYVelocity() > other.getY() + other.getHeight()) {
-					float damage = groundPound ? highDamage : lowDamage;
-					other.damage(damage, this);
-					this.setYVelocity(13);
-					groundPound = false;
-				}
-			}
+			collideEnemy((Enemy) other);
 		}
+	}
+	
+	private void collideEnemy(Enemy enemy) {
+		Rectangle bounds = getBounds();
+		if (this.getYVelocity() > 0) {
+			return;
+		}
+		
+		if (bounds.getY() - this.getYVelocity() <= enemy.getY() + enemy.getHeight()) {
+			return;
+		}
+		
+		float damage = groundPound ? highDamage : lowDamage;
+		enemy.damage(damage, this);
+		this.setYVelocity(13);
+		groundPound = false;
 	}
 	
 }
