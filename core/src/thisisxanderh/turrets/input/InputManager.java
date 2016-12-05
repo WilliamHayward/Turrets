@@ -6,8 +6,12 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import thisisxanderh.turrets.core.Coordinate;
+import thisisxanderh.turrets.core.UIStage;
 import thisisxanderh.turrets.input.schemes.ControlScheme;
 import thisisxanderh.turrets.input.schemes.DefaultKeyboard;
 import thisisxanderh.turrets.input.schemes.KeyboardScheme;
@@ -16,11 +20,11 @@ import thisisxanderh.turrets.terrain.Tile;
 public class InputManager {
 	private ControlScheme scheme;
 	private Controller controller = null;
+	private UIStage stage;
 	private float cursorX;
 	private float cursorY;
-	private OrthographicCamera camera;
-	public InputManager(OrthographicCamera camera) {
-		this.camera = camera;
+	public InputManager(UIStage stage) {
+		this.stage = stage;
 		scheme = new DefaultKeyboard();
 	}
 
@@ -45,8 +49,8 @@ public class InputManager {
 				}
 				cursorX += xDiff * 5;
 				cursorY += yDiff * 5;
-				cursorX = MathUtils.clamp(cursorX, 0, camera.viewportWidth);
-				cursorY = MathUtils.clamp(cursorY, 0, camera.viewportHeight);
+				cursorX = MathUtils.clamp(cursorX, 0, stage.getWidth());
+				cursorY = MathUtils.clamp(cursorY, 0, stage.getHeight());
 			default:
 				return;
 		}
@@ -72,9 +76,10 @@ public class InputManager {
 	 * Get cursor position in world
 	 */
 	public Coordinate getCursorPosition() {
-		float x = camera.position.x - camera.viewportWidth + cursorX * camera.zoom;
-		float y = camera.position.y + camera.viewportHeight - cursorY * camera.zoom;
-		return new Coordinate(x, y);
+		OrthographicCamera camera = (OrthographicCamera) stage.getGameStage().getCamera();
+		Vector3 position = new Vector3(cursorX, cursorY, 0);
+		camera.unproject(position);
+		return new Coordinate(position.x, position.y);
 	}
 	
 	/**
@@ -110,7 +115,14 @@ public class InputManager {
 	}
 	
 	public boolean getBuild() {
-		return Gdx.input.justTouched();
+		if (Gdx.input.justTouched()) {
+			Vector2 position = stage.screenToStageCoordinates(new Vector2(cursorX, cursorY));
+			Actor hit = stage.hit(position.x, position.y, false);
+			if (hit == null) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public int getHotkey() {

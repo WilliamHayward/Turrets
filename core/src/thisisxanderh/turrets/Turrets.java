@@ -18,11 +18,15 @@ import thisisxanderh.turrets.actors.players.*;
 import thisisxanderh.turrets.actors.players.Player;
 import thisisxanderh.turrets.actors.players.PlayerTypes;
 import thisisxanderh.turrets.core.GameStage;
+import thisisxanderh.turrets.core.UIStage;
 import thisisxanderh.turrets.core.commands.InvalidCommandException;
 import thisisxanderh.turrets.graphics.SpriteCache;
+import thisisxanderh.turrets.input.InputManager;
 
 public class Turrets extends ApplicationAdapter {
 	GameStage stage;
+	UIStage uiStage;
+	
 	
 	Texture background;
 	
@@ -35,11 +39,12 @@ public class Turrets extends ApplicationAdapter {
 		TiledMap map = new TmxMapLoader().load("tiles/test.tmx");
         
 		stage = new GameStage();
+
 		
 
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(),
 				Gdx.graphics.getHeight());
-		camera.zoom = 2f;
+		camera.zoom = 3f;
 		
 		Viewport viewport = new ScreenViewport(camera);
 		
@@ -82,7 +87,19 @@ public class Turrets extends ApplicationAdapter {
 		Player player = new Hero(camera);
 		stage.addActor(player);
 		player.spawn();
-		
+
+        
+        /*button2.addListener(new ClickListener(){
+            @Override 
+            public void clicked(InputEvent event, float x, float y) {
+                button2.setText("You clicked the button");
+            }
+        });*/
+        uiStage = new UIStage(stage, player);
+        Gdx.input.setInputProcessor(uiStage);
+
+        InputManager input = new InputManager(uiStage);
+        player.setInput(input);
 		camera.position.x = player.getX() + player.getWidth() / 4f;
 		camera.position.y = player.getY() + player.getHeight() / 4f;
 		
@@ -94,28 +111,30 @@ public class Turrets extends ApplicationAdapter {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.getBatch().begin();
-		Camera cam = stage.getCamera();
-		float x = cam.position.x - cam.viewportWidth;
+		OrthographicCamera cam = (OrthographicCamera) stage.getCamera();
+		float x = cam.position.x - cam.viewportWidth * cam.zoom;
         TiledMapTileLayer layer = (TiledMapTileLayer) stage.getMap().getLayers().get(0);
 		x -= (cam.position.x / layer.getWidth()) * 5;
 		float y = cam.position.y - cam.viewportHeight;
-		while (x < cam.position.x + cam.viewportWidth) {
+		/* This is causing freezes
+		while (x < cam.position.x + cam.viewportWidth * cam.zoom) {
 			stage.getBatch().draw(background, x, y);
 			x += background.getWidth();
-		}
+		}*/
 		stage.getBatch().end();
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
+		uiStage.act();
+		uiStage.draw();
 	}
 	
 	@Override
 	public void dispose () {
 		stage.dispose();
 	}
-	
+
 	@Override
-	public void resize(int width, int height) {
+	public void resize (int width, int height) {
 		stage.getViewport().update(width, height, true);
-		
 	}
 }

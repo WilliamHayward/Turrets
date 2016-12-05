@@ -23,7 +23,7 @@ public abstract class Enemy extends GameActor {
 	protected List<Coordinate> path;
 	protected int destination = 0;
 	protected int direction = 1; // 1 for moving forward, -1 for moving back
-	protected float speed = 10f;
+	protected float speed;
 	protected Commander parent;
 	protected TrapEffect effects = new EmptyEffect();
 	public Enemy(SpriteList textureID, Commander parent) {
@@ -65,7 +65,7 @@ public abstract class Enemy extends GameActor {
 			yVel = (speed * Math.signum(yDiff));
 		}
 		
-		if (xVel < speed && yVel < speed) {
+		if (Math.abs(xVel) < speed && Math.abs(yVel) < speed) {
 			destination += direction;
 			if (destination < 0 || path.get(destination) == null) {
 				direction *= -1;

@@ -59,7 +59,6 @@ public abstract class Player extends GameActor {
 		standing = SpriteCache.loadSprite(image);
 		solid = true;
 		this.camera = camera;
-		input = new InputManager(camera);
 		layer = LayerList.PLAYER;
 		buildings = new ArrayList<>();
 		buildings.add(BuildingList.MACHINE_GUN);
@@ -78,11 +77,8 @@ public abstract class Player extends GameActor {
 	@Override
 	public void draw(Batch batch, float alpha) {
 		SpriteBatch spriteBatch = (SpriteBatch) batch;
-		Color original = spriteBatch.getColor();
-		//spriteBatch.setColor(color);
 		spriteBatch.draw(texture, getX(), getY(), 0, 0, getWidth(), getHeight(),
 				1, 1, getRotation(), 0, 0, texture.getWidth(), texture.getHeight(), facingLeft, false);
-		spriteBatch.setColor(original);
 	}
 	
 	@Override
@@ -129,6 +125,10 @@ public abstract class Player extends GameActor {
 		
 		camera.position.x = this.getX();
 		camera.position.y = this.getY();
+	}
+	
+	public void setInput(InputManager input) {
+		this.input = input;
 	}
 	
 	private void handleInput() {
@@ -235,7 +235,7 @@ public abstract class Player extends GameActor {
 		currentBuilding = -2;
 	}
 	
-	private void selectBuilding(int newBuilding) {
+	public void selectBuilding(int newBuilding) {
 		if (building != null) {
 			building.remove();
 		}

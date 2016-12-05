@@ -9,6 +9,7 @@ public class Spider extends Enemy {
 		super(SpriteList.SPIDER, parent);
 		maxHealth = 1;
 		health = maxHealth;
+		speed = 15f;
 	}
 
 }

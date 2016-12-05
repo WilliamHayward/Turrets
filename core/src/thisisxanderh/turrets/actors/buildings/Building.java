@@ -67,7 +67,7 @@ public abstract class Building extends GameActor {
 	
 	protected abstract boolean validPosition();
 	
-	protected boolean validPosition(float yBoundShift) {
+	protected boolean validPosition(float yBoundShift) {		
 		GameStage stage = (GameStage) this.getStage();
 		
 		// Don't place it in the ground
