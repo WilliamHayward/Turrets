@@ -91,7 +91,7 @@ public abstract class GameActor extends Actor {
 	
 	@Override
 	public void act(float delta) {
-		float xVelocityStep = MathUtils.clamp(xVelocity * delta, -MAX_SPEED * delta, MAX_SPEED * delta);
+		float xVelocityStep = MathUtils.clamp(xVelocity * delta, -MAX_SPEED, MAX_SPEED * delta);
 		float yVelocityStep = MathUtils.clamp(yVelocity * delta, -MAX_SPEED * delta, MAX_SPEED * delta);
 		this.setPosition(getX() + xVelocityStep / delta, getY() + yVelocityStep / delta);
 	}

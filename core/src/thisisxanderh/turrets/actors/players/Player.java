@@ -7,7 +7,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -38,7 +37,6 @@ public abstract class Player extends GameActor {
 	private boolean doubleJumpAvailable = true;
 	private boolean groundPound = false;
 	private float stunnedTimer = 0f;
-	private OrthographicCamera camera;
 	protected Color color = null;
 	private List<BuildingList> buildings;
 	private int currentBuilding = -2;
@@ -54,11 +52,10 @@ public abstract class Player extends GameActor {
 	
 	protected PlayerTypes type = PlayerTypes.HERO;
 	
-	public Player(OrthographicCamera camera, SpriteList image) {
+	public Player(SpriteList image) {
 		super(image);
 		standing = SpriteCache.loadSprite(image);
 		solid = true;
-		this.camera = camera;
 		layer = LayerList.PLAYER;
 		buildings = new ArrayList<>();
 		buildings.add(BuildingList.MACHINE_GUN);
@@ -129,8 +126,8 @@ public abstract class Player extends GameActor {
 			}
         }
 		
-		camera.position.x = this.getX();
-		camera.position.y = this.getY();
+		this.getStage().getCamera().position.x = this.getX();
+		this.getStage().getCamera().position.y = this.getY();
 	}
 	
 	public void setInput(InputManager input) {

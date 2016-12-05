@@ -6,21 +6,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import thisisxanderh.turrets.actors.buildings.Building;
 import thisisxanderh.turrets.actors.enemies.Enemy;
+import thisisxanderh.turrets.actors.enemies.Spawner;
 import thisisxanderh.turrets.actors.players.PlayerTypes;
+import thisisxanderh.turrets.core.commands.InvalidCommandException;
 import thisisxanderh.turrets.graphics.LayerList;
 import thisisxanderh.turrets.terrain.Terrain;
 
@@ -36,18 +41,10 @@ public class GameStage extends Stage {
 	private Map<LayerList, Group> layers = new HashMap<>();
 	
 	private UIStage uiStage;
+
+	private GameController controller;
 	
 	public GameStage() {
-		init();
-	}
-
-	public GameStage(Viewport viewport) {
-		super(viewport);
-		init();
-	}
-
-	public GameStage(Viewport viewport, Batch batch) {
-		super(viewport, batch);
 		init();
 	}
 	
@@ -57,12 +54,61 @@ public class GameStage extends Stage {
 			layers.put(layer, layerGroup);
 			this.addLayer(layerGroup);
 		}
+		
+		OrthographicCamera camera = new OrthographicCamera(Gdx.graphics.getWidth(),
+				Gdx.graphics.getHeight());
+		camera.zoom = 3f;
+		Viewport viewport = new ScreenViewport(camera);
+		setViewport(viewport);
+		
+
+	}
+
+	
+	public void setController(GameController controller) {
+		this.controller = controller;
 	}
 	
+	public GameController getController() {
+		return controller;
+	}
 	public void setMap(TiledMap map) {
 		this.map = map;
 		terrain = new Terrain(map);
 		mapRenderer = new OrthogonalTiledMapRenderer(map);
+
+		Spawner spawn = null;
+		try {
+			spawn = new Spawner("tiles/spawn.txt");
+		} catch (InvalidCommandException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+        
+        TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(0);
+        for (int x = 0; x < layer.getWidth(); x++) {
+            for (int y = 0; y < layer.getHeight(); y++) {
+                TiledMapTileLayer.Cell cell = layer.getCell(x,y);
+                if (cell == null) {
+                	continue;
+                }
+                MapProperties properties = cell.getTile().getProperties();
+                Object property = properties.get("spawn");
+                if(property != null){
+                	String type = (String) property;
+                	addSpawn(x, y, PlayerTypes.valueOf(type));
+                    cell.setTile(null);
+                }
+                property = properties.get("enemy_path");
+                if (property != null) {
+                	int pathPosition  = (int) property;
+                	spawn.addPosition(pathPosition, x, y);
+                    cell.setTile(null);
+                }
+            }
+        }
+        addActor(spawn);
+
 	}
 	
 	public TiledMap getMap() {
