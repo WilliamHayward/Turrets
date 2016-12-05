@@ -1,5 +1,6 @@
 package thisisxanderh.turrets.actors.buildings.turrets;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -31,10 +32,23 @@ public abstract class Turret extends Building {
 		float height = barrel.getHeight();
 		
 		float y = getY() + getHeight() - barrel.getHeight() / 5;
+		
+		Color original = spriteBatch.getColor();
+		
+		if (!built) {
+			if (this.validPosition()) {
+				spriteBatch.setColor(Color.GREEN);
+			} else {
+				spriteBatch.setColor(Color.RED);
+			}
+
+		}
+		
 		spriteBatch.draw(barrel, getX() + getWidth() / 2f - width / 2f, y,
 				width / 2f, 0, width, height, 1, 1, angle - 90, 0, 0, 
 				(int) width, (int) height, false, false);
-				
+
+		spriteBatch.setColor(original);
 		super.draw(batch, alpha);
 	}
 	

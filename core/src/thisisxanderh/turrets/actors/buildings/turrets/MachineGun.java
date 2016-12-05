@@ -1,6 +1,5 @@
 package thisisxanderh.turrets.actors.buildings.turrets;
 
-import thisisxanderh.turrets.actors.enemies.Enemy;
 import thisisxanderh.turrets.graphics.SpriteCache;
 import thisisxanderh.turrets.graphics.SpriteList;
 

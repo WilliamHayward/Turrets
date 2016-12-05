@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 
 import thisisxanderh.turrets.actors.buildings.Building;
@@ -40,7 +39,6 @@ public abstract class Player extends GameActor {
 	private boolean groundPound = false;
 	private float stunnedTimer = 0f;
 	private OrthographicCamera camera;
-	private ShapeRenderer shapeRenderer = new ShapeRenderer();
 	protected Color color = null;
 	private List<BuildingList> buildings;
 	private int currentBuilding = -2;
@@ -129,8 +127,8 @@ public abstract class Player extends GameActor {
 			}
         }
 		
-		stage.getViewport().getCamera().position.x = this.getX();
-		stage.getViewport().getCamera().position.y = this.getY();
+		camera.position.x = this.getX();
+		camera.position.y = this.getY();
 	}
 	
 	private void handleInput() {

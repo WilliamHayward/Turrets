@@ -1,6 +1,5 @@
 package thisisxanderh.turrets.actors.buildings.turrets;
 
-import thisisxanderh.turrets.core.GameActor;
 import thisisxanderh.turrets.graphics.SpriteList;
 import thisisxanderh.turrets.terrain.Tile;
 
