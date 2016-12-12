@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
 import thisisxanderh.turrets.actors.buildings.Building;
 import thisisxanderh.turrets.actors.enemies.Enemy;
 import thisisxanderh.turrets.core.Coordinate;
@@ -91,7 +92,7 @@ public abstract class Turret extends Building {
 		GameStage stage = (GameStage) this.getStage();
 		float shortest = Float.MAX_VALUE;
 		Enemy closest = null;
-		for (Enemy enemy: stage.getEnemies()) {
+		for (Enemy enemy: stage.getActors(Enemy.class)) {
 			float distance = getDistance(enemy);
 			if (distance < shortest) {
 				shortest = distance;

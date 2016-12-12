@@ -87,6 +87,9 @@ public abstract class Player extends GameActor {
 			spawn();
 		}
 		GameStage stage = (GameStage) this.getStage();
+		if (!stage.getController().isBuildMode() && building != null) {
+			deselectBuilding();
+		}
 		pauseTimer -= delta;
 		if (input.getManager().getPause() && pauseTimer <= 0) {
 			stage.getController().togglePause();
@@ -163,11 +166,17 @@ public abstract class Player extends GameActor {
 			solid = !solid;
 			this.setSize(texture.getWidth(), texture.getHeight());
 		}
-		
+
 		if (shipMode) {
-			this.handleShipInput(manager);
+			handleShipInput(manager);
 		} else {
-			this.handleFootInput(manager);
+			handleFootInput(manager);
+			GameStage stage = (GameStage) this.getStage();
+			if (stage.getController().isBuildMode()) {
+				handleBuildInput(manager);
+			} else {
+				handlePlayInput(manager);
+			}
 		}
 	}
 	
@@ -182,28 +191,16 @@ public abstract class Player extends GameActor {
 		this.setYVelocity(verticalSpeed * speed * 2);
 	}
 	
-	private void handleFootInput(InputManager manager) {
-		float horizontalSpeed = manager.getHorizontal();
-		this.setXVelocity(horizontalSpeed * speed);
-		
-		if (onGround) {
-			if (manager.getJump()) {
-				this.setYVelocity(13);
-			}
-		} else {
-			if (doubleJumpAvailable && manager.getJump()) {
-				this.setYVelocity(13);
-				doubleJumpAvailable = false;
-			}
-			
-			if (manager.getPound()) {
-				this.setYVelocity(-20);
-				this.setXVelocity(0);
-				doubleJumpAvailable = false;
-				groundPound = true;
-			}
+	private void handlePlayInput(InputManager manager) {
+		if (!onGround && manager.getPound()) {
+			this.setYVelocity(-20);
+			this.setXVelocity(0);
+			doubleJumpAvailable = false;
+			groundPound = true;
 		}
-
+	}
+	
+	private void handleBuildInput(InputManager manager) {
 		int hotkey = manager.getHotkey();
 		int newBuilding = currentBuilding;
 		if (hotkey!= -1) {
@@ -231,6 +228,22 @@ public abstract class Player extends GameActor {
 			building = null;
 			currentBuilding = -2;
 			selectBuilding(currentBuilding);
+		}
+	}
+	
+	private void handleFootInput(InputManager manager) {
+		float horizontalSpeed = manager.getHorizontal();
+		this.setXVelocity(horizontalSpeed * speed);
+		
+		if (onGround) {
+			if (manager.getJump()) {
+				this.setYVelocity(13);
+			}
+		} else {
+			if (doubleJumpAvailable && manager.getJump()) {
+				this.setYVelocity(13);
+				doubleJumpAvailable = false;
+			}
 		}
 		
 		facingLeft = manager.getFacing(facingLeft);

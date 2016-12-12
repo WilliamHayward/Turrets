@@ -93,7 +93,7 @@ public abstract class Building extends GameActor {
 		
 		// Two buildings can't occupy the same position
 		bounds = this.getBounds();
-		for (Building building: stage.getBuildings()) {
+		for (Building building: stage.getActors(Building.class)) {
 			if (building.equals(this)) {
 				// It'll always be colliding with itself, ya dingus
 				continue;

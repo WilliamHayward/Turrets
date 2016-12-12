@@ -10,6 +10,7 @@ import java.util.List;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import thisisxanderh.turrets.core.Coordinate;
+import thisisxanderh.turrets.core.commands.BuildCommand;
 import thisisxanderh.turrets.core.commands.Command;
 import thisisxanderh.turrets.core.commands.Commander;
 import thisisxanderh.turrets.core.commands.DisplayCommand;
@@ -23,7 +24,7 @@ public class Spawner extends Actor implements Commander {
 	private List<Enemy> children = new ArrayList<>();
 
 	List<Command> commands = new ArrayList<>();
-	Command performing;
+	Command performing = null;
 	
 	
 	public Spawner(String commandsLocation) throws InvalidCommandException {
@@ -32,8 +33,9 @@ public class Spawner extends Actor implements Commander {
 			positions.add(null);
 		}
 		commands = buildCommands(commandsLocation);
-		nextCommand();
 	}
+	
+	
 	
 	public void addPosition(int position, float x, float y) {
 		Coordinate coordinate = new Coordinate(x, y);
@@ -44,8 +46,15 @@ public class Spawner extends Actor implements Commander {
 		return positions;
 	}
 	
+	public boolean isBuild() {
+		return (performing instanceof BuildCommand);
+	}
+	
 	@Override
 	public void act(float delta) {
+		if (performing == null) {
+			return;
+		}
 		performing.tick(delta);
 	}
 	
@@ -84,6 +93,9 @@ public class Spawner extends Actor implements Commander {
 						break;
 					case "spawn":
 						command = new SpawnCommand(this, line);
+						break;
+					case "build":
+						command = new BuildCommand(this);
 						break;
 					default:
 						throw new InvalidCommandException("Command " + instruction + " does not exist");

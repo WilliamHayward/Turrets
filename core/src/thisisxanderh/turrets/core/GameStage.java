@@ -21,8 +21,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-import thisisxanderh.turrets.actors.buildings.Building;
-import thisisxanderh.turrets.actors.enemies.Enemy;
 import thisisxanderh.turrets.actors.enemies.Spawner;
 import thisisxanderh.turrets.actors.players.PlayerTypes;
 import thisisxanderh.turrets.core.commands.InvalidCommandException;
@@ -46,6 +44,7 @@ public class GameStage extends Stage {
 		init();
 	}
 	
+	
 	private void init() {
 		for (LayerList layer: LayerList.values()) {
 			Group layerGroup = new Group();
@@ -58,8 +57,6 @@ public class GameStage extends Stage {
 		camera.zoom = 3f;
 		Viewport viewport = new ScreenViewport(camera);
 		setViewport(viewport);
-		
-
 	}
 
 	
@@ -139,48 +136,39 @@ public class GameStage extends Stage {
 		return terrain;
 	}
 	
-	public List<GameActor> getGameActors() {
-		List<GameActor> actors = new ArrayList<>();
+	/**
+	 * This filters down a list of all actors to just those
+	 * which are a given instance.
+	 */
+	public <T> List<T> getActors(Class<T> filter) {
+		List<T> actors = new ArrayList<>();
 		for (Actor actor: this.getActors()) {
-			if (actor instanceof GameActor) {
-				actors.add((GameActor) actor);
+			if (filter.isInstance(actor)) { // Check that it is correct class
+				actors.add(filter.cast(actor)); // Cast to that class and add to list
 			}
 		}
 		return actors;
 	}
-
-	public List<Building> getBuildings() {
-		List<Building> buildings = new ArrayList<>();
-		for (Actor actor: this.getActors()) {
-			if (actor instanceof Building) {
-				buildings.add((Building) actor);
-			}
-		}
-		return buildings;
-	}
-
-	public List<Enemy> getEnemies() {
-		List<Enemy> enemies = new ArrayList<>();
-		for (Actor actor: this.getActors()) {
-			if (actor instanceof Enemy) {
-				enemies.add((Enemy) actor);
-			}
-		}
-		return enemies;
+	
+	@SuppressWarnings("unchecked")
+	public List<GameActor> getGameActors() {
+		return (List<GameActor>)(Object) getActors(GameActor.class);
 	}
 	
 	@Override
 	public void act(float delta) {
-		
 		super.act(delta);
 		
-		// Process collisions between actors
+		if (!controller.isBuildMode() && controller.endPlay()) {
+			controller.startBuild();
+		}
+		
 		/**
-		 * This is overkill for what Turrets need, but if all GameActors need to
-		 * be able to collide with all other GameActors, this will make that happen
+		 * Check if each actor is colliding with each other actor.
 		 */
 		List<GameActor> actors = this.getGameActors();
-		List<GameActor> others = this.getGameActors(); // Two lists to prevent concurrent modification
+		List<GameActor> others = new ArrayList<>(actors); // Two lists to prevent concurrent modification
+		
 		for (GameActor actor: actors) {
 			if (!actor.collides()) {
 				continue;

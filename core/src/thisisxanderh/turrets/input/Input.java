@@ -169,6 +169,21 @@ public class Input extends Stage {
 	        });
 	        
 	        this.addActor(button);
+	        
+	        button = new TextButton("Play", skin, "default");
+	        button.setWidth(100f);
+	        button.setHeight(20f);
+	        button.setPosition(5, Gdx.graphics.getHeight() - button.getHeight() - 5);
+
+	        button.addListener(new ClickListener(){
+	            @Override 
+	            public void clicked(InputEvent event, float x, float y) {
+	            	GameStage stage = (GameStage) player.getStage();
+	            	stage.getController().startPlay();;
+	            }
+	        });
+	        
+	        this.addActor(button);
 		}
 	}
 	

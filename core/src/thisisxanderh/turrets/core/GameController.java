@@ -2,6 +2,9 @@ package thisisxanderh.turrets.core;
 
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+
+import thisisxanderh.turrets.actors.enemies.Enemy;
+import thisisxanderh.turrets.actors.enemies.Spawner;
 import thisisxanderh.turrets.actors.players.Hero;
 import thisisxanderh.turrets.actors.players.Player;
 import thisisxanderh.turrets.input.Input;
@@ -10,6 +13,8 @@ public class GameController {
 	private GameStage game;
 	
 	private boolean paused = false;
+	private boolean buildMode = true;
+	
 	private Player player;
 	public GameController() {
 		game = new GameStage();
@@ -26,6 +31,7 @@ public class GameController {
         player.setInput(input);		
 		
 		player.spawn();
+		
 	}
 	
 	public void tick(float delta) {
@@ -33,6 +39,7 @@ public class GameController {
 			player.act(delta);
 			return;
 		}
+		
 		game.act(delta);
 	}
 	
@@ -74,5 +81,38 @@ public class GameController {
 	
 	public void unPause() {
 		paused = false;
+	}
+	
+	public void startPlay() {
+		buildMode = false;
+		for (Spawner spawner: game.getActors(Spawner.class)) {
+			spawner.nextCommand();
+		}
+		player.getInput().toggleMode();
+	}
+	
+	public void startBuild() {
+		buildMode = true;
+		player.getInput().toggleMode();
+	}
+	
+	public boolean endPlay() {
+		for (Spawner spawner: game.getActors(Spawner.class)) {
+			if (!spawner.isBuild()) {
+				return false;
+			}
+		}
+		if (game.getActors(Enemy.class).size() > 0) {
+			return false;
+		}
+		return true;
+	}
+	
+	public boolean isBuildMode() {
+		return buildMode;
+	}
+
+	public void setBuildMode(boolean buildMode) {
+		this.buildMode = buildMode;
 	}
 }

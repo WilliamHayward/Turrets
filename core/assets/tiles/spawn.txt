@@ -1,7 +1,10 @@
 display Hello, World
-wait 2
+wait cleared
 spawn SPIDER,GIANT_SPIDER,SPIDER 3
 wait cleared
+build
 spawn GIANT_SPIDER,SPIDER
 wait 1.5
+build
+spawn SPIDER,SPIDER,SPIDER,SPIDER 3
 display Goodbye
