@@ -91,13 +91,6 @@ public class Input extends Stage {
 	}
 	
 	/**
-	 * Get cursor position on screen
-	 *
-	public Coordinate getCursor() {
-		return manager.getCursor();
-	}*/
-	
-	/**
 	 * Get cursor position in world
 	 */
 	public Coordinate getCursorPosition() {
@@ -118,54 +111,6 @@ public class Input extends Stage {
 		float y = (float) Math.floor(position.getY() / Tile.SIZE) * Tile.SIZE;
 		return new Coordinate(x, y);
 	}
-	
-	/*public boolean getSwitch() {
-		return input.getSwitch();
-	}
-	
-	public boolean getJump() {
-		return input.getJump();
-	}
-	
-	public boolean getPause() {
-		return input.getPause();
-	}
-	
-	public boolean getBuild() {
-		return input.getBuild();
-	}
-	
-	public int getHotkey() {
-		return input.getHotkey();
-	}
-
-	public boolean getPrev() {
-		return input.getPrev();
-	}
-	
-	public boolean getNext() {
-		return input.getNext();
-	}
-	
-	public boolean getExit() {
-		return input.getExit();
-	}
-	
-	public boolean getPound() {
-		return input.getPound();
-	}
-	
-	public boolean getFacing(boolean prevFacing) {
-		return input.getFacing(prevFacing);
-	}
-	
-	public float getHorizontal() {
-		return input.getHorizontal();
-	}
-		
-	public float getVertical() {
-		return input.getVertical();
-	}*/
 	
 	private abstract class UserInterface extends Group {
 		
