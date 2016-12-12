@@ -78,10 +78,14 @@ public abstract class Player extends GameActor {
 		SpriteBatch spriteBatch = (SpriteBatch) batch;
 		spriteBatch.draw(texture, getX(), getY(), 0, 0, getWidth(), getHeight(),
 				1, 1, getRotation(), 0, 0, texture.getWidth(), texture.getHeight(), facingLeft, false);
+		batch.end();
+		input.draw();
+		batch.begin();
 	}
 	
 	@Override
 	public void act(float delta) {
+		input.act(delta);
 		if (!this.inWorld()) {
 			spawn();
 		}
@@ -89,6 +93,7 @@ public abstract class Player extends GameActor {
 		pauseTimer -= delta;
 		if (input.getPause() && pauseTimer <= 0) {
 			stage.getController().togglePause();
+			input.togglePause();
 			pauseTimer = 0.05f; // Gdx input considers "just pressed" to last a moment or two, so spin the wheels for 0.05 seconds
 			return;
 		}
@@ -147,7 +152,6 @@ public abstract class Player extends GameActor {
 	}
 	
 	private void handleInput() {
-		input.update();
 
 		
 		if (input.getSwitch()) {

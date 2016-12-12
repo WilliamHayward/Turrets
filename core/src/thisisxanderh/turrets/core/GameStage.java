@@ -39,8 +39,6 @@ public class GameStage extends Stage {
 	private List<GameActor> deadList = new ArrayList<>();
 	
 	private Map<LayerList, Group> layers = new HashMap<>();
-	
-	private UIStage uiStage;
 
 	private GameController controller;
 	
@@ -248,13 +246,5 @@ public class GameStage extends Stage {
 			}
 		}
 		return actors;
-	}
-
-	public UIStage getUiStage() {
-		return uiStage;
-	}
-
-	public void setUiStage(UIStage uiStage) {
-		this.uiStage = uiStage;
 	}
 }

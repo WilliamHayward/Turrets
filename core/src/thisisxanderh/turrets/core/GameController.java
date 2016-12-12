@@ -1,6 +1,5 @@
 package thisisxanderh.turrets.core;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import thisisxanderh.turrets.actors.players.Hero;
@@ -9,9 +8,9 @@ import thisisxanderh.turrets.input.InputManager;
 
 public class GameController {
 	private GameStage game;
-	private UIStage ui;
 	
 	private boolean paused = false;
+	private Player player;
 	public GameController() {
 		game = new GameStage();
 		game.setController(this);
@@ -19,22 +18,19 @@ public class GameController {
 		TiledMap map = new TmxMapLoader().load("tiles/test.tmx");
 		game.setMap(map);
 		
-		Player player = new Hero();
+		player = new Hero();
 		game.addActor(player);
 		
-		ui = new UIStage(game, player);
-		ui.setController(this);
 		
-        Gdx.input.setInputProcessor(ui);
-        InputManager input = new InputManager(ui);
+        InputManager input = new InputManager(player);
         player.setInput(input);		
 		
 		player.spawn();
 	}
 	
 	public void tick(float delta) {
-		ui.act(delta);
 		if (paused) {
+			player.act(delta);
 			return;
 		}
 		game.act(delta);
@@ -42,18 +38,15 @@ public class GameController {
 	
 	public void draw() {
 		game.draw();
-		ui.draw();
 	}
 	
 	public void resize (int width, int height) {
 		
 		game.getViewport().update(width, height, true);
-		ui.getViewport().update(width, height);
 	}
 	
 	public void dispose() {
 		game.dispose();
-		ui.dispose();
 	}
 
 	public boolean isPaused() {
@@ -77,11 +70,9 @@ public class GameController {
 	
 	public void pause() {
 		paused = true;
-		ui.pause();
 	}
 	
 	public void unPause() {
 		paused = false;
-		ui.unPause();
 	}
 }
