@@ -4,7 +4,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import thisisxanderh.turrets.actors.players.Hero;
 import thisisxanderh.turrets.actors.players.Player;
-import thisisxanderh.turrets.input.InputManager;
+import thisisxanderh.turrets.input.Input;
 
 public class GameController {
 	private GameStage game;
@@ -22,7 +22,7 @@ public class GameController {
 		game.addActor(player);
 		
 		
-        InputManager input = new InputManager(player);
+        Input input = new Input(player);
         player.setInput(input);		
 		
 		player.spawn();

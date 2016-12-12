@@ -3,9 +3,6 @@ package thisisxanderh.turrets.actors.players;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -26,13 +23,13 @@ import thisisxanderh.turrets.core.GameStage;
 import thisisxanderh.turrets.graphics.LayerList;
 import thisisxanderh.turrets.graphics.SpriteCache;
 import thisisxanderh.turrets.graphics.SpriteList;
-import thisisxanderh.turrets.input.DeviceList;
+import thisisxanderh.turrets.input.Input;
 import thisisxanderh.turrets.input.InputManager;
 import thisisxanderh.turrets.terrain.Tile;
 
 public abstract class Player extends GameActor {
 	private static final float GRAVITY = -25f;
-	private InputManager input;
+	private Input input;
 	private boolean facingLeft = false;
 	private boolean doubleJumpAvailable = true;
 	private boolean groundPound = false;
@@ -91,7 +88,7 @@ public abstract class Player extends GameActor {
 		}
 		GameStage stage = (GameStage) this.getStage();
 		pauseTimer -= delta;
-		if (input.getPause() && pauseTimer <= 0) {
+		if (input.getManager().getPause() && pauseTimer <= 0) {
 			stage.getController().togglePause();
 			input.togglePause();
 			pauseTimer = 0.05f; // Gdx input considers "just pressed" to last a moment or two, so spin the wheels for 0.05 seconds
@@ -147,14 +144,14 @@ public abstract class Player extends GameActor {
 		this.getStage().getCamera().position.y = this.getY();
 	}
 	
-	public void setInput(InputManager input) {
+	public void setInput(Input input) {
 		this.input = input;
 	}
 	
 	private void handleInput() {
-
+		InputManager manager = input.getManager();
 		
-		if (input.getSwitch()) {
+		if (manager.getSwitch()) {
 			if (shipMode) {
 				this.texture = standing;
 				this.setRotation(0);
@@ -168,48 +165,48 @@ public abstract class Player extends GameActor {
 		}
 		
 		if (shipMode) {
-			this.handleShipInput();
+			this.handleShipInput(manager);
 		} else {
-			this.handleFootInput();
+			this.handleFootInput(manager);
 		}
 
-		if (Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
+		/*if (Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
 			if (input.getDevice() == DeviceList.KEYBOARD) {
 				input.setController(Controllers.getControllers().first());
 			} else {
 				input.setKeyboard();
 			}
-		}
+		}*/
 		
 	}
 	
-	public InputManager getInput() {
+	public Input getInput() {
 		return input;
 	}
 	
-	private void handleShipInput() {
-		float horizontalSpeed = input.getHorizontal();
+	private void handleShipInput(InputManager manager) {
+		float horizontalSpeed = manager.getHorizontal();
 		this.setXVelocity(horizontalSpeed * speed * 2);
-		float verticalSpeed = input.getVertical();
+		float verticalSpeed = manager.getVertical();
 		this.setYVelocity(verticalSpeed * speed * 2);
 	}
 	
-	private void handleFootInput() {
-		float horizontalSpeed = input.getHorizontal();
+	private void handleFootInput(InputManager manager) {
+		float horizontalSpeed = manager.getHorizontal();
 		this.setXVelocity(horizontalSpeed * speed);
 		
 		if (onGround) {
-			if (input.getJump()) {
+			if (manager.getJump()) {
 				this.setYVelocity(13);
 			}
 		} else {
 			if (doubleJumpAvailable) {
-				if (input.getJump()) {
+				if (manager.getJump()) {
 					this.setYVelocity(13);
 					doubleJumpAvailable = false;
 				}
 			}
-			if (input.getPound()) {
+			if (manager.getPound()) {
 				this.setYVelocity(-20);
 				this.setXVelocity(0);
 				doubleJumpAvailable = false;
@@ -217,13 +214,13 @@ public abstract class Player extends GameActor {
 			}
 		}
 
-		int hotkey = input.getHotkey();
+		int hotkey = manager.getHotkey();
 		int newBuilding = currentBuilding;
 		if (hotkey!= -1) {
 			newBuilding = hotkey;
-		} else if (input.getNext()) {
+		} else if (manager.getNext()) {
 			newBuilding++;
-		} else if (input.getPrev()) {
+		} else if (manager.getPrev()) {
 			newBuilding--;
 		}
 		if (newBuilding == -1) {
@@ -236,11 +233,11 @@ public abstract class Player extends GameActor {
 			selectBuilding(newBuilding);
 		}
 		
-		if (input.getExit()) {
+		if (manager.getExit()) {
 			deselectBuilding();
 		}
 		
-		if (input.getBuild() && building != null) {
+		if (manager.getBuild() && building != null) {
 			if (building.build()) {
 				building = null;
 				currentBuilding = -2;
@@ -248,7 +245,7 @@ public abstract class Player extends GameActor {
 			}
 		}
 		
-		facingLeft = input.getFacing(facingLeft);
+		facingLeft = manager.getFacing(facingLeft);
 	}
 	
 	private void deselectBuilding() {
