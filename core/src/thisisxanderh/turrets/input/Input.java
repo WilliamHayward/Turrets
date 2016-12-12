@@ -85,11 +85,6 @@ public class Input extends Stage {
 		manager.act(delta);
 	}
 	
-	@Override
-	public void draw() {
-		super.draw();
-	}
-	
 	/**
 	 * Get cursor position in world
 	 */

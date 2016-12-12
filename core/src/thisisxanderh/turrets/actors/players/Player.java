@@ -169,15 +169,6 @@ public abstract class Player extends GameActor {
 		} else {
 			this.handleFootInput(manager);
 		}
-
-		/*if (Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
-			if (input.getDevice() == DeviceList.KEYBOARD) {
-				input.setController(Controllers.getControllers().first());
-			} else {
-				input.setKeyboard();
-			}
-		}*/
-		
 	}
 	
 	public Input getInput() {
@@ -200,12 +191,11 @@ public abstract class Player extends GameActor {
 				this.setYVelocity(13);
 			}
 		} else {
-			if (doubleJumpAvailable) {
-				if (manager.getJump()) {
-					this.setYVelocity(13);
-					doubleJumpAvailable = false;
-				}
+			if (doubleJumpAvailable && manager.getJump()) {
+				this.setYVelocity(13);
+				doubleJumpAvailable = false;
 			}
+			
 			if (manager.getPound()) {
 				this.setYVelocity(-20);
 				this.setXVelocity(0);
@@ -237,12 +227,10 @@ public abstract class Player extends GameActor {
 			deselectBuilding();
 		}
 		
-		if (manager.getBuild() && building != null) {
-			if (building.build()) {
-				building = null;
-				currentBuilding = -2;
-				selectBuilding(currentBuilding);
-			}
+		if (manager.getBuild() && building != null && building.build()) {
+			building = null;
+			currentBuilding = -2;
+			selectBuilding(currentBuilding);
 		}
 		
 		facingLeft = manager.getFacing(facingLeft);

@@ -16,7 +16,7 @@ public class Turrets extends ApplicationAdapter {
 		SpriteCache.loadAllSprites();
 		controller = new GameController();
 	}
-
+	
 	@Override
 	public void render () {
 		Gdx.gl.glClearColor(0, 0, 0, 1);

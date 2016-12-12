@@ -67,7 +67,8 @@ public class Spawner extends Actor implements Commander {
 		List<Command> commands = new ArrayList<>();
 		BufferedReader file = null;
 		try {
-			file = new BufferedReader(new FileReader(path));
+			FileReader fileReader = new FileReader(path);
+			file = new BufferedReader(fileReader);
 			String line;
 			String instruction;
 			Command command = null;
@@ -91,6 +92,7 @@ public class Spawner extends Actor implements Commander {
 			}
 			commands.add(new EndCommand(this));
 			file.close();
+			fileReader.close();
 		} catch (FileNotFoundException e) {
 			throw new InvalidCommandException("Command file not found");
 		} catch (IOException e) {
