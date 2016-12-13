@@ -1,0 +1,10 @@
+display Let's Do This
+spawn SPIDER
+wait cleared
+spawn SPIDER
+build
+build
+spawn GIANT_SPIDER,SPIDER
+build
+spawn SPIDER,SPIDER,SPIDER,SPIDER 3
+display Goodbye
