@@ -3,11 +3,15 @@ package thisisxanderh.turrets.actors.players;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 import thisisxanderh.turrets.actors.buildings.Building;
 import thisisxanderh.turrets.actors.buildings.BuildingList;
@@ -49,6 +53,9 @@ public abstract class Player extends GameActor {
 	
 	protected PlayerTypes type = PlayerTypes.HERO;
 	
+	private OrthographicCamera camera;
+	private Viewport viewport;
+	
 	public Player(SpriteList image) {
 		super(image);
 		standing = SpriteCache.loadSprite(image);
@@ -59,6 +66,21 @@ public abstract class Player extends GameActor {
 		buildings.add(BuildingList.CANNON);
 		buildings.add(BuildingList.GLUE);
 		buildings.add(BuildingList.SPIKES);
+		
+		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera.zoom = 3.0f;
+		
+		viewport = new ScreenViewport(camera);
+		
+		viewport.setScreenBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+	}
+	
+	public OrthographicCamera getCamera() {
+		return camera;
+	}
+	
+	public Viewport getViewport() {
+		return viewport;
 	}
 	
 	public void spawn() {
@@ -146,8 +168,8 @@ public abstract class Player extends GameActor {
 			}
         }
 		
-		this.getStage().getCamera().position.x = this.getX();
-		this.getStage().getCamera().position.y = this.getY();
+		camera.position.x = this.getX();
+		camera.position.y = this.getY();
 	}
 	
 	public void setInput(Input input) {

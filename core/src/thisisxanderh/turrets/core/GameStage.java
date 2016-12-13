@@ -23,6 +23,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import thisisxanderh.turrets.actors.enemies.Spawner;
+import thisisxanderh.turrets.actors.players.Player;
 import thisisxanderh.turrets.actors.players.PlayerTypes;
 import thisisxanderh.turrets.core.commands.InvalidCommandException;
 import thisisxanderh.turrets.graphics.LayerList;
@@ -80,17 +81,49 @@ public class GameStage extends Stage {
 		buildTrap = new Terrain(buildLayer, "build", "trap");
 		
 		mapRenderer = new OrthogonalTiledMapRenderer(map);
+		
+		for (MapLayer mapLayer: map.getLayers()) {
+			TiledMapTileLayer layer = (TiledMapTileLayer) mapLayer;
+			if (layer.getProperties().get("spawner") != null) {
+				makeEnemySpawner(layer);
+			}
+		}
+		
+		
+        
+        TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get("Spawns");
+        makePlayerSpawner(layer);
 
+	}
+	
+	private void makePlayerSpawner(TiledMapTileLayer layer) {
+        for (int x = 0; x < layer.getWidth(); x++) {
+            for (int y = 0; y < layer.getHeight(); y++) {
+                TiledMapTileLayer.Cell cell = layer.getCell(x,y);
+                if (cell == null) {
+                	continue;
+                }
+                MapProperties properties = cell.getTile().getProperties();
+                Object property = properties.get("spawn");
+                if(property != null){
+                	String type = (String) property;
+                	addSpawn(x, y, PlayerTypes.valueOf(type));
+                    cell.setTile(null);
+                }
+            }
+        }
+	}
+	
+	private void makeEnemySpawner(TiledMapTileLayer layer) {
 		Spawner spawn = null;
+		String path = (String) layer.getProperties().get("spawner");
 		try {
-			spawn = new Spawner("tiles/spawn.txt");
+			spawn = new Spawner(path);
 		} catch (InvalidCommandException e) {
 			e.printStackTrace();
 			System.exit(1);
 		}
-        
-        TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(0);
-        for (int x = 0; x < layer.getWidth(); x++) {
+		for (int x = 0; x < layer.getWidth(); x++) {
             for (int y = 0; y < layer.getHeight(); y++) {
                 TiledMapTileLayer.Cell cell = layer.getCell(x,y);
                 if (cell == null) {
@@ -112,7 +145,6 @@ public class GameStage extends Stage {
             }
         }
         addActor(spawn);
-
 	}
 	
 	public TiledMap getMap() {
@@ -220,6 +252,9 @@ public class GameStage extends Stage {
 	
 	@Override
 	public void draw() {
+		this.setViewport(getActors(Player.class).get(0).getViewport());
+		//OrthographicCamera camera = getActors(Player.class).get(0).getCamera();
+		//this.getViewport().setCamera(camera);
 		OrthographicCamera camera = (OrthographicCamera) this.getViewport().getCamera();
 		if (camera != null) {
 	        camera.update();

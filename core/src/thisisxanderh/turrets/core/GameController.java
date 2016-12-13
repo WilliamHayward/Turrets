@@ -7,6 +7,7 @@ import thisisxanderh.turrets.actors.enemies.Enemy;
 import thisisxanderh.turrets.actors.enemies.Spawner;
 import thisisxanderh.turrets.actors.players.Hero;
 import thisisxanderh.turrets.actors.players.Player;
+import thisisxanderh.turrets.graphics.Toast;
 import thisisxanderh.turrets.input.Input;
 
 public class GameController {
@@ -35,6 +36,16 @@ public class GameController {
 		
 		player.spawn();
 		startBuild();
+	}
+	
+	public void notify(String message) {
+		notify(message, Toast.DURATION);
+	}
+	
+	public void notify(String message, float duration) {
+		for (Player player: game.getActors(Player.class)) {
+			
+		}
 	}
 	
 	public void tick(float delta) {

@@ -91,7 +91,6 @@ public abstract class Enemy extends GameActor {
 		ShapeRenderer shapeRenderer = new ShapeRenderer();
 		shapeRenderer.begin(ShapeType.Filled);
 		shapeRenderer.setColor(Color.GREEN);
-		
 		shapeRenderer.setProjectionMatrix(this.getStage().getCamera().combined);
 		shapeRenderer.rect(getX(), getY() + getHeight() + 2, getWidth() * (health / maxHealth), 10);
 		shapeRenderer.end();

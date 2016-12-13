@@ -117,6 +117,9 @@ public class Input extends Stage {
 		if (consoleEnabled) {
 			console.act(delta);
 		}
+		if (paused) {
+			pause.act(delta);
+		}
 	}
 	
 	/**
@@ -265,13 +268,11 @@ public class Input extends Stage {
 			logs = new ArrayList<>();
 			
 			for (int i = 0; i < 5; i++) {
-				
 				Label log = new Label("", skin);
 				log.setSize(Gdx.graphics.getWidth(), 20f);
 				log.setPosition(0, Gdx.graphics.getHeight() - 20f * (i + 1));
 				logs.add(log);
 				this.addActor(log);
-					
 			}
 		}
 		
