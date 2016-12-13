@@ -9,7 +9,6 @@ public class Scout extends Player {
 		super(SpriteList.SCOUT_STANDING);
 		ship = SpriteCache.loadSprite(SpriteList.SCOUT_SHIP);
 		color = Color.SKY;
-		
 
 		speed = 15f;
 		highDamage = 2f;

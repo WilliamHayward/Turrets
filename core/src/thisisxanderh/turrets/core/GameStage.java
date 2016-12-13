@@ -8,6 +8,7 @@ import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
@@ -33,6 +34,8 @@ public class GameStage extends Stage {
 	private TiledMap map;
 	private TiledMapRenderer mapRenderer;
 	private Terrain terrain;
+	private Terrain buildTurret;
+	private Terrain buildTrap;
 	private Map<PlayerTypes, List<Coordinate>> spawns = new HashMap<>();
 	private List<GameActor> deadList = new ArrayList<>();
 	
@@ -69,7 +72,13 @@ public class GameStage extends Stage {
 	}
 	public void setMap(TiledMap map) {
 		this.map = map;
-		terrain = new Terrain(map);
+		terrain = new Terrain(map.getLayers().get("Terrain"), "solid", "true");
+		
+		MapLayer buildLayer = map.getLayers().get("Build");
+		buildTurret = new Terrain(buildLayer, "build", "turret");
+		
+		buildTrap = new Terrain(buildLayer, "build", "trap");
+		
 		mapRenderer = new OrthogonalTiledMapRenderer(map);
 
 		Spawner spawn = null;
@@ -134,6 +143,14 @@ public class GameStage extends Stage {
 	
 	public Terrain getTerrain() {
 		return terrain;
+	}
+	
+	public Terrain getBuildTurret() {
+		return buildTurret;
+	}
+	
+	public Terrain getBuildTrap() {
+		return buildTrap;
 	}
 	
 	/**

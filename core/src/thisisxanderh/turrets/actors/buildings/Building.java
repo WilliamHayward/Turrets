@@ -67,28 +67,28 @@ public abstract class Building extends GameActor {
 	
 	protected abstract boolean validPosition();
 	
-	protected boolean validPosition(float yBoundShift) {		
+	protected boolean validPosition(Terrain terrain) {		
 		GameStage stage = (GameStage) this.getStage();
 		
 		// Don't place it in the ground
-		Terrain terrain = stage.getTerrain();
 		Rectangle bounds = this.getBounds();
-		if (terrain.overlaps(bounds)) {
-			return false;
-		}
+		bounds.width -= 2;
+		bounds.height -= 2;
+		bounds.x += 1;
+		bounds.y += 1;
 		
-		// Check that it's attached the something
-		bounds.setY(bounds.getY() + yBoundShift);
 		if (!terrain.overlaps(bounds)) {
 			return false;
 		}
 		
-		for (int i = 0; i < Math.floor(getWidth() / Tile.SIZE); i++) {
+		int tileCount = (int) Math.floor(getWidth() / Tile.SIZE);
+		bounds.width = Tile.SIZE - 2;
+		for (int i = 0; i < tileCount; i++) {
 			// Ensure no overhang for longer buildings
-			bounds = new Rectangle(getX() + i * Tile.SIZE, getY() + yBoundShift, Tile.SIZE, getWidth());
 			if (!terrain.overlaps(bounds)) {
 				return false;
 			}
+			bounds.x += Tile.SIZE;
 		}
 		
 		// Two buildings can't occupy the same position

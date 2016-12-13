@@ -15,6 +15,9 @@ public class GameController {
 	private boolean paused = false;
 	private boolean buildMode = true;
 	
+	private float buildTime = 30f;
+	private float buildTimer;
+	
 	private Player player;
 	public GameController() {
 		game = new GameStage();
@@ -31,7 +34,7 @@ public class GameController {
         player.setInput(input);		
 		
 		player.spawn();
-		
+		startBuild();
 	}
 	
 	public void tick(float delta) {
@@ -39,7 +42,12 @@ public class GameController {
 			player.act(delta);
 			return;
 		}
-		
+		if (buildMode) {
+			buildTimer -= delta;
+			if (buildTimer <= 0) {
+				this.startPlay();
+			}
+		}
 		game.act(delta);
 	}
 	
@@ -88,12 +96,13 @@ public class GameController {
 		for (Spawner spawner: game.getActors(Spawner.class)) {
 			spawner.nextCommand();
 		}
-		player.getInput().toggleMode();
+		player.getInput().setPlay();
 	}
 	
 	public void startBuild() {
 		buildMode = true;
-		player.getInput().toggleMode();
+		buildTimer = buildTime;
+		player.getInput().setBuild();
 	}
 	
 	public boolean endPlay() {
@@ -114,5 +123,9 @@ public class GameController {
 
 	public void setBuildMode(boolean buildMode) {
 		this.buildMode = buildMode;
+	}
+	
+	public float getBuildTimer() {
+		return buildTimer;
 	}
 }

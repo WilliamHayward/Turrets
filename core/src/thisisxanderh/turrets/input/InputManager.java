@@ -14,6 +14,7 @@ public interface InputManager {
 	public boolean getNext();
 	public boolean getExit();
 	public boolean getPound();
+	public boolean getConsole();
 	public boolean getFacing(boolean prevFacing);
 	public float getHorizontal();
 	public float getVertical();

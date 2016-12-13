@@ -112,4 +112,9 @@ public class KeyboardInput implements InputManager {
 		return new Coordinate(Gdx.input.getX(), Gdx.input.getY());
 	}
 
+	@Override
+	public boolean getConsole() {
+		return Gdx.input.isKeyJustPressed(Keys.GRAVE);
+	}
+
 }

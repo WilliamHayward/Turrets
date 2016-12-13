@@ -128,6 +128,7 @@ public abstract class Turret extends Building {
 	
 	@Override
 	protected boolean validPosition() {
-		return super.validPosition(this.getBounds().getHeight());
+		GameStage stage = (GameStage) this.getStage();
+		return super.validPosition(stage.getBuildTurret());
 	}
 }

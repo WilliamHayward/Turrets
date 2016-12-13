@@ -40,8 +40,6 @@ public abstract class Player extends GameActor {
 	private Building building;
 	private boolean shipMode = false;
 	
-	private float pauseTimer = 0f;
-
 	protected float highDamage;
 	protected float lowDamage;
 	protected float speed;
@@ -86,21 +84,26 @@ public abstract class Player extends GameActor {
 		if (!this.inWorld()) {
 			spawn();
 		}
+		
 		GameStage stage = (GameStage) this.getStage();
 		if (!stage.getController().isBuildMode() && building != null) {
 			deselectBuilding();
 		}
-		pauseTimer -= delta;
-		if (input.getManager().getPause() && pauseTimer <= 0) {
+		
+		if (input.getManager().getPause()) {
 			stage.getController().togglePause();
 			input.togglePause();
-			pauseTimer = 0.05f; // Gdx input considers "just pressed" to last a moment or two, so spin the wheels for 0.05 seconds
 			return;
+		}
+		
+		if (input.getManager().getConsole()) {
+			input.toggleConsole();
 		}
 		
 		if (stage.getController().isPaused()) {
 			return;
 		}
+		
 		
 		stunnedTimer -= delta;
 		if (stunnedTimer < 0 && !groundPound) {
