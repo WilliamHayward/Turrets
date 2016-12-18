@@ -4,20 +4,20 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 
-import thisisxanderh.turrets.core.Coordinate;
-import thisisxanderh.turrets.core.GameActor;
+import thisisxanderh.turrets.core.Entity;
 import thisisxanderh.turrets.core.GameStage;
 import thisisxanderh.turrets.graphics.LayerList;
 import thisisxanderh.turrets.graphics.SpriteList;
 import thisisxanderh.turrets.terrain.Terrain;
 import thisisxanderh.turrets.terrain.Tile;
 
-public abstract class Building extends GameActor {
+public abstract class Building extends Entity {
 	protected boolean built = false;
 	private boolean validPosition = false;
 	protected String name;
-	private Coordinate prevPosition = new Coordinate(0,0);
+	private Vector2 prevPosition = new Vector2(0,0);
 	public Building(SpriteList texture) {
 		super(texture);
 	}
@@ -56,7 +56,7 @@ public abstract class Building extends GameActor {
 		super.act(delta);
 		if (!built) {
 			// Only check if valid position when conditions change (Collision checks are a bit costly)
-			if (prevPosition.getX() != getX() || prevPosition.getY() != getY()) {
+			if (prevPosition.x != getX() || prevPosition.y != getY()) {
 				validPosition = validPosition();
 			}
 		} else {
@@ -106,7 +106,7 @@ public abstract class Building extends GameActor {
 	}
 	
 	@Override
-	public void collided(GameActor other) {
+	public void collided(Entity other) {
 		// Do nothing
 	}
 	

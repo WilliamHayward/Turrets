@@ -7,9 +7,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
-import thisisxanderh.turrets.core.Coordinate;
 import thisisxanderh.turrets.core.commands.BuildCommand;
 import thisisxanderh.turrets.core.commands.Command;
 import thisisxanderh.turrets.core.commands.Commander;
@@ -20,7 +20,7 @@ import thisisxanderh.turrets.core.commands.SpawnCommand;
 import thisisxanderh.turrets.core.commands.WaitCommand;
 
 public class Spawner extends Actor implements Commander {
-	private List<Coordinate> positions;
+	private List<Vector2> positions;
 	private List<Enemy> children = new ArrayList<>();
 
 	List<Command> commands = new ArrayList<>();
@@ -38,11 +38,11 @@ public class Spawner extends Actor implements Commander {
 	
 	
 	public void addPosition(int position, float x, float y) {
-		Coordinate coordinate = new Coordinate(x, y);
-		positions.set(position, coordinate);
+		Vector2 Vector2 = new Vector2(x, y);
+		positions.set(position, Vector2);
 	}
 	
-	public List<Coordinate> getPath() {
+	public List<Vector2> getPath() {
 		return positions;
 	}
 	

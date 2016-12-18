@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -16,8 +17,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import thisisxanderh.turrets.actors.players.Player;
-import thisisxanderh.turrets.core.Coordinate;
 import thisisxanderh.turrets.core.GameStage;
+import thisisxanderh.turrets.graphics.Toast;
 import thisisxanderh.turrets.terrain.Tile;
 
 public class Input extends Stage {
@@ -27,7 +28,7 @@ public class Input extends Stage {
 	private BuildUI build;
 	private PlayUI play;
 	private PauseUI pause;
-	
+	private ToastUI toast;
 	private ConsoleUI console;
 	
 	private boolean consoleEnabled = false;
@@ -40,7 +41,8 @@ public class Input extends Stage {
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
         build = new BuildUI(player, skin);
         play = new PlayUI(player, skin);
-        
+        toast = new ToastUI(skin);
+        this.addActor(toast);
         pause = new PauseUI(player, skin);
         
         console = new ConsoleUI(player, skin);
@@ -114,38 +116,46 @@ public class Input extends Stage {
 	public void act(float delta) {
 		active.act(delta);
 		manager.act(delta);
-		if (consoleEnabled) {
-			console.act(delta);
-		}
+		
 		if (paused) {
 			pause.act(delta);
+		} else {
+			toast.act(delta);
+			if (consoleEnabled) {
+				console.act(delta);
+			}
 		}
 	}
 	
 	/**
 	 * Get cursor position in world
 	 */
-	public Coordinate getCursorPosition() {
+	public Vector2 getCursorPosition() {
 		GameStage stage = (GameStage) player.getStage();
 		OrthographicCamera camera = (OrthographicCamera) stage.getCamera();
-		Coordinate cursor = manager.getCursor();
-		Vector3 position = new Vector3(cursor.getX(), cursor.getY(), 0);
+		Vector2 cursor = manager.getCursor();
+		Vector3 position = new Vector3(cursor.x, cursor.y, 0);
 		camera.unproject(position);
-		return new Coordinate(position.x, position.y);
+		return new Vector2(position.x, position.y);
 	}
 	
 	/**
 	 * Get cursor tile position in world
 	 */
-	public Coordinate getCursorTile() {
-		Coordinate position = getCursorPosition();
-		float x = (float) Math.floor(position.getX() / Tile.SIZE) * Tile.SIZE;
-		float y = (float) Math.floor(position.getY() / Tile.SIZE) * Tile.SIZE;
-		return new Coordinate(x, y);
+	public Vector2 getCursorTile() {
+		Vector2 position = getCursorPosition();
+		float x = (float) Math.floor(position.x / Tile.SIZE) * Tile.SIZE;
+		float y = (float) Math.floor(position.y / Tile.SIZE) * Tile.SIZE;
+		return new Vector2(x, y);
 	}
 	
-	private abstract class UserInterface extends Group {
-		
+	private abstract class UserInterface extends Group {}
+	
+	private class ToastUI extends UserInterface {
+		private ArrayList<Toast> toast = new ArrayList<>();
+		private ToastUI(Skin skin) {
+			
+		}
 	}
 	
 	private class BuildUI extends UserInterface {

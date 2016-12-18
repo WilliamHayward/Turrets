@@ -4,16 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 
 import thisisxanderh.turrets.terrain.Terrain;
 import thisisxanderh.turrets.terrain.Tile;
 
 public class Line {
-	private Coordinate start;
-	private Coordinate end;
+	private Vector2 start;
+	private Vector2 end;
 	
-	public Line(Coordinate start, Coordinate end) {
-		if (start.getX() < end.getX()) {
+	public Line(Vector2 start, Vector2 end) {
+		if (start.x < end.x) {
 			this.start = start;
 			this.end = end;
 		} else {
@@ -24,19 +25,19 @@ public class Line {
 	
 	public Line(float x1, float y1, float x2, float y2) {
 		if (x1 < x2) {
-			start = new Coordinate(x1, y1);
-			end = new Coordinate(x2, y2);
+			start = new Vector2(x1, y1);
+			end = new Vector2(x2, y2);
 		} else {
-			start = new Coordinate(x2, y2);
-			end = new Coordinate(x1, y1);
+			start = new Vector2(x2, y2);
+			end = new Vector2(x1, y1);
 		}
 	}
 	
-	public Coordinate getStart() {
+	public Vector2 getStart() {
 		return start;
 	}
 	
-	public Coordinate getEnd() {
+	public Vector2 getEnd() {
 		return end;
 	}
 	
@@ -74,10 +75,10 @@ public class Line {
 		float top = rect.getY() + rect.getHeight();
 		float bottom = rect.getY();
 		
-		boolean leftValid = start.getX() < left && end.getX() < left;
-		boolean rightValid = start.getX() > right && end.getX() > right;
-		boolean topValid = start.getY() > top && end.getY() > top;
-		boolean bottomValid = start.getY() < bottom && end.getY() < bottom;
+		boolean leftValid = start.x < left && end.x < left;
+		boolean rightValid = start.x > right && end.x > right;
+		boolean topValid = start.y > top && end.y > top;
+		boolean bottomValid = start.y < bottom && end.y < bottom;
 		
 		boolean sidesValid = leftValid || rightValid;
 		if (sidesValid || topValid || bottomValid) {
@@ -100,15 +101,15 @@ public class Line {
 	}
 	
 	// Taken from http://stackoverflow.com/a/1968345
-	public Coordinate intersectsAt(Line line) {
-		float Ax1 = start.getX();
-		float Ax2 = end.getX();
-		float Ay1 = start.getY();
-		float Ay2 = end.getY();
-		float Bx1 = line.getStart().getX();
-		float Bx2 = line.getEnd().getX();
-		float By1 = line.getStart().getY();
-		float By2 = line.getEnd().getY();
+	public Vector2 intersectsAt(Line line) {
+		float Ax1 = start.x;
+		float Ax2 = end.x;
+		float Ay1 = start.y;
+		float Ay2 = end.y;
+		float Bx1 = line.getStart().x;
+		float Bx2 = line.getEnd().x;
+		float By1 = line.getStart().y;
+		float By2 = line.getEnd().y;
 
 		float s1_x, s1_y, s2_x, s2_y;
 	    s1_x = Ax2 - Ax1;     
@@ -123,14 +124,14 @@ public class Line {
 	    if (s >= 0 && s <= 1 && t >= 0 && t <= 1) {
 	    	float xInt = Ax1 + (t * s1_x);
 	    	float yInt = Ay1 + (t * s1_y);
-	    	return new Coordinate(xInt, yInt);
+	    	return new Vector2(xInt, yInt);
 	        
 	    }
 
 		return null;
 	}
 	
-	public Coordinate intersectsAt(Rectangle rect) {
+	public Vector2 intersectsAt(Rectangle rect) {
 		if (this.intersects(rect)) {
 			for (Line edge: getLines(rect)) {
 				return intersectsAt(edge);
@@ -139,7 +140,7 @@ public class Line {
 		return null;
 	}
 	
-	public Coordinate intersectsAt(Terrain terrain) {
+	public Vector2 intersectsAt(Terrain terrain) {
 		for (Tile tile: terrain.getTiles()) {
 			if (this.intersects(tile)) {
 				return this.intersectsAt(tile);

@@ -12,7 +12,7 @@ import thisisxanderh.turrets.graphics.SpriteCache;
 import thisisxanderh.turrets.graphics.SpriteList;
 import thisisxanderh.turrets.terrain.Tile;
 
-public abstract class GameActor extends Actor {
+public abstract class Entity extends Actor {
 	protected float xVelocity = 0;
 	protected float yVelocity = 0;
 	protected Texture texture = SpriteCache.loadSprite(SpriteList.PLACEHOLDER);
@@ -26,18 +26,18 @@ public abstract class GameActor extends Actor {
 	
 	public static final float MAX_SPEED = Tile.SIZE;
 	
-	public GameActor() {
+	public Entity() {
 		this.setWidth(Tile.SIZE);
 		this.setHeight(Tile.SIZE);
 	}
 	
-	public GameActor(Texture texture) {
+	public Entity(Texture texture) {
 		this.texture = texture;
 		this.setHeight(texture.getHeight());
 		this.setWidth(texture.getWidth());
 	}
 	
-	public GameActor(SpriteList textureID) {
+	public Entity(SpriteList textureID) {
 		this(SpriteCache.loadSprite(textureID));
 	}
 	
@@ -153,7 +153,7 @@ public abstract class GameActor extends Actor {
 				this.getY() > 0 && this.getY() < GameStage.SIZE * Tile.SIZE);
 	}
 	
-	public abstract void collided(GameActor other);
+	public abstract void collided(Entity other);
 	
 	/**
 	 * @return true if killed
@@ -170,7 +170,7 @@ public abstract class GameActor extends Actor {
 	/**
 	 * @return true if killed
 	 */
-	public boolean damage(float damage, GameActor cause) {
+	public boolean damage(float damage, Entity cause) {
 		health -= damage;
 		if (health <= 0) {
 			die(cause);
@@ -184,7 +184,7 @@ public abstract class GameActor extends Actor {
 		stage.kill(this);
 	}
 	
-	public void die(GameActor cause) {
+	public void die(Entity cause) {
 		die();
 	}
 }

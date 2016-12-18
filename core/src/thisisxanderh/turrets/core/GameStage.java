@@ -15,6 +15,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -37,8 +38,8 @@ public class GameStage extends Stage {
 	private Terrain terrain;
 	private Terrain buildTurret;
 	private Terrain buildTrap;
-	private Map<PlayerTypes, List<Coordinate>> spawns = new HashMap<>();
-	private List<GameActor> deadList = new ArrayList<>();
+	private Map<PlayerTypes, List<Vector2>> spawns = new HashMap<>();
+	private List<Entity> deadList = new ArrayList<>();
 	
 	private Map<LayerList, Group> layers = new HashMap<>();
 
@@ -47,7 +48,6 @@ public class GameStage extends Stage {
 	public GameStage() {
 		init();
 	}
-	
 	
 	private void init() {
 		for (LayerList layer: LayerList.values()) {
@@ -71,6 +71,7 @@ public class GameStage extends Stage {
 	public GameController getController() {
 		return controller;
 	}
+	
 	public void setMap(TiledMap map) {
 		this.map = map;
 		terrain = new Terrain(map.getLayers().get("Terrain"), "solid", "true");
@@ -85,18 +86,15 @@ public class GameStage extends Stage {
 		for (MapLayer mapLayer: map.getLayers()) {
 			TiledMapTileLayer layer = (TiledMapTileLayer) mapLayer;
 			if (layer.getProperties().get("spawner") != null) {
-				makeEnemySpawner(layer);
+				addEnemySpawner(layer);
 			}
 		}
 		
-		
-        
         TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get("Spawns");
-        makePlayerSpawner(layer);
-
+        addPlayerSpawns(layer);
 	}
 	
-	private void makePlayerSpawner(TiledMapTileLayer layer) {
+	private void addPlayerSpawns(TiledMapTileLayer layer) {
         for (int x = 0; x < layer.getWidth(); x++) {
             for (int y = 0; y < layer.getHeight(); y++) {
                 TiledMapTileLayer.Cell cell = layer.getCell(x,y);
@@ -114,15 +112,16 @@ public class GameStage extends Stage {
         }
 	}
 	
-	private void makeEnemySpawner(TiledMapTileLayer layer) {
+	private void addEnemySpawner(TiledMapTileLayer layer) {
 		Spawner spawn = null;
 		String path = (String) layer.getProperties().get("spawner");
+		
 		try {
 			spawn = new Spawner(path);
 		} catch (InvalidCommandException e) {
 			e.printStackTrace();
-			System.exit(1);
 		}
+		
 		for (int x = 0; x < layer.getWidth(); x++) {
             for (int y = 0; y < layer.getHeight(); y++) {
                 TiledMapTileLayer.Cell cell = layer.getCell(x,y);
@@ -130,13 +129,7 @@ public class GameStage extends Stage {
                 	continue;
                 }
                 MapProperties properties = cell.getTile().getProperties();
-                Object property = properties.get("spawn");
-                if(property != null){
-                	String type = (String) property;
-                	addSpawn(x, y, PlayerTypes.valueOf(type));
-                    cell.setTile(null);
-                }
-                property = properties.get("enemy_path");
+                Object property = properties.get("enemy_path");
                 if (property != null) {
                 	int pathPosition  = (int) property;
                 	spawn.addPosition(pathPosition, x, y);
@@ -144,6 +137,7 @@ public class GameStage extends Stage {
                 }
             }
         }
+		
         addActor(spawn);
 	}
 	
@@ -152,19 +146,19 @@ public class GameStage extends Stage {
 	}
 	
 	public void addSpawn(float x, float y, PlayerTypes type) {
-		Coordinate spawn = new Coordinate(x, y);
+		Vector2 spawn = new Vector2(x, y);
 		addSpawn(spawn, type);
 	}
 	
-	public void addSpawn(Coordinate spawn, PlayerTypes type) {
+	public void addSpawn(Vector2 spawn, PlayerTypes type) {
 		if (spawns.get(type) == null) {
 			spawns.put(type, new ArrayList<>());
 		}
 		spawns.get(type).add(spawn);
 	}
 	
-	public Coordinate getSpawn(PlayerTypes type) {
-		List<Coordinate> list = spawns.get(type);
+	public Vector2 getSpawn(PlayerTypes type) {
+		List<Vector2> list = spawns.get(type);
 		if (list == null) {
 			return null;
 		}
@@ -200,8 +194,8 @@ public class GameStage extends Stage {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<GameActor> getGameActors() {
-		return (List<GameActor>)(Object) getActors(GameActor.class);
+	public List<Entity> getEntities() {
+		return (List<Entity>)(Object) getActors(Entity.class);
 	}
 	
 	@Override
@@ -215,29 +209,30 @@ public class GameStage extends Stage {
 		/**
 		 * Check if each actor is colliding with each other actor.
 		 */
-		List<GameActor> actors = this.getGameActors();
-		List<GameActor> others = new ArrayList<>(actors); // Two lists to prevent concurrent modification
+		List<Entity> entities = this.getEntities();
+		List<Entity> others = new ArrayList<>(entities); // Two lists to prevent concurrent modification
 		
-		for (GameActor actor: actors) {
-			if (!actor.collides()) {
+		for (Entity entity: entities) {
+			if (!entity.collides()) {
 				continue;
 			}
-			Rectangle bounds = actor.getBounds();
-			for (GameActor other: others) {
-				if (!other.collides() || actor.equals(other)) {
+			Rectangle bounds = entity.getBounds();
+			for (Entity other: others) {
+				if (!other.collides() || entity.equals(other)) {
 					continue;
 				}
 				if (bounds.overlaps(other.getBounds())) {
-					actor.collided(other);
-					other.collided(actor);
+					entity.collided(other);
+					other.collided(entity);
 				}
 			}
-			others.remove(actor); // Collisions are already two way, don't need to be checked twice
+			others.remove(entity); // Collisions are already two way, don't need to be checked twice
 		}
 	
-		for(GameActor actor: deadList) {
-			actor.remove();
+		for(Entity entity: deadList) {
+			entity.remove();
 		}
+		
 		deadList.clear();
 		
 	}
@@ -245,16 +240,14 @@ public class GameStage extends Stage {
 	/**
 	 * Delay actor death to prevent concurrent modification
 	 */
-	public void kill(GameActor actor) {
-		deadList.add(actor);
+	public void kill(Entity entity) {
+		deadList.add(entity);
 	}
 	
 	
 	@Override
 	public void draw() {
 		this.setViewport(getActors(Player.class).get(0).getViewport());
-		//OrthographicCamera camera = getActors(Player.class).get(0).getCamera();
-		//this.getViewport().setCamera(camera);
 		OrthographicCamera camera = (OrthographicCamera) this.getViewport().getCamera();
 		if (camera != null) {
 	        camera.update();
@@ -271,8 +264,8 @@ public class GameStage extends Stage {
 	@Override
 	public void addActor(Actor actor) {
 		LayerList layer = LayerList.DEFAULT;
-		if (actor instanceof GameActor) {
-			layer = ((GameActor) actor).getLayer();
+		if (actor instanceof Entity) {
+			layer = ((Entity) actor).getLayer();
 		}
 		layers.get(layer).addActor(actor);
 	}

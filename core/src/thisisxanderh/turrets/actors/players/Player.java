@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -21,8 +22,7 @@ import thisisxanderh.turrets.actors.buildings.turrets.Cannon;
 import thisisxanderh.turrets.actors.buildings.turrets.MachineGun;
 import thisisxanderh.turrets.actors.buildings.turrets.Turret;
 import thisisxanderh.turrets.actors.enemies.Enemy;
-import thisisxanderh.turrets.core.Coordinate;
-import thisisxanderh.turrets.core.GameActor;
+import thisisxanderh.turrets.core.Entity;
 import thisisxanderh.turrets.core.GameStage;
 import thisisxanderh.turrets.graphics.LayerList;
 import thisisxanderh.turrets.graphics.SpriteCache;
@@ -31,7 +31,7 @@ import thisisxanderh.turrets.input.Input;
 import thisisxanderh.turrets.input.InputManager;
 import thisisxanderh.turrets.terrain.Tile;
 
-public abstract class Player extends GameActor {
+public abstract class Player extends Entity {
 	private static final float GRAVITY = -25f;
 	private Input input;
 	private boolean facingLeft = false;
@@ -85,9 +85,9 @@ public abstract class Player extends GameActor {
 	
 	public void spawn() {
 		GameStage stage = (GameStage) this.getStage();
-		Coordinate spawn = stage.getSpawn(type);
-		this.setX(spawn.getX() * Tile.SIZE);
-		this.setY(spawn.getY() * Tile.SIZE);
+		Vector2 spawn = stage.getSpawn(type);
+		this.setX(spawn.x * Tile.SIZE);
+		this.setY(spawn.y * Tile.SIZE);
 	}
 	
 	@Override
@@ -154,7 +154,7 @@ public abstract class Player extends GameActor {
 			
 			if (building != null) {
 				
-				Coordinate position = input.getCursorTile();
+				Vector2 position = input.getCursorTile();
 				float tileFraction = building.getHeight() / Tile.SIZE;
 				
 				if (tileFraction < 1 && building instanceof Turret) {
@@ -162,8 +162,8 @@ public abstract class Player extends GameActor {
 				} else {
 					tileFraction = 0;
 				}
-				building.setX(position.getX());
-				building.setY(position.getY() + tileFraction);
+				building.setX(position.x);
+				building.setY(position.y + tileFraction);
 				
 			}
         }
@@ -316,7 +316,7 @@ public abstract class Player extends GameActor {
 	}
 	
 	@Override
-	public void collided(GameActor other) {
+	public void collided(Entity other) {
 		if (other instanceof Enemy) {
 			collideEnemy((Enemy) other);
 		}

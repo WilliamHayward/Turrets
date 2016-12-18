@@ -8,19 +8,19 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Vector2;
 
 import thisisxanderh.turrets.actors.buildings.traps.EmptyEffect;
 import thisisxanderh.turrets.actors.buildings.traps.Trap;
 import thisisxanderh.turrets.actors.buildings.traps.TrapEffect;
-import thisisxanderh.turrets.core.Coordinate;
-import thisisxanderh.turrets.core.GameActor;
+import thisisxanderh.turrets.core.Entity;
 import thisisxanderh.turrets.core.commands.Commander;
 import thisisxanderh.turrets.graphics.LayerList;
 import thisisxanderh.turrets.graphics.SpriteList;
 import thisisxanderh.turrets.terrain.Tile;
 
-public abstract class Enemy extends GameActor {
-	protected List<Coordinate> path;
+public abstract class Enemy extends Entity {
+	protected List<Vector2> path;
 	protected int destination = 0;
 	protected int direction = 1; // 1 for moving forward, -1 for moving back
 	protected float speed;
@@ -37,14 +37,14 @@ public abstract class Enemy extends GameActor {
 	}
 	
 	protected void spawn() {
-		this.setX(path.get(0).getX() * Tile.SIZE);
-		this.setY(path.get(0).getY() * Tile.SIZE);
+		this.setX(path.get(0).x * Tile.SIZE);
+		this.setY(path.get(0).y * Tile.SIZE);
 	}
 	
 	@Override
 	public void act(float delta) {
-		float destinationX = path.get(destination).getX() * Tile.SIZE;
-		float destinationY = path.get(destination).getY() * Tile.SIZE;
+		float destinationX = path.get(destination).x * Tile.SIZE;
+		float destinationY = path.get(destination).y * Tile.SIZE;
 		float xDiff = destinationX - this.getX();
 		float yDiff = destinationY - this.getY();
 		
@@ -104,7 +104,7 @@ public abstract class Enemy extends GameActor {
 	}
 	
 	@Override
-	public void collided(GameActor other) {
+	public void collided(Entity other) {
 		if (other instanceof Trap) {
 			Trap trap = (Trap) other;
 			effects.combine(trap.getEffect());

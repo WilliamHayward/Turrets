@@ -1,12 +1,12 @@
 package thisisxanderh.turrets.actors.buildings.turrets;
 
 import thisisxanderh.turrets.actors.enemies.Enemy;
-import thisisxanderh.turrets.core.GameActor;
+import thisisxanderh.turrets.core.Entity;
 import thisisxanderh.turrets.core.GameStage;
 import thisisxanderh.turrets.graphics.LayerList;
 import thisisxanderh.turrets.graphics.SpriteList;
 
-public abstract class Bullet extends GameActor {
+public abstract class Bullet extends Entity {
 	protected float speed;
 	protected float damage;
 	public Bullet(SpriteList textureID) {
@@ -15,7 +15,7 @@ public abstract class Bullet extends GameActor {
 		solid = true;
 	}
 	
-	public void fire(GameActor target) {
+	public void fire(Entity target) {
 		float destinationX = target.getX();
 		float destinationY = target.getY();
 		float xDiff = destinationX - this.getX();
@@ -39,7 +39,7 @@ public abstract class Bullet extends GameActor {
 	}
 	
 	@Override
-	public void collided(GameActor other) {
+	public void collided(Entity other) {
 		if (other instanceof Enemy) {
 			other.damage(damage);
 			this.remove();

@@ -1,6 +1,6 @@
 package thisisxanderh.turrets.input;
 
-import thisisxanderh.turrets.core.Coordinate;
+import com.badlogic.gdx.math.Vector2;
 
 public interface InputManager {
 	public void act(float delta);
@@ -19,5 +19,5 @@ public interface InputManager {
 	public float getHorizontal();
 	public float getVertical();
 	
-	public Coordinate getCursor();
+	public Vector2 getCursor();
 }

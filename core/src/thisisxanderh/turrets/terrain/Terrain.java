@@ -3,16 +3,20 @@ package thisisxanderh.turrets.terrain;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.math.Rectangle;
 
-public class Terrain implements Shape2D {
+public class Terrain extends Actor implements Shape2D {
 	private List<Tile> tiles;
+	private Color color = Color.BLACK;
 	
 	public Terrain(MapLayer map, String property, String value) {
 		tiles = new ArrayList<>();
@@ -37,6 +41,17 @@ public class Terrain implements Shape2D {
 			}
 		}
 		// TODO: Optimize rectangles
+	}
+	
+	public void setColor(Color color) {
+		this.color = color;
+	}
+	
+	@Override
+	public void draw(Batch batch, float alpha) {
+		for (Tile tile: tiles) {
+			//tile.draw(batch, alpha);
+		}
 	}
 	
 	public void addTile(int x, int y) {

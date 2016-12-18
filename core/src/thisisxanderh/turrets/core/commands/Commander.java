@@ -2,8 +2,9 @@ package thisisxanderh.turrets.core.commands;
 
 import java.util.List;
 
+import com.badlogic.gdx.math.Vector2;
+
 import thisisxanderh.turrets.actors.enemies.Enemy;
-import thisisxanderh.turrets.core.Coordinate;
 
 public interface Commander {
 
@@ -12,7 +13,7 @@ public interface Commander {
 
 	void deactivate();
 
-	List<Coordinate> getPath();
+	List<Vector2> getPath();
 
 	void spawn(Enemy child);
 

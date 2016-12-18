@@ -6,8 +6,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
-import thisisxanderh.turrets.core.Coordinate;
-
 public class KeyboardInput implements InputManager {
 	private Stage stage;
 	
@@ -108,8 +106,8 @@ public class KeyboardInput implements InputManager {
 	}
 
 	@Override
-	public Coordinate getCursor() {
-		return new Coordinate(Gdx.input.getX(), Gdx.input.getY());
+	public Vector2 getCursor() {
+		return new Vector2(Gdx.input.getX(), Gdx.input.getY());
 	}
 
 	@Override

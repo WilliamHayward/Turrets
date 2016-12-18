@@ -4,11 +4,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 
 import thisisxanderh.turrets.actors.buildings.Building;
 import thisisxanderh.turrets.actors.enemies.Enemy;
-import thisisxanderh.turrets.core.Coordinate;
-import thisisxanderh.turrets.core.GameActor;
+import thisisxanderh.turrets.core.Entity;
 import thisisxanderh.turrets.core.GameStage;
 import thisisxanderh.turrets.graphics.SpriteList;
 
@@ -105,17 +105,17 @@ public abstract class Turret extends Building {
 		return closest;
 	}
 	
-	private float getDistance(GameActor other) {
+	private float getDistance(Entity other) {
 		float distance = (float) Math.hypot(other.getX()-this.getX(), other.getY()-this.getY());
 		return distance;
 	}
 	
 	private float getAngle(float x, float y) {
-		return getAngle(new Coordinate(x, y));
+		return getAngle(new Vector2(x, y));
 	}
 	
-	private float getAngle(Coordinate target) {
-	    float angle = (float) Math.toDegrees(Math.atan2(target.getY() - getY(), target.getX() - getX()));
+	private float getAngle(Vector2 target) {
+	    float angle = (float) Math.toDegrees(Math.atan2(target.y - getY(), target.x - getX()));
 
 	    if(angle < 0){
 	        angle += 360;
