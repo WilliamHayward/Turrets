@@ -51,6 +51,9 @@ public class SpawnCommand extends Command {
 	@Override
 	public void tick(float delta) {
 		if (paced) {
+			if (children.size() == 0) {
+				finish();
+			}
 			timer += delta;
 			int spawnCount = (int) Math.floor(timer / gap); //Find out how many should be spawned
 			for (int i = 0; i < spawnCount; i++) {

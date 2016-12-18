@@ -1,4 +1,5 @@
 display Hello, World
+display Test, message2
 wait cleared
 spawn SPIDER,GIANT_SPIDER,SPIDER 3
 wait cleared

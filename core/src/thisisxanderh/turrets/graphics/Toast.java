@@ -8,6 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
 
+import thisisxanderh.turrets.input.Input;
+
 
 public class Toast extends Actor {
 	public static final float DURATION = 5f;
@@ -18,11 +20,23 @@ public class Toast extends Actor {
 	private NinePatch patch;
 	private Label label;
 	
+	private Input.ToastUI toaster;
+	
 	private float timer;
+	private float speed;
+	
 	public Toast(String title, Skin skin) {
 		patch = skin.getPatch("default-round");
 		label = new Label(title, skin);
 		label.setWrap(true);
+		label.setAlignment(Align.center);
+		if (label.getWidth() > WIDTH) {
+			label.setWidth(WIDTH);
+			// You have to pack and then set the width again, otherwise label.getHeight() isn't correct.
+			// Source: http://stackoverflow.com/questions/24276180/libgdx-label-multiline-text-height
+			label.pack();
+			label.setWidth(WIDTH);
+		}
 		timer = DURATION;
 	}
 	
@@ -34,28 +48,35 @@ public class Toast extends Actor {
 	@Override
 	public void act(float delta) {
 		timer -= delta;
+		float speed = 0;
 		if (timer <= 0) {
+			toaster.toastNext();
 			this.remove();
+		} else if (timer < 0.5f) { // Last second, move down
+			speed = -this.speed;
+		} else {
+			float distance = label.getY() - PADDING;
+			if (Math.abs(distance) <= Math.abs(this.speed)) {
+				label.setY(PADDING);
+			} else {
+				speed = this.speed;
+			}
 		}
+		label.setY(label.getY() + speed);
+	}
+	
+	public void setToaster(Input.ToastUI toaster) {
+		this.toaster = toaster;
+		float x = toaster.getStage().getWidth() / 2 - label.getWidth() / 2;
+		float y = -label.getHeight();
+		label.setPosition(x, y);
+		float distance = label.getY() - PADDING;
+		speed = Math.abs(distance / 30f);
 	}
 	
 	@Override
 	public void draw(Batch batch, float alpha) {
-		Stage stage = this.getStage();
-		label.setAlignment(Align.center);
-		
-		if (label.getWidth() > WIDTH) {
-			label.setWidth(WIDTH);
-			// You have to pack and then set the width again, otherwise label.getHeight() isn't correct.
-			// Source: http://stackoverflow.com/questions/24276180/libgdx-label-multiline-text-height
-			label.pack();
-			label.setWidth(WIDTH);
-		}
-
-		float x = stage.getWidth() / 2 - label.getWidth() / 2;
-		float y = PADDING;
-		label.setPosition(x, y);
-		patch.draw(batch, x - PADDING / 2, y, label.getWidth() + PADDING, label.getHeight());
+		patch.draw(batch, label.getX() - PADDING / 2, label.getY(), label.getWidth() + PADDING, label.getHeight());
 		label.draw(batch, alpha);
 	}
 }

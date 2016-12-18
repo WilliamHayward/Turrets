@@ -38,13 +38,14 @@ public class GameController {
 		startBuild();
 	}
 	
-	public void notify(String message) {
-		notify(message, Toast.DURATION);
+	public void toast(String message) {
+		toast(message, Toast.DURATION);
 	}
 	
-	public void notify(String message, float duration) {
+	public void toast(String message, float duration) {
 		for (Player player: game.getActors(Player.class)) {
-			
+			Toast bread = new Toast(message, player.getInput().getSkin(), duration);
+			player.getInput().toast(bread);
 		}
 	}
 	

@@ -112,6 +112,14 @@ public class Input extends Stage {
 		}
 	}
 	
+	public Skin getSkin() {
+		return skin;
+	}
+	
+	public void toast(Toast bread) {
+		toast.toast(bread);
+	}
+	
 	@Override
 	public void act(float delta) {
 		active.act(delta);
@@ -150,11 +158,27 @@ public class Input extends Stage {
 	}
 	
 	private abstract class UserInterface extends Group {}
-	
-	private class ToastUI extends UserInterface {
-		private ArrayList<Toast> toast = new ArrayList<>();
+
+	public class ToastUI extends UserInterface {
+		private ArrayList<Toast> loaf = new ArrayList<>();
 		private ToastUI(Skin skin) {
 			
+		}
+		
+		protected void toast(Toast bread) {
+			bread.setToaster(this);
+			loaf.add(bread);
+			if (loaf.size() == 1) {
+				this.addActor(bread);
+			}
+		}
+		
+		public void toastNext() {
+			loaf.remove(0);
+			if (loaf.size() > 0) {
+				Toast bread = loaf.get(0);
+				this.addActor(bread);
+			}
 		}
 	}
 	
