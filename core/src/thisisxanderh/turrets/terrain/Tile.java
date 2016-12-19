@@ -30,4 +30,12 @@ public class Tile extends Rectangle {
 	public void draw(Batch batch, float alpha) {
 		batch.draw(texture, x, y, width, height);
 	}
+	
+	public void growRight() {
+		this.setWidth(getWidth() + SIZE);
+	}
+	
+	public void growDown() {
+		this.setHeight(getHeight() + SIZE); 
+	}
 }

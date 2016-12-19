@@ -42,6 +42,8 @@ public class GameStage extends Stage {
 	private Map<PlayerTypes, List<Vector2>> spawns = new HashMap<>();
 	private List<Entity> deadList = new ArrayList<>();
 	
+	private boolean debug = false;
+	
 	private Map<LayerList, Group> layers = new HashMap<>();
 
 	private GameController controller;
@@ -76,6 +78,9 @@ public class GameStage extends Stage {
 	public void setMap(TiledMap map) {
 		this.map = map;
 		terrain = new Terrain(map.getLayers().get("Terrain"), "solid", "true");
+		if (debug) {
+			this.addActor(terrain);
+		}
 		
 		MapLayer buildLayer = map.getLayers().get("Build");
 		buildTurret = new Terrain(buildLayer, "build", "turret");

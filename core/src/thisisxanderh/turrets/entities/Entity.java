@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import thisisxanderh.turrets.core.GameStage;
@@ -14,8 +15,7 @@ import thisisxanderh.turrets.graphics.SpriteList;
 import thisisxanderh.turrets.terrain.Tile;
 
 public abstract class Entity extends Actor {
-	protected float xVelocity = 0;
-	protected float yVelocity = 0;
+	protected Vector2 velocity = new Vector2(0, 0);
 	protected Texture texture = SpriteCache.loadSprite(SpriteList.PLACEHOLDER);
 	protected float health;
 	protected float maxHealth;
@@ -66,34 +66,46 @@ public abstract class Entity extends Actor {
 		return rectangle;
 	}
 	
+	public void addVelocity(Vector2 other) {
+		velocity.add(other);
+	}
+	
+	public void setVelocity(Vector2 velocity) {
+		this.velocity = velocity;
+	}
+	
+	public Vector2 getVelocity() {
+		return velocity;
+	}
+	
 	public void addXVelocity(float xVelocity) {
-		this.xVelocity += xVelocity;
+		velocity.x += xVelocity;
 	}
 	
 	public void setXVelocity(float xVelocity) {
-		this.xVelocity = xVelocity;
+		velocity.x = xVelocity;
 	}
 
 	public float getXVelocity() {
-		return xVelocity;
+		return velocity.x;
 	}
 	
 	public void addYVelocity(float yVelocity) {
-		this.yVelocity += yVelocity;
+		velocity.y += yVelocity;
 	}
 	
 	public void setYVelocity(float yVelocity) {
-		this.yVelocity = yVelocity;
+		velocity.y = yVelocity;
 	}
 	
 	public float getYVelocity() {
-		return yVelocity;
+		return velocity.y;
 	}
 	
 	@Override
 	public void act(float delta) {
-		float xVelocityStep = MathUtils.clamp(xVelocity * delta, -MAX_SPEED, MAX_SPEED * delta);
-		float yVelocityStep = MathUtils.clamp(yVelocity * delta, -MAX_SPEED * delta, MAX_SPEED * delta);
+		float xVelocityStep = MathUtils.clamp(velocity.x * delta, -MAX_SPEED, MAX_SPEED * delta);
+		float yVelocityStep = MathUtils.clamp(velocity.y * delta, -MAX_SPEED * delta, MAX_SPEED * delta);
 		this.setPosition(getX() + xVelocityStep / delta, getY() + yVelocityStep / delta);
 	}
 	
