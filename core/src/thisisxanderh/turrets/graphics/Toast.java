@@ -7,8 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
 
-import thisisxanderh.turrets.input.Input;
-
+import thisisxanderh.turrets.ui.ToastUI;
 
 public class Toast extends Actor {
 	public static final float DURATION = 5f;
@@ -19,7 +18,7 @@ public class Toast extends Actor {
 	private NinePatch patch;
 	private Label label;
 	
-	private Input.ToastUI toaster;
+	private ToastUI toaster;
 	
 	private float timer;
 	private float speed;
@@ -68,7 +67,7 @@ public class Toast extends Actor {
 		timer = 1;
 	}
 	
-	public void setToaster(Input.ToastUI toaster) {
+	public void setToaster(ToastUI toaster) {
 		this.toaster = toaster;
 		float x = toaster.getStage().getWidth() / 2 - label.getWidth() / 2;
 		float y = -label.getHeight();

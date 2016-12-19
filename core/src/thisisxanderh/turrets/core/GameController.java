@@ -8,7 +8,9 @@ import thisisxanderh.turrets.entities.enemies.Spawner;
 import thisisxanderh.turrets.entities.players.Hero;
 import thisisxanderh.turrets.entities.players.Player;
 import thisisxanderh.turrets.graphics.Toast;
-import thisisxanderh.turrets.input.Input;
+import thisisxanderh.turrets.input.InputManager;
+import thisisxanderh.turrets.input.KeyboardInput;
+import thisisxanderh.turrets.ui.UIManager;
 
 public class GameController {
 	private GameStage game;
@@ -31,8 +33,11 @@ public class GameController {
 		game.addActor(player);
 		
 		
-        Input input = new Input(player);
-        player.setInput(input);		
+        UIManager ui = new UIManager(player);
+        player.setUI(ui);		
+
+		InputManager input = new KeyboardInput(game);
+		player.setInput(input);
 		
 		player.spawn();
 		startBuild();
@@ -44,8 +49,8 @@ public class GameController {
 	
 	public void toast(String message, float duration) {
 		for (Player player: game.getActors(Player.class)) {
-			Toast bread = new Toast(message, player.getInput().getSkin(), duration);
-			player.getInput().toast(bread);
+			Toast bread = new Toast(message, player.getUI().getSkin(), duration);
+			player.getUI().toast(bread);
 		}
 	}
 	
@@ -108,13 +113,13 @@ public class GameController {
 		for (Spawner spawner: game.getActors(Spawner.class)) {
 			spawner.nextCommand();
 		}
-		player.getInput().setPlay();
+		player.getUI().setPlay();
 	}
 	
 	public void startBuild() {
 		buildMode = true;
 		buildTimer = buildTime;
-		player.getInput().setBuild();
+		player.getUI().setBuild();
 	}
 	
 	public boolean endPlay() {

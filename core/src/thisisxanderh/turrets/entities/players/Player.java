@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -28,13 +27,16 @@ import thisisxanderh.turrets.entities.enemies.Enemy;
 import thisisxanderh.turrets.graphics.LayerList;
 import thisisxanderh.turrets.graphics.SpriteCache;
 import thisisxanderh.turrets.graphics.SpriteList;
-import thisisxanderh.turrets.input.Input;
 import thisisxanderh.turrets.input.InputManager;
 import thisisxanderh.turrets.terrain.Tile;
+import thisisxanderh.turrets.ui.UIManager;
 
 public abstract class Player extends Entity {
 	private static final float GRAVITY = -25f;
-	private Input input;
+	
+	private InputManager input;
+	private UIManager ui;
+	
 	private boolean facingLeft = false;
 	private boolean doubleJumpAvailable = true;
 	private boolean groundPound = false;
@@ -97,13 +99,14 @@ public abstract class Player extends Entity {
 		spriteBatch.draw(texture, getX(), getY(), 0, 0, getWidth(), getHeight(),
 				1, 1, getRotation(), 0, 0, texture.getWidth(), texture.getHeight(), facingLeft, false);
 		batch.end();
-		input.draw();
+		ui.draw();
 		batch.begin();
 	}
 	
 	@Override
 	public void act(float delta) {
 		input.act(delta);
+		ui.act();
 		if (!this.inWorld()) {
 			spawn();
 		}
@@ -113,14 +116,14 @@ public abstract class Player extends Entity {
 			deselectBuilding();
 		}
 		
-		if (input.getManager().getPause()) {
+		if (input.getPause()) {
 			stage.getController().togglePause();
-			input.togglePause();
+			ui.togglePause();
 			return;
 		}
 		
-		if (input.getManager().getConsole()) {
-			input.toggleConsole();
+		if (input.getConsole()) {
+			ui.toggleConsole();
 		}
 		
 		if (stage.getController().isPaused()) {
@@ -154,7 +157,6 @@ public abstract class Player extends Entity {
 			this.addYVelocity(GRAVITY * delta);
 			
 			if (building != null) {
-				
 				Vector2 position = input.getCursorTile();
 				float tileFraction = building.getHeight() / Tile.SIZE;
 				
@@ -173,14 +175,8 @@ public abstract class Player extends Entity {
 		camera.position.y = this.getY();
 	}
 	
-	public void setInput(Input input) {
-		this.input = input;
-	}
-	
 	private void handleInput() {
-		InputManager manager = input.getManager();
-		
-		if (manager.getSwitch()) {
+		if (input.getSwitch()) {
 			if (shipMode) {
 				this.texture = standing;
 				this.setRotation(0);
@@ -193,41 +189,44 @@ public abstract class Player extends Entity {
 			this.setSize(texture.getWidth(), texture.getHeight());
 		}
 
-		if (Gdx.input.isKeyJustPressed(Keys.K)) {
-			System.out.println("Immediate");
-			input.killToast(true);
-		}
-		if (Gdx.input.isKeyJustPressed(Keys.L)) {
-			System.out.println("Not immediate");
-			input.killToast(false);
-		}
-
 		if (shipMode) {
-			handleShipInput(manager);
+			handleShipInput();
 		} else {
-			handleFootInput(manager);
+			handleFootInput();
 			GameStage stage = (GameStage) this.getStage();
 			if (stage.getController().isBuildMode()) {
-				handleBuildInput(manager);
+				handleBuildInput();
 			} else {
-				handlePlayInput(manager);
+				handlePlayInput();
 			}
 		}
 	}
 	
-	public Input getInput() {
+	public void setInput(InputManager input) {
+		this.input = input;
+	}
+	
+	public InputManager getInput() {
 		return input;
 	}
 	
-	private void handleShipInput(InputManager manager) {
-		float horizontalSpeed = manager.getHorizontal();
+	public void setUI(UIManager ui) {
+		this.ui = ui;
+	}
+	
+	public UIManager getUI() {
+		return ui;
+	}
+	
+	private void handleShipInput() {
+		float horizontalSpeed = input.getHorizontal();
 		this.setXVelocity(horizontalSpeed * speed * 2);
-		float verticalSpeed = manager.getVertical();
+		float verticalSpeed = input.getVertical();
 		this.setYVelocity(verticalSpeed * speed * 2);
 	}
 	
-	private void handlePlayInput(InputManager manager) {
-		if (!onGround && manager.getPound()) {
+	private void handlePlayInput() {
+		if (!onGround && input.getPound()) {
 			this.setYVelocity(-20);
 			this.setXVelocity(0);
 			doubleJumpAvailable = false;
@@ -235,14 +234,14 @@ public abstract class Player extends Entity {
 		}
 	}
 	
-	private void handleBuildInput(InputManager manager) {
-		int hotkey = manager.getHotkey();
+	private void handleBuildInput() {
+		int hotkey = input.getHotkey();
 		int newBuilding = currentBuilding;
 		if (hotkey!= -1) {
 			newBuilding = hotkey;
-		} else if (manager.getNext()) {
+		} else if (input.getNext()) {
 			newBuilding++;
-		} else if (manager.getPrev()) {
+		} else if (input.getPrev()) {
 			newBuilding--;
 		}
 		if (newBuilding == -1) {
@@ -255,33 +254,33 @@ public abstract class Player extends Entity {
 			selectBuilding(newBuilding);
 		}
 		
-		if (manager.getExit()) {
+		if (input.getExit()) {
 			deselectBuilding();
 		}
 		
-		if (manager.getBuild() && building != null && building.build()) {
+		if (input.getBuild() && building != null && building.build()) {
 			building = null;
 			currentBuilding = -2;
 			selectBuilding(currentBuilding);
 		}
 	}
 	
-	private void handleFootInput(InputManager manager) {
-		float horizontalSpeed = manager.getHorizontal();
+	private void handleFootInput() {
+		float horizontalSpeed = input.getHorizontal();
 		this.setXVelocity(horizontalSpeed * speed);
 		
 		if (onGround) {
-			if (manager.getJump()) {
+			if (input.getJump()) {
 				this.setYVelocity(13);
 			}
 		} else {
-			if (doubleJumpAvailable && manager.getJump()) {
+			if (doubleJumpAvailable && input.getJump()) {
 				this.setYVelocity(13);
 				doubleJumpAvailable = false;
 			}
 		}
 		
-		facingLeft = manager.getFacing(facingLeft);
+		facingLeft = input.getFacing(facingLeft);
 	}
 	
 	private void deselectBuilding() {

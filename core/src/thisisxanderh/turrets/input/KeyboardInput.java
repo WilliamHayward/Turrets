@@ -2,9 +2,14 @@ package thisisxanderh.turrets.input;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Widget;
+
+import thisisxanderh.turrets.terrain.Tile;
 
 public class KeyboardInput implements InputManager {
 	private Stage stage;
@@ -14,6 +19,7 @@ public class KeyboardInput implements InputManager {
 
 	@Override
 	public void act(float delta) {
+		
 		cursorX = Gdx.input.getX();
 		cursorY = Gdx.input.getY();
 	}
@@ -42,7 +48,7 @@ public class KeyboardInput implements InputManager {
 		if (Gdx.input.justTouched()) {
 			Vector2 position = stage.screenToStageCoordinates(new Vector2(cursorX, cursorY));
 			Actor hit = stage.hit(position.x, position.y, false);
-			if (hit == null) {
+			if (!(hit instanceof Widget)) { 
 				return true;
 			}
 		}
@@ -113,6 +119,29 @@ public class KeyboardInput implements InputManager {
 	@Override
 	public boolean getConsole() {
 		return Gdx.input.isKeyJustPressed(Keys.GRAVE);
+	}
+	
+	/**
+	 * Get cursor position in world
+	 */
+	@Override
+	public Vector2 getCursorPosition() {
+		OrthographicCamera camera = (OrthographicCamera) stage.getCamera();
+		Vector2 cursor = getCursor();
+		Vector3 position = new Vector3(cursor.x, cursor.y, 0);
+		camera.unproject(position);
+		return new Vector2(position.x, position.y);
+	}
+	
+	/**
+	 * Get cursor tile position in world
+	 */
+	@Override
+	public Vector2 getCursorTile() {
+		Vector2 position = getCursorPosition();
+		float x = (float) Math.floor(position.x / Tile.SIZE) * Tile.SIZE;
+		float y = (float) Math.floor(position.y / Tile.SIZE) * Tile.SIZE;
+		return new Vector2(x, y);
 	}
 
 }

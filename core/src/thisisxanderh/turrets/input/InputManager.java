@@ -20,4 +20,7 @@ public interface InputManager {
 	public float getVertical();
 	
 	public Vector2 getCursor();
+	public Vector2 getCursorPosition();
+	public Vector2 getCursorTile();
+	
 }
