@@ -16,8 +16,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-import thisisxanderh.turrets.actors.players.Player;
 import thisisxanderh.turrets.core.GameStage;
+import thisisxanderh.turrets.entities.players.Player;
 import thisisxanderh.turrets.graphics.Toast;
 import thisisxanderh.turrets.terrain.Tile;
 
@@ -51,6 +51,10 @@ public class Input extends Stage {
 		this.player = player;
 		
         Gdx.input.setInputProcessor(this);
+	}
+	
+	public void killToast(boolean immediate) {
+		toast.eject(immediate);
 	}
 	
 	public InputManager getManager() {
@@ -167,10 +171,10 @@ public class Input extends Stage {
 		
 		protected void toast(Toast bread) {
 			bread.setToaster(this);
-			loaf.add(bread);
-			if (loaf.size() == 1) {
+			if (loaf.size() == 0) {
 				this.addActor(bread);
 			}
+			loaf.add(bread);
 		}
 		
 		public void toastNext() {
@@ -178,6 +182,20 @@ public class Input extends Stage {
 			if (loaf.size() > 0) {
 				Toast bread = loaf.get(0);
 				this.addActor(bread);
+			}
+		}
+		
+		public void eject(boolean immediate) {
+			if (loaf.size() > 0) {
+				Toast current = loaf.get(0);
+				if (immediate) {
+					current.remove();
+					loaf.clear();
+				} else {
+					current.rush();
+					loaf.clear();
+					loaf.add(current);
+				}
 			}
 		}
 	}

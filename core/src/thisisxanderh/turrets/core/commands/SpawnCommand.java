@@ -2,11 +2,11 @@ package thisisxanderh.turrets.core.commands;
 
 import java.util.List;
 
-import thisisxanderh.turrets.actors.enemies.Enemy;
-import thisisxanderh.turrets.actors.enemies.EnemyList;
-import thisisxanderh.turrets.actors.enemies.GiantSpider;
-import thisisxanderh.turrets.actors.enemies.Spawner;
-import thisisxanderh.turrets.actors.enemies.Spider;
+import thisisxanderh.turrets.entities.enemies.Enemy;
+import thisisxanderh.turrets.entities.enemies.EnemyList;
+import thisisxanderh.turrets.entities.enemies.GiantSpider;
+import thisisxanderh.turrets.entities.enemies.Spawner;
+import thisisxanderh.turrets.entities.enemies.Spider;
 
 import java.util.ArrayList;
 

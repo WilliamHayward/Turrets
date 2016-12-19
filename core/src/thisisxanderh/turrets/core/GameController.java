@@ -3,10 +3,10 @@ package thisisxanderh.turrets.core;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 
-import thisisxanderh.turrets.actors.enemies.Enemy;
-import thisisxanderh.turrets.actors.enemies.Spawner;
-import thisisxanderh.turrets.actors.players.Hero;
-import thisisxanderh.turrets.actors.players.Player;
+import thisisxanderh.turrets.entities.enemies.Enemy;
+import thisisxanderh.turrets.entities.enemies.Spawner;
+import thisisxanderh.turrets.entities.players.Hero;
+import thisisxanderh.turrets.entities.players.Player;
 import thisisxanderh.turrets.graphics.Toast;
 import thisisxanderh.turrets.input.Input;
 

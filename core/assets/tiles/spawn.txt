@@ -1,5 +1,5 @@
-display Hello, World
-display Test, message2
+display Hello, Elizabeth
+display Begin play
 wait cleared
 spawn SPIDER,GIANT_SPIDER,SPIDER 3
 wait cleared

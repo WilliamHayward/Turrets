@@ -3,7 +3,6 @@ package thisisxanderh.turrets.graphics;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
@@ -63,6 +62,10 @@ public class Toast extends Actor {
 			}
 		}
 		label.setY(label.getY() + speed);
+	}
+	
+	public void rush() {
+		timer = 1;
 	}
 	
 	public void setToaster(Input.ToastUI toaster) {

@@ -23,10 +23,11 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-import thisisxanderh.turrets.actors.enemies.Spawner;
-import thisisxanderh.turrets.actors.players.Player;
-import thisisxanderh.turrets.actors.players.PlayerTypes;
 import thisisxanderh.turrets.core.commands.InvalidCommandException;
+import thisisxanderh.turrets.entities.Entity;
+import thisisxanderh.turrets.entities.enemies.Spawner;
+import thisisxanderh.turrets.entities.players.Player;
+import thisisxanderh.turrets.entities.players.PlayerTypes;
 import thisisxanderh.turrets.graphics.LayerList;
 import thisisxanderh.turrets.terrain.Terrain;
 

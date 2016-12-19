@@ -1,6 +1,6 @@
 package thisisxanderh.turrets.core.commands;
 
-import thisisxanderh.turrets.actors.enemies.Spawner;
+import thisisxanderh.turrets.entities.enemies.Spawner;
 
 public class WaitCommand extends Command {
 	private float timer;

@@ -1,6 +1,6 @@
 package thisisxanderh.turrets.core.commands;
 
-import thisisxanderh.turrets.actors.enemies.Spawner;
+import thisisxanderh.turrets.entities.enemies.Spawner;
 
 /**
  * Immediately kills parent emitter

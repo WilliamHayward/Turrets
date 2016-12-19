@@ -2,9 +2,9 @@ package thisisxanderh.turrets.core.commands;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
-import thisisxanderh.turrets.actors.enemies.Spawner;
 import thisisxanderh.turrets.core.GameController;
 import thisisxanderh.turrets.core.GameStage;
+import thisisxanderh.turrets.entities.enemies.Spawner;
 
 public class DisplayCommand extends Command {
 	private String message;
