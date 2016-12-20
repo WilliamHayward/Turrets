@@ -1,6 +1,7 @@
 package thisisxanderh.turrets.ui;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -13,14 +14,20 @@ import thisisxanderh.turrets.entities.players.Player;
 public class BuildUI extends UserInterface {
 	Label timer;
 	Player player;
+	private static final float BUTTON_SIZE = 75f;
+	private static final float PADDING = 10f;
 	public BuildUI(Player player, Skin skin) {
 		super();
 		this.player = player;
+		Group buttons = new Group();
 		TextButton button = new TextButton("Machine Gun", skin, "default");
-        button.setWidth(100f);
-        button.setHeight(20f);
-        button.setPosition(5, 5);
-
+        button.setWidth(BUTTON_SIZE);
+        button.setHeight(BUTTON_SIZE);
+        
+        float xPosition = 0;
+        
+        button.setPosition(xPosition, 0);
+        
         button.addListener(new ClickListener(){
             @Override 
             public void clicked(InputEvent event, float x, float y) {
@@ -28,12 +35,15 @@ public class BuildUI extends UserInterface {
             }
         });
         
-        this.addActor(button);
+        buttons.addActor(button);
         
         button = new TextButton("Cannon", skin, "default");
-        button.setWidth(100f);
-        button.setHeight(20f);
-        button.setPosition(110f, 5);
+        button.setWidth(BUTTON_SIZE);
+        button.setHeight(BUTTON_SIZE);
+        
+        xPosition += BUTTON_SIZE + PADDING;
+        
+        button.setPosition(xPosition, 0);
 
         button.addListener(new ClickListener(){
             @Override 
@@ -42,12 +52,15 @@ public class BuildUI extends UserInterface {
             }
         });
         
-        this.addActor(button);
+        buttons.addActor(button);
         
         button = new TextButton("Glue", skin, "default");
-        button.setWidth(100f);
-        button.setHeight(20f);
-        button.setPosition(215f, 5);
+        button.setWidth(BUTTON_SIZE);
+        button.setHeight(BUTTON_SIZE);
+        
+        xPosition += BUTTON_SIZE + PADDING;
+        
+        button.setPosition(xPosition, 0);
 
         button.addListener(new ClickListener(){
             @Override 
@@ -56,12 +69,15 @@ public class BuildUI extends UserInterface {
             }
         });
         
-        this.addActor(button);
+        buttons.addActor(button);
         
         button = new TextButton("Spikes", skin, "default");
-        button.setWidth(100f);
-        button.setHeight(20f);
-        button.setPosition(320f, 5);
+        button.setWidth(BUTTON_SIZE);
+        button.setHeight(BUTTON_SIZE);
+        
+        xPosition += BUTTON_SIZE + PADDING;
+        
+        button.setPosition(xPosition, 0);
 
         button.addListener(new ClickListener(){
             @Override 
@@ -70,9 +86,15 @@ public class BuildUI extends UserInterface {
             }
         });
         
-        this.addActor(button);
+        buttons.setWidth(xPosition + BUTTON_SIZE);
+        
+        buttons.addActor(button);
+        
+        buttons.setPosition(Gdx.graphics.getWidth() / 2f - buttons.getWidth() / 2f, 5f);
+        this.addActor(buttons);
         
         button = new TextButton("Play", skin, "default");
+        
         button.setWidth(100f);
         button.setHeight(20f);
         button.setPosition(5, Gdx.graphics.getHeight() - button.getHeight() - 5);
@@ -85,7 +107,7 @@ public class BuildUI extends UserInterface {
             }
         });
         
-        this.addActor(button);
+        //this.addActor(button);
         timer = new Label("", skin);
         timer.setSize(50, 50);
         timer.setPosition(Gdx.graphics.getWidth() - timer.getWidth() - 5,
@@ -96,8 +118,11 @@ public class BuildUI extends UserInterface {
 	@Override
 	public void act(float delta) {
         GameStage stage = (GameStage) player.getStage();
-        int count = (int) Math.ceil(stage.getController().getBuildTimer());
-		timer.setText(String.valueOf(count));
+        int seconds = (int) Math.ceil(stage.getController().getBuildTimer());
+        int minutes = (int) Math.floor(seconds / 60);
+        seconds -= minutes * 60;
+        String time = String.format("%d:%02d", minutes, seconds);
+		timer.setText(time);
 		
 	}
 }
