@@ -1,14 +1,14 @@
 package thisisxanderh.turrets.entities.players;
 
-import com.badlogic.gdx.graphics.Color;
+import thisisxanderh.turrets.entities.States;
 import thisisxanderh.turrets.graphics.SpriteCache;
 import thisisxanderh.turrets.graphics.SpriteList;
 
 public class Pilot extends Player {
 	public Pilot() {
 		super(SpriteList.PILOT_STANDING);
-		ship = SpriteCache.loadSprite(SpriteList.PILOT_SHIP);
-		color = Color.SKY;
+
+		this.addState(States.FLYING, SpriteCache.loadSprite(SpriteList.PILOT_SHIP));
 		
 
 		speed = 8f;

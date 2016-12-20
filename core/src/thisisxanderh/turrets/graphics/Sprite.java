@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 public class Sprite extends Animation {
-	private float lifetime = 1;
+	private float lifetime = 0;
 	private Vector2 origin = new Vector2(0, 0);
 	
 	public Sprite(float frameDuration, Array<? extends TextureRegion> keyFrames) {
@@ -47,5 +47,9 @@ public class Sprite extends Animation {
 	
 	public void setOrigin(Vector2 origin) {
 		this.origin.set(origin);
+	}
+	
+	public void reset() {
+		lifetime = 0;
 	}
 }

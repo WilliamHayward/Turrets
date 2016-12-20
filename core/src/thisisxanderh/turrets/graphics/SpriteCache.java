@@ -22,8 +22,10 @@ public class SpriteCache {
 			if (frames.size == 0) {
 				Gdx.app.error("URGENT", name + " has no frames");
 			}
-			sprites.put(sprite, new Sprite(1, frames));
+			sprites.put(sprite, new Sprite(0.5f, frames));
 		}
+		
+		// Any permanent custom tinkerings can go here easily enough. Frame durations and such.
 	}
 	
 	public static Sprite loadSprite(SpriteList id) {

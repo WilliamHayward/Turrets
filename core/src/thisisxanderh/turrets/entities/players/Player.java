@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -15,6 +14,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import thisisxanderh.turrets.core.GameStage;
 import thisisxanderh.turrets.entities.Entity;
+import thisisxanderh.turrets.entities.States;
 import thisisxanderh.turrets.entities.buildings.Building;
 import thisisxanderh.turrets.entities.buildings.BuildingList;
 import thisisxanderh.turrets.entities.buildings.traps.Glue;
@@ -24,7 +24,6 @@ import thisisxanderh.turrets.entities.buildings.turrets.MachineGun;
 import thisisxanderh.turrets.entities.buildings.turrets.Turret;
 import thisisxanderh.turrets.entities.enemies.Enemy;
 import thisisxanderh.turrets.graphics.LayerList;
-import thisisxanderh.turrets.graphics.Sprite;
 import thisisxanderh.turrets.graphics.SpriteCache;
 import thisisxanderh.turrets.graphics.SpriteList;
 import thisisxanderh.turrets.input.InputManager;
@@ -37,22 +36,16 @@ public abstract class Player extends Entity {
 	private InputManager input;
 	private UIManager ui;
 	
-	private boolean facingLeft = false;
 	private boolean doubleJumpAvailable = true;
-	private boolean groundPound = false;
 	private float stunnedTimer = 0f;
-	protected Color color = null;
+	
 	private List<BuildingList> buildings;
 	private int currentBuilding = -2;
 	private Building building;
-	private boolean shipMode = false;
 	
 	protected float highDamage;
 	protected float lowDamage;
 	protected float speed;
-	
-	protected Sprite standing;
-	protected Sprite ship;
 	
 	protected PlayerTypes type = PlayerTypes.HERO;
 	
@@ -61,7 +54,7 @@ public abstract class Player extends Entity {
 	
 	public Player(SpriteList image) {
 		super(image);
-		standing = SpriteCache.loadSprite(image);
+		this.addState(States.STANDING, SpriteCache.loadSprite(image));
 		solid = true;
 		layer = LayerList.PLAYER;
 		buildings = new ArrayList<>();
@@ -130,7 +123,7 @@ public abstract class Player extends Entity {
 		
 		
 		stunnedTimer -= delta;
-		if (stunnedTimer < 0 && !groundPound) {
+		if (stunnedTimer < 0 && !this.isState(States.POUNDING)) {
 			handleInput();
 		}
 		
@@ -142,14 +135,18 @@ public abstract class Player extends Entity {
         	this.moveToContact();
         }
         
-        if (!shipMode) {
+        if (!this.isState(States.FLYING)) {
 	        if (onGround) {
-	        	if (groundPound) {
+	        	if (this.isState(States.POUNDING)) {
 	        		stunnedTimer = 0.5f;
 	        		setYVelocity(4f);
+	        		this.setState(States.STUNNED);
 	        	}
-	        	doubleJumpAvailable = true;
-	        	groundPound = false;
+	        	
+	        	if (!this.isState(States.STUNNED)) {
+		        	doubleJumpAvailable = true;
+		        }
+	        	
 	        }
 	        
 			this.addYVelocity(GRAVITY * delta);
@@ -176,19 +173,17 @@ public abstract class Player extends Entity {
 	private void handleInput() {
 		TextureRegion texture = sprite.getFrame();
 		if (input.getSwitch()) {
-			if (shipMode) {
-				this.sprite = standing;
-				this.setRotation(0);
+			if (this.isState(States.FLYING)) {
+				setState(States.STANDING);
 			} else {
-				this.sprite = ship;
+				setState(States.FLYING);
 				deselectBuilding();
 			}
-			shipMode = !shipMode;
 			solid = !solid;
 			this.setSize(texture.getRegionWidth(), texture.getRegionHeight());
 		}
 
-		if (shipMode) {
+		if (this.isState(States.FLYING)) {
 			handleShipInput();
 		} else {
 			handleFootInput();
@@ -229,7 +224,7 @@ public abstract class Player extends Entity {
 			this.setYVelocity(-20);
 			this.setXVelocity(0);
 			doubleJumpAvailable = false;
-			groundPound = true;
+			this.setState(States.POUNDING);
 		}
 	}
 	
@@ -266,10 +261,18 @@ public abstract class Player extends Entity {
 	
 	private void handleFootInput() {
 		float horizontalSpeed = input.getHorizontal();
+		
 		this.setXVelocity(horizontalSpeed * speed);
 		
 		if (onGround) {
+			if (horizontalSpeed == 0) {
+				this.setState(States.STANDING);
+			} else {
+				this.setState(States.WALKING);
+			}
+			
 			if (input.getJump()) {
+				this.setState(States.JUMPING);
 				this.setYVelocity(13);
 			}
 		} else {
@@ -278,7 +281,7 @@ public abstract class Player extends Entity {
 				doubleJumpAvailable = false;
 			}
 		}
-		
+		boolean facingLeft = getScaleX() < 0;
 		facingLeft = input.getFacing(facingLeft);
 		float scaleX = Math.abs(getScaleX()) * (facingLeft ? -1 : 1);
 		this.setScaleX(scaleX); 
@@ -342,10 +345,10 @@ public abstract class Player extends Entity {
 			return;
 		}
 		
-		float damage = groundPound ? highDamage : lowDamage;
+		float damage = this.isState(States.POUNDING) ? highDamage : lowDamage;
 		enemy.damage(damage, this);
 		this.setYVelocity(13);
-		groundPound = false;
+		this.setState(States.JUMPING);
 	}
 	
 }

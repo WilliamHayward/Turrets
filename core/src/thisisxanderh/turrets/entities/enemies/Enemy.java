@@ -69,7 +69,7 @@ public abstract class Enemy extends Entity {
 			destination += direction;
 			if (destination < 0 || path.get(destination) == null) {
 				direction *= -1;
-				this.setScaleX(direction);
+				this.setScaleX(-getScaleX());
 				destination += direction;
 			}
 		}
@@ -91,7 +91,8 @@ public abstract class Enemy extends Entity {
 		shapeRenderer.begin(ShapeType.Filled);
 		shapeRenderer.setColor(Color.GREEN);
 		shapeRenderer.setProjectionMatrix(this.getStage().getCamera().combined);
-		shapeRenderer.rect(getX(), getY() + getHeight() + 2, getWidth() * (health / maxHealth), 10);
+		shapeRenderer.rect(getX(), getY() + getHeight() * getScaleY() + 2, getWidth() * (health / maxHealth) * getScaleY(), 10);
+		
 		shapeRenderer.end();
 		spriteBatch.begin();
 	}

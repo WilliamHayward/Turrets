@@ -1,5 +1,8 @@
 package thisisxanderh.turrets.entities;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -22,6 +25,9 @@ public abstract class Entity extends Actor {
 	protected float maxHealth;
 	protected boolean onGround;
 	
+	private States state;
+	private Map<States, Sprite> stateSprites = new HashMap<>();
+	
 	protected boolean solid = false;
 	
 	protected LayerList layer = LayerList.DEFAULT;
@@ -36,13 +42,24 @@ public abstract class Entity extends Actor {
 	}
 	
 	public Entity(Sprite sprite) {
-		this.sprite = sprite;
-		this.setHeight(sprite.getHeight());
+		this.addState(States.DEFAULT, sprite);
+		this.setState(States.DEFAULT);
 		this.setWidth(sprite.getWidth());
+		this.setHeight(sprite.getHeight());
 	}
 	
 	public Entity(SpriteList textureID) {
 		this(SpriteCache.loadSprite(textureID));
+	}
+	
+	public void setSprite(Sprite sprite) {
+		sprite.reset();
+		this.sprite = sprite;
+		/*
+		 * TODO: Right now some animations look janky with this for each sprite.
+		 */
+		/*this.setWidth(sprite.getWidth());
+		this.setHeight(sprite.getHeight());*/
 	}
 	
 	public boolean collides() {
@@ -72,8 +89,12 @@ public abstract class Entity extends Actor {
 	public Rectangle getBounds() {
 		float x = this.getX();
 		float y = this.getY();
-		float width = this.getWidth();
-		float height = this.getHeight();
+		float width = this.getWidth() * this.getScaleX();
+		float height = this.getHeight() * this.getScaleY();
+		
+		width = Math.abs(width);
+		height = Math.abs(height);
+
 		Rectangle rectangle = new Rectangle(x, y, width, height);
 		return rectangle;
 	}
@@ -220,5 +241,32 @@ public abstract class Entity extends Actor {
 	
 	public void die(Entity cause) {
 		die();
+	}
+
+	public States getState() {
+		return state;
+	}
+
+	public void setState(States state) {
+		if (this.isState(state)) {
+			return;
+		}
+		this.state = state;
+		Sprite sprite = stateSprites.get(state);
+		if (sprite != null) {
+			this.setSprite(sprite);
+		}
+	}
+	
+	public void addState(States state, Sprite sprite) {
+		stateSprites.put(state, sprite);
+	}
+	
+	public boolean isState(States state) {
+		return this.state == state;
+	}
+
+	public Sprite getSprite() {
+		return sprite;
 	}
 }
