@@ -3,11 +3,6 @@ package thisisxanderh.turrets.entities.enemies;
 
 import java.util.List;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 
 import thisisxanderh.turrets.core.commands.Commander;
@@ -87,20 +82,6 @@ public abstract class Enemy extends Entity {
 			}
 		}
 		effects = new TrapEffect();
-	}
-	
-	@Override
-	public void draw(Batch batch, float alpha) {
-		SpriteBatch spriteBatch = (SpriteBatch) batch;
-		super.draw(batch, alpha);
-		spriteBatch.end();
-		ShapeRenderer shapeRenderer = new ShapeRenderer();
-		shapeRenderer.begin(ShapeType.Filled);
-		shapeRenderer.setColor(Color.GREEN);
-		shapeRenderer.setProjectionMatrix(this.getStage().getCamera().combined);
-		shapeRenderer.rect(getX(), getY() + getHeight() * getScaleY() + 2, getWidth() * (health / maxHealth) * getScaleY(), 10);	
-		shapeRenderer.end();
-		spriteBatch.begin();
 	}
 	
 	@Override
