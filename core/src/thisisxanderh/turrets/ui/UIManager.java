@@ -12,10 +12,11 @@ public class UIManager extends Stage {
 	private Player player;
 	private Skin skin;
 	private BuildUI build;
-	private PlayUI play;
+	private SiegeUI siege;
 	private PauseUI pause;
 	private ToastUI toast;
 	private ConsoleUI console;
+	private PlayUI play;
 	
 	private boolean consoleEnabled = false;
 	
@@ -25,15 +26,21 @@ public class UIManager extends Stage {
 		super();
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
         build = new BuildUI(player, skin);
-        play = new PlayUI(player, skin);
+        siege = new SiegeUI(player, skin);
         toast = new ToastUI(skin);
         this.addActor(toast);
         pause = new PauseUI(player, skin);
         
         console = new ConsoleUI(player, skin);
+        
+        play = new PlayUI(player, skin);
+        this.addActor(play);
+        
         active = build;
-        this.addActor(active);
+        this.addActor(active); 
 		this.player = player;
+		
+		
 		
         Gdx.input.setInputProcessor(this);
 	}
@@ -85,15 +92,15 @@ public class UIManager extends Stage {
 		setMode(build);
 	}
 	
-	public void setPlay() {
-		setMode(play);
+	public void setSiege() {
+		setMode(siege);
 	}
 	
 	public void toggleMode() {
-		if (active instanceof PlayUI) {
+		if (active instanceof SiegeUI) {
 			setMode(build);
 		} else {
-			setMode(play);
+			setMode(siege);
 		}
 	}
 	
@@ -112,6 +119,7 @@ public class UIManager extends Stage {
 		if (paused) {
 			pause.act(delta);
 		} else {
+			play.act(delta);
 			toast.act(delta);
 			if (consoleEnabled) {
 				console.act(delta);

@@ -11,6 +11,7 @@ public class GiantSpider extends Enemy {
 		maxHealth = 4;
 		health = maxHealth;
 		speed = 10f;
+		bounty = 10;
 	}
 
 }

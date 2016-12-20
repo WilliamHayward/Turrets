@@ -47,6 +47,8 @@ public abstract class Player extends Entity {
 	protected float lowDamage;
 	protected float speed;
 	
+	private int money = 0;
+	
 	protected PlayerTypes type = PlayerTypes.HERO;
 	
 	private OrthographicCamera camera;
@@ -306,16 +308,16 @@ public abstract class Player extends Entity {
 		BuildingList buildingID = buildings.get(newBuilding);
 		switch (buildingID) {
 			case CANNON:
-				building = new Cannon();
+				building = new Cannon(this);
 				break;
 			case GLUE:
-				building = new Glue();
+				building = new Glue(this);
 				break;
 			case MACHINE_GUN:
-				building = new MachineGun();
+				building = new MachineGun(this);
 				break;
 			case SPIKES:
-				building = new Spikes();
+				building = new Spikes(this);
 				break;
 			default:
 				break;
@@ -346,9 +348,27 @@ public abstract class Player extends Entity {
 		}
 		
 		float damage = this.isState(States.POUNDING) ? highDamage : lowDamage;
-		enemy.damage(damage, this);
+		if (enemy.damage(damage, this)) {
+			addMoney(enemy.getBounty());
+		}
 		this.setYVelocity(13);
 		this.setState(States.JUMPING);
 	}
 	
+	
+	public void addMoney(int amount) {
+		changeMoney(amount);
+	}
+	
+	public void takeMoney(int amount) {
+		changeMoney(-amount);
+	}
+	
+	public void changeMoney(int amount) {
+		money += amount;
+	}
+	
+	public int getMoney() {
+		return money;
+	}
 }

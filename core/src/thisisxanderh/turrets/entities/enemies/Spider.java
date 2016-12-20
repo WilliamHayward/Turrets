@@ -11,5 +11,6 @@ public class Spider extends Enemy {
 		maxHealth = 1;
 		health = maxHealth;
 		speed = 15f;
+		bounty = 5;
 	}
 }

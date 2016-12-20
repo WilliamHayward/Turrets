@@ -9,8 +9,12 @@ import thisisxanderh.turrets.graphics.SpriteList;
 public abstract class Bullet extends Entity {
 	protected float speed;
 	protected float damage;
-	public Bullet(SpriteList textureID) {
+	
+	private Turret parent;
+	
+	public Bullet(Turret parent, SpriteList textureID) {
 		super(textureID);
+		this.parent = parent;
 		layer = LayerList.BULLET;
 		solid = true;
 	}
@@ -33,7 +37,6 @@ public abstract class Bullet extends Entity {
 		GameStage stage = (GameStage) this.getStage();
 		if (stage.getTerrain().overlaps(this.getBounds())) {
 			hitGround();
-			
 		}
 		super.act(delta);
 	}
@@ -41,7 +44,9 @@ public abstract class Bullet extends Entity {
 	@Override
 	public void collided(Entity other) {
 		if (other instanceof Enemy) {
-			other.damage(damage);
+			if (other.damage(damage)) {
+				parent.addMoney(((Enemy) other).getBounty());
+			}
 			this.remove();
 		}
 	}

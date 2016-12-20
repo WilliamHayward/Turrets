@@ -10,6 +10,7 @@ import thisisxanderh.turrets.core.GameStage;
 import thisisxanderh.turrets.entities.Entity;
 import thisisxanderh.turrets.entities.buildings.Building;
 import thisisxanderh.turrets.entities.enemies.Enemy;
+import thisisxanderh.turrets.entities.players.Player;
 import thisisxanderh.turrets.graphics.Sprite;
 import thisisxanderh.turrets.graphics.SpriteList;
 
@@ -22,8 +23,8 @@ public abstract class Turret extends Building {
 	
 	protected Bullet bullet;
 	
-	public Turret(SpriteList textureID) {
-		super(textureID);
+	public Turret(Player owner, SpriteList textureID) {
+		super(owner, textureID);
 	}
 	
 	@Override
@@ -35,7 +36,7 @@ public abstract class Turret extends Building {
 		Color original = spriteBatch.getColor();
 		
 		if (!built) {
-			if (this.validPosition()) {
+			if (this.canBuild) {
 				spriteBatch.setColor(Color.GREEN);
 			} else {
 				spriteBatch.setColor(Color.RED);
@@ -138,8 +139,12 @@ public abstract class Turret extends Building {
 	
 	
 	@Override
-	protected boolean validPosition() {
+	protected boolean canBuild() {
 		GameStage stage = (GameStage) this.getStage();
-		return super.validPosition(stage.getBuildTurret());
+		return super.canBuild(stage.getBuildTurret());
+	}
+
+	public void addMoney(int amount) {
+		getOwner().addMoney(amount);
 	}
 }

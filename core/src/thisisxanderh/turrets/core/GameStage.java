@@ -208,7 +208,7 @@ public class GameStage extends Stage {
 	public void act(float delta) {
 		super.act(delta);
 		
-		if (!controller.isBuildMode() && controller.endPlay()) {
+		if (!controller.isBuildMode() && controller.siegeEnded()) {
 			controller.startBuild();
 		}
 		

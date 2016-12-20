@@ -12,9 +12,9 @@ import com.badlogic.gdx.math.Vector2;
 
 import thisisxanderh.turrets.core.commands.Commander;
 import thisisxanderh.turrets.entities.Entity;
-import thisisxanderh.turrets.entities.buildings.traps.EmptyEffect;
 import thisisxanderh.turrets.entities.buildings.traps.Trap;
 import thisisxanderh.turrets.entities.buildings.traps.TrapEffect;
+import thisisxanderh.turrets.entities.players.Player;
 import thisisxanderh.turrets.graphics.LayerList;
 import thisisxanderh.turrets.graphics.SpriteList;
 import thisisxanderh.turrets.terrain.Tile;
@@ -25,7 +25,10 @@ public abstract class Enemy extends Entity {
 	protected int direction = 1; // 1 for moving forward, -1 for moving back
 	protected float speed;
 	protected Commander parent;
-	protected TrapEffect effects = new EmptyEffect();
+	protected TrapEffect effects = new TrapEffect();
+	
+	protected int bounty = 0;
+	
 	public Enemy(SpriteList textureID, Commander parent) {
 		super(textureID);
 		this.setX(0);
@@ -78,8 +81,12 @@ public abstract class Enemy extends Entity {
 		
 		
 		super.act(delta);
-		this.damage(effects.getDPS() * delta);
-		effects = new EmptyEffect();
+		if (this.damage(effects.getDPS() * delta)) {
+			for (Player player: effects.getOwners()) {
+				player.addMoney(getBounty());
+			}
+		}
+		effects = new TrapEffect();
 	}
 	
 	@Override
@@ -109,5 +116,9 @@ public abstract class Enemy extends Entity {
 			Trap trap = (Trap) other;
 			effects.combine(trap.getEffect());
 		}
+	}
+
+	public int getBounty() {
+		return bounty;
 	}
 }

@@ -30,6 +30,8 @@ public class GameController {
 		game.setMap(map);
 		
 		player = new Hero();
+		player.addMoney(50);
+		
 		game.addActor(player);
 		
 		
@@ -62,7 +64,7 @@ public class GameController {
 		if (buildMode) {
 			buildTimer -= delta;
 			if (buildTimer <= 0) {
-				this.startPlay();
+				this.startSiege();
 			}
 		}
 		game.act(delta);
@@ -108,12 +110,12 @@ public class GameController {
 		paused = false;
 	}
 	
-	public void startPlay() {
+	public void startSiege() {
 		buildMode = false;
 		for (Spawner spawner: game.getActors(Spawner.class)) {
 			spawner.nextCommand();
 		}
-		player.getUI().setPlay();
+		player.getUI().setSiege();
 	}
 	
 	public void startBuild() {
@@ -122,7 +124,7 @@ public class GameController {
 		player.getUI().setBuild();
 	}
 	
-	public boolean endPlay() {
+	public boolean siegeEnded() {
 		for (Spawner spawner: game.getActors(Spawner.class)) {
 			if (!spawner.isBuild()) {
 				return false;

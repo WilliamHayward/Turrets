@@ -9,6 +9,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import thisisxanderh.turrets.core.GameStage;
+import thisisxanderh.turrets.entities.buildings.traps.Glue;
+import thisisxanderh.turrets.entities.buildings.traps.Spikes;
+import thisisxanderh.turrets.entities.buildings.turrets.Cannon;
+import thisisxanderh.turrets.entities.buildings.turrets.MachineGun;
 import thisisxanderh.turrets.entities.players.Player;
 
 public class BuildUI extends UserInterface {
@@ -23,6 +27,8 @@ public class BuildUI extends UserInterface {
 		TextButton button = new TextButton("Machine Gun", skin, "default");
         button.setWidth(BUTTON_SIZE);
         button.setHeight(BUTTON_SIZE);
+        
+        button.setText(button.getText() + "\n" + new MachineGun(null).getCost());
         
         float xPosition = 0;
         
@@ -41,6 +47,8 @@ public class BuildUI extends UserInterface {
         button.setWidth(BUTTON_SIZE);
         button.setHeight(BUTTON_SIZE);
         
+        button.setText(button.getText() + "\n" + new Cannon(null).getCost());
+        
         xPosition += BUTTON_SIZE + PADDING;
         
         button.setPosition(xPosition, 0);
@@ -58,6 +66,8 @@ public class BuildUI extends UserInterface {
         button.setWidth(BUTTON_SIZE);
         button.setHeight(BUTTON_SIZE);
         
+        button.setText(button.getText() + "\n" + new Glue(null).getCost());
+        
         xPosition += BUTTON_SIZE + PADDING;
         
         button.setPosition(xPosition, 0);
@@ -74,6 +84,8 @@ public class BuildUI extends UserInterface {
         button = new TextButton("Spikes", skin, "default");
         button.setWidth(BUTTON_SIZE);
         button.setHeight(BUTTON_SIZE);
+
+        button.setText(button.getText() + "\n" + new Spikes(null).getCost());
         
         xPosition += BUTTON_SIZE + PADDING;
         
@@ -103,7 +115,7 @@ public class BuildUI extends UserInterface {
             @Override 
             public void clicked(InputEvent event, float x, float y) {
             	GameStage stage = (GameStage) player.getStage();
-            	stage.getController().startPlay();
+            	stage.getController().startSiege();
             }
         });
         

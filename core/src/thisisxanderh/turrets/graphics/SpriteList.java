@@ -37,4 +37,8 @@ public enum SpriteList {
 	
 	GLUE,
 	SPIKES,
+	
+	COIN_HIGH,
+	COIN_MID,
+	COIN_LOW,
 }

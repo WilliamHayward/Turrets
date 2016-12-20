@@ -2,12 +2,12 @@ package thisisxanderh.turrets.entities.buildings;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import thisisxanderh.turrets.core.GameStage;
 import thisisxanderh.turrets.entities.Entity;
+import thisisxanderh.turrets.entities.players.Player;
 import thisisxanderh.turrets.graphics.LayerList;
 import thisisxanderh.turrets.graphics.SpriteList;
 import thisisxanderh.turrets.terrain.Terrain;
@@ -15,17 +15,29 @@ import thisisxanderh.turrets.terrain.Tile;
 
 public abstract class Building extends Entity {
 	protected boolean built = false;
-	private boolean validPosition = false;
+	protected boolean canBuild = false;
 	protected String name;
 	private Vector2 prevPosition = new Vector2(0,0);
-	public Building(SpriteList texture) {
+	
+	protected int cost;
+	
+	private Player owner;
+	
+	public Building(Player owner, SpriteList texture) {
 		super(texture);
+		
+		this.owner = owner;
+	}
+	
+	public int getCost() {
+		return cost;
 	}
 	
 	public boolean build() {
-		if (!validPosition) {
+		if (owner.getMoney() < getCost() || !canBuild) {
 			return false;
 		}
+		owner.takeMoney(getCost());
 		solid = true;
 		built = true;
 		layer = LayerList.BUILDING;
@@ -34,20 +46,24 @@ public abstract class Building extends Entity {
 
 	@Override
 	public void draw(Batch batch, float alpha) {
-
-		SpriteBatch spriteBatch = (SpriteBatch) batch;
-		Color original = spriteBatch.getColor();
-		
+		Color color = batch.getColor();
 		if (!built) {
-			if (validPosition) {
-				spriteBatch.setColor(Color.GREEN);
+			if (canBuild) {
+				color = Color.GREEN;
 			} else {
-				spriteBatch.setColor(Color.RED);
+				color = Color.RED;
 			}
-
 		}
-		super.draw(spriteBatch, alpha);
-		spriteBatch.setColor(original);
+		
+		draw(batch, alpha, color);
+		
+	}
+	
+	public void draw(Batch batch, float alpha, Color tint) {
+		Color original = batch.getColor();
+		batch.setColor(tint);
+		super.draw(batch, alpha);
+		batch.setColor(original);
 	}
 	
 	
@@ -57,7 +73,7 @@ public abstract class Building extends Entity {
 		if (!built) {
 			// Only check if valid position when conditions change (Collision checks are a bit costly)
 			if (prevPosition.x != getX() || prevPosition.y != getY()) {
-				validPosition = validPosition();
+				canBuild = canBuild();
 			}
 		} else {
 			
@@ -65,9 +81,17 @@ public abstract class Building extends Entity {
 		prevPosition.set(getX(), getY());
 	}
 	
-	protected abstract boolean validPosition();
+	public Player getOwner() {
+		return owner;
+	}
 	
-	protected boolean validPosition(Terrain terrain) {		
+	protected abstract boolean canBuild();
+	
+	protected boolean canBuild(Terrain terrain) {	
+		if (owner.getMoney() < getCost()) {
+			return false;
+		}
+		
 		GameStage stage = (GameStage) this.getStage();
 		
 		// Don't place it in the ground

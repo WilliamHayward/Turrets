@@ -5,8 +5,8 @@ import thisisxanderh.turrets.terrain.Tile;
 
 public class BigBullet extends Bullet {
 
-	public BigBullet() {
-		super(SpriteList.PLACEHOLDER);
+	public BigBullet(Turret parent) {
+		super(parent, SpriteList.PLACEHOLDER);
 		speed = 5f;
 		damage = 5f;
 		this.setSize(Tile.SIZE, Tile.SIZE);
