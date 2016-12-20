@@ -23,6 +23,7 @@ import thisisxanderh.turrets.entities.buildings.turrets.Cannon;
 import thisisxanderh.turrets.entities.buildings.turrets.MachineGun;
 import thisisxanderh.turrets.entities.buildings.turrets.Turret;
 import thisisxanderh.turrets.entities.enemies.Enemy;
+import thisisxanderh.turrets.entities.enemies.Snail;
 import thisisxanderh.turrets.graphics.LayerList;
 import thisisxanderh.turrets.graphics.SpriteCache;
 import thisisxanderh.turrets.graphics.SpriteList;
@@ -338,22 +339,36 @@ public abstract class Player extends Entity {
 	}
 	
 	private void collideEnemy(Enemy enemy) {
-		Rectangle bounds = getBounds();
-		if (this.getYVelocity() > 0) {
-			return;
-		}
-		Rectangle other = enemy.getBounds();
-		
-		if (bounds.getY() - this.getYVelocity() <= other.y + other.height) {
+		if (!this.bopped(enemy)) {
 			return;
 		}
 		
 		float damage = this.isState(States.POUNDING) ? highDamage : lowDamage;
+
+		if (enemy instanceof Snail) {
+			damage = 0;
+		}
+		
 		if (enemy.damage(damage, this)) {
 			addMoney(enemy.getBounty());
 		}
+		
 		this.setYVelocity(13);
 		this.setState(States.JUMPING);
+	}
+	
+	public boolean bopped(Enemy enemy) {
+		if (this.getYVelocity() > 0 || this.isState(States.STUNNED)) {
+			return false;
+		}
+		Rectangle bounds = this.getBounds();
+		Rectangle other = enemy.getBounds();
+		
+		if (bounds.getY() - this.getYVelocity() <= other.y + other.height) {
+			return false;
+		}
+
+		return true;
 	}
 	
 	

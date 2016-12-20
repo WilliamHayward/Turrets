@@ -1,6 +1,7 @@
 package thisisxanderh.turrets.entities.enemies;
 
 import thisisxanderh.turrets.core.commands.Commander;
+import thisisxanderh.turrets.entities.Modifiers;
 import thisisxanderh.turrets.graphics.SpriteList;
 
 public class Fly extends Enemy {
@@ -8,7 +9,7 @@ public class Fly extends Enemy {
 	
 	public Fly(Commander parent) {
 		super(SpriteList.FLY, parent);
-		this.applyModifier(EnemyModifiers.GIANT);
+		this.applyModifier(Modifiers.GIANT);
 		maxHealth = 1;
 		health = maxHealth;
 		speed = 15f;

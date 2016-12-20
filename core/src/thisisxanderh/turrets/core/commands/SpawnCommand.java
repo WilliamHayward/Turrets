@@ -2,9 +2,9 @@ package thisisxanderh.turrets.core.commands;
 
 import java.util.List;
 
+import thisisxanderh.turrets.entities.Modifiers;
 import thisisxanderh.turrets.entities.enemies.Enemy;
 import thisisxanderh.turrets.entities.enemies.EnemyList;
-import thisisxanderh.turrets.entities.enemies.EnemyModifiers;
 import thisisxanderh.turrets.entities.enemies.Fly;
 import thisisxanderh.turrets.entities.enemies.Slime;
 import thisisxanderh.turrets.entities.enemies.Snail;
@@ -58,7 +58,7 @@ public class SpawnCommand extends Command {
 			}
 			
 			for (int i = 1; i < childInfo.length; i++) {
-				EnemyModifiers modification = EnemyModifiers.valueOf(childInfo[i]);
+				Modifiers modification = Modifiers.valueOf(childInfo[i]);
 				child.applyModifier(modification);
 			}
 			

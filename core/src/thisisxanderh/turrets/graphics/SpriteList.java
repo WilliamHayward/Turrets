@@ -44,4 +44,6 @@ public enum SpriteList {
 	COIN_HIGH,
 	COIN_MID,
 	COIN_LOW,
+	
+	SNAIL_HIDING,
 }

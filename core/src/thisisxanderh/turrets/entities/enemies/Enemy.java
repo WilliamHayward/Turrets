@@ -120,20 +120,4 @@ public abstract class Enemy extends Entity {
 	public int getBounty() {
 		return bounty;
 	}
-	
-	public void applyModifier(EnemyModifiers modifier) {
-		switch (modifier) {
-			case GIANT:
-				float x = this.getScaleX() * 2f;
-				this.setScaleX(x);
-				float y = this.getScaleY() * 2f;
-				this.setScaleY(y);
-				// TODO: SLow down animation perhaps?
-				// TODO: Double/increase health?
-				break;
-			default:
-				break;
-			
-		}
-	}
 }

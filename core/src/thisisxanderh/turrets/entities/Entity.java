@@ -44,12 +44,16 @@ public abstract class Entity extends Actor {
 	public Entity(Sprite sprite) {
 		this.addState(States.DEFAULT, sprite);
 		this.setState(States.DEFAULT);
-		this.setWidth(sprite.getWidth());
-		this.setHeight(sprite.getHeight());
+		resize();
 	}
 	
 	public Entity(SpriteList textureID) {
 		this(SpriteCache.loadSprite(textureID));
+	}
+	
+	protected void resize() {
+		this.setWidth(sprite.getWidth());
+		this.setHeight(sprite.getHeight());
 	}
 	
 	public void setSprite(Sprite sprite) {
@@ -262,11 +266,32 @@ public abstract class Entity extends Actor {
 		stateSprites.put(state, sprite);
 	}
 	
+	public void addState(States state, SpriteList sprite) {
+		addState(state, SpriteCache.loadSprite(sprite));
+	}
+	
 	public boolean isState(States state) {
 		return this.state == state;
 	}
 
 	public Sprite getSprite() {
 		return sprite;
+	}
+
+	
+	public void applyModifier(Modifiers modifier) {
+		switch (modifier) {
+			case GIANT:
+				float x = this.getScaleX() * 2f;
+				this.setScaleX(x);
+				float y = this.getScaleY() * 2f;
+				this.setScaleY(y);
+				// TODO: SLow down animation perhaps?
+				// TODO: Double/increase health?
+				break;
+			default:
+				break;
+			
+		}
 	}
 }
