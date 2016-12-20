@@ -107,7 +107,7 @@ public class BuildUI extends UserInterface {
             }
         });
         
-        //this.addActor(button);
+        this.addActor(button);
         timer = new Label("", skin);
         timer.setSize(50, 50);
         timer.setPosition(Gdx.graphics.getWidth() - timer.getWidth() - 5,

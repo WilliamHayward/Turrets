@@ -1,19 +1,20 @@
 package thisisxanderh.turrets.entities.buildings.turrets;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import thisisxanderh.turrets.core.GameStage;
 import thisisxanderh.turrets.entities.Entity;
 import thisisxanderh.turrets.entities.buildings.Building;
 import thisisxanderh.turrets.entities.enemies.Enemy;
+import thisisxanderh.turrets.graphics.Sprite;
 import thisisxanderh.turrets.graphics.SpriteList;
 
 public abstract class Turret extends Building {
-	protected Texture barrel;
+	protected Sprite barrel;
 	private float angle = -90;
 	
 	protected float cooldown;
@@ -29,10 +30,7 @@ public abstract class Turret extends Building {
 	public void draw(Batch batch, float alpha) {
 		SpriteBatch spriteBatch = (SpriteBatch) batch;
 		
-		float width = barrel.getWidth();
-		float height = barrel.getHeight();
 		
-		float y = getY() + getHeight() - barrel.getHeight() / 5;
 		
 		Color original = spriteBatch.getColor();
 		
@@ -45,10 +43,15 @@ public abstract class Turret extends Building {
 
 		}
 		
-		spriteBatch.draw(barrel, getX() + getWidth() / 2f - width / 2f, y,
-				width / 2f, 0, width, height, 1, 1, angle - 90, 0, 0, 
-				(int) width, (int) height, false, false);
-
+		TextureRegion barrel = this.barrel.getFrame();
+		
+		float width = barrel.getRegionWidth();
+		float height = barrel.getRegionHeight();
+		
+		float y = getY() + getHeight() - height / 2f;
+		float x = getX() + getWidth() / 2f - width / 2f;
+		spriteBatch.draw(barrel, x, y, width / 2f, 0, 
+				width, height, getScaleX(), getScaleY(), angle - 90);
 		spriteBatch.setColor(original);
 		super.draw(batch, alpha);
 	}
@@ -62,7 +65,9 @@ public abstract class Turret extends Building {
 		}
 		Enemy target = getNearest();
 		if (target != null) {
-			float newAngle = getAngle(target.getX(), target.getY()); 
+			Vector2 position = target.getCentre();
+			position.add(target.getVelocity());
+			float newAngle = getAngle(position.x, position.y); 
 			if (newAngle - 180 > 45 && newAngle - 180 < 135) {
 				angle = newAngle;
 			} else {
@@ -115,7 +120,13 @@ public abstract class Turret extends Building {
 	}
 	
 	private float getAngle(Vector2 target) {
-	    float angle = (float) Math.toDegrees(Math.atan2(target.y - getY(), target.x - getX()));
+		TextureRegion barrel = this.barrel.getFrame();
+		float width = barrel.getRegionWidth();
+		float height = barrel.getRegionHeight();
+		
+		float y = getY() + getHeight() - height / 2f;
+		float x = getX() + getWidth() / 2f + width / 2f;
+	    float angle = (float) Math.toDegrees(Math.atan2(target.y - y, target.x - x));
 
 	    if(angle < 0){
 	        angle += 360;

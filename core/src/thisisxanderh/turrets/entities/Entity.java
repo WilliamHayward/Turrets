@@ -1,8 +1,8 @@
 package thisisxanderh.turrets.entities;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -10,13 +10,14 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import thisisxanderh.turrets.core.GameStage;
 import thisisxanderh.turrets.graphics.LayerList;
+import thisisxanderh.turrets.graphics.Sprite;
 import thisisxanderh.turrets.graphics.SpriteCache;
 import thisisxanderh.turrets.graphics.SpriteList;
 import thisisxanderh.turrets.terrain.Tile;
 
 public abstract class Entity extends Actor {
 	protected Vector2 velocity = new Vector2(0, 0);
-	protected Texture texture = SpriteCache.loadSprite(SpriteList.PLACEHOLDER);
+	protected Sprite sprite = SpriteCache.loadSprite(SpriteList.PLACEHOLDER);
 	protected float health;
 	protected float maxHealth;
 	protected boolean onGround;
@@ -27,15 +28,17 @@ public abstract class Entity extends Actor {
 	
 	public static final float MAX_SPEED = Tile.SIZE;
 	
+	private float lifetime = 0;
+	
 	public Entity() {
 		this.setWidth(Tile.SIZE);
 		this.setHeight(Tile.SIZE);
 	}
 	
-	public Entity(Texture texture) {
-		this.texture = texture;
-		this.setHeight(texture.getHeight());
-		this.setWidth(texture.getWidth());
+	public Entity(Sprite sprite) {
+		this.sprite = sprite;
+		this.setHeight(sprite.getHeight());
+		this.setWidth(sprite.getWidth());
 	}
 	
 	public Entity(SpriteList textureID) {
@@ -49,8 +52,17 @@ public abstract class Entity extends Actor {
 	@Override
 	public void draw(Batch batch, float alpha) {
 		SpriteBatch spriteBatch = (SpriteBatch) batch;
-		spriteBatch.draw(texture, getX(), getY(), 0, 0, getWidth(), getHeight(),
-				1, 1, getRotation(), 0, 0, texture.getWidth(), texture.getHeight(), false, false);
+		TextureRegion texture = sprite.getFrame();
+		
+		float x = getX();
+		float y = getY();
+		
+		if (getScaleX() < 0) {
+			x += -getScaleX() * getWidth();
+		}
+		
+		spriteBatch.draw(texture, x, y, getOriginX(), getOriginY(), 
+				getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
 	}
 	
 	public LayerList getLayer() {
@@ -102,11 +114,20 @@ public abstract class Entity extends Actor {
 		return velocity.y;
 	}
 	
+	public Vector2 getCentre() {
+		return new Vector2(getX(), getY());
+	}
+	
 	@Override
 	public void act(float delta) {
+		lifetime += delta;
 		float xVelocityStep = MathUtils.clamp(velocity.x * delta, -MAX_SPEED, MAX_SPEED * delta);
 		float yVelocityStep = MathUtils.clamp(velocity.y * delta, -MAX_SPEED * delta, MAX_SPEED * delta);
 		this.setPosition(getX() + xVelocityStep / delta, getY() + yVelocityStep / delta);
+	}
+	
+	public float getLifetime() {
+		return lifetime;
 	}
 	
 	/**

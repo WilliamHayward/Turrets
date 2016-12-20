@@ -1,9 +1,9 @@
 package thisisxanderh.turrets.terrain;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Rectangle;
 
+import thisisxanderh.turrets.graphics.Sprite;
 import thisisxanderh.turrets.graphics.SpriteCache;
 import thisisxanderh.turrets.graphics.SpriteList;
 
@@ -11,7 +11,7 @@ public class Tile extends Rectangle {
 	/**
 	 * 
 	 */
-	Texture texture = SpriteCache.loadSprite(SpriteList.PLACEHOLDER);
+	Sprite sprite = SpriteCache.loadSprite(SpriteList.PLACEHOLDER);
 	private static final long serialVersionUID = -561878273190361184L;
 	public static final int SIZE = 128; // Width and height (in pixels) of all tiles 
 	
@@ -28,7 +28,7 @@ public class Tile extends Rectangle {
 	}
 
 	public void draw(Batch batch, float alpha) {
-		batch.draw(texture, x, y, width, height);
+		batch.draw(sprite.getFrame(), x, y, width, height);
 	}
 	
 	public void growRight() {

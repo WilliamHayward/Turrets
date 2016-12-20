@@ -1,5 +1,6 @@
 package thisisxanderh.turrets.core.commands;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import thisisxanderh.turrets.core.GameController;
@@ -21,7 +22,7 @@ public class DisplayCommand extends Command {
 		GameStage stage = (GameStage) spawner.getStage();
 		GameController controller = stage.getController();
 		controller.toast(message, 3);
-		System.out.println(message);
+		Gdx.app.debug("Display", message);
 		finish();
 	}
 

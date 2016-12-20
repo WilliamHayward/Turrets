@@ -69,6 +69,7 @@ public abstract class Enemy extends Entity {
 			destination += direction;
 			if (destination < 0 || path.get(destination) == null) {
 				direction *= -1;
+				this.setScaleX(direction);
 				destination += direction;
 			}
 		}
@@ -84,9 +85,7 @@ public abstract class Enemy extends Entity {
 	@Override
 	public void draw(Batch batch, float alpha) {
 		SpriteBatch spriteBatch = (SpriteBatch) batch;
-		spriteBatch.draw(texture, getX(), getY(), 0, 0, getWidth(), getHeight(),
-				1, 1, getRotation(), 0, 0, texture.getWidth(), texture.getHeight(), direction == -1, false);
-
+		super.draw(batch, alpha);
 		spriteBatch.end();
 		ShapeRenderer shapeRenderer = new ShapeRenderer();
 		shapeRenderer.begin(ShapeType.Filled);

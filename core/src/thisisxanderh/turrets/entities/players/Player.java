@@ -6,9 +6,8 @@ import java.util.List;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -25,6 +24,7 @@ import thisisxanderh.turrets.entities.buildings.turrets.MachineGun;
 import thisisxanderh.turrets.entities.buildings.turrets.Turret;
 import thisisxanderh.turrets.entities.enemies.Enemy;
 import thisisxanderh.turrets.graphics.LayerList;
+import thisisxanderh.turrets.graphics.Sprite;
 import thisisxanderh.turrets.graphics.SpriteCache;
 import thisisxanderh.turrets.graphics.SpriteList;
 import thisisxanderh.turrets.input.InputManager;
@@ -51,8 +51,8 @@ public abstract class Player extends Entity {
 	protected float lowDamage;
 	protected float speed;
 	
-	protected Texture standing;
-	protected Texture ship;
+	protected Sprite standing;
+	protected Sprite ship;
 	
 	protected PlayerTypes type = PlayerTypes.HERO;
 	
@@ -95,9 +95,7 @@ public abstract class Player extends Entity {
 	
 	@Override
 	public void draw(Batch batch, float alpha) {
-		SpriteBatch spriteBatch = (SpriteBatch) batch;
-		spriteBatch.draw(texture, getX(), getY(), 0, 0, getWidth(), getHeight(),
-				1, 1, getRotation(), 0, 0, texture.getWidth(), texture.getHeight(), facingLeft, false);
+		super.draw(batch, alpha);
 		batch.end();
 		ui.draw();
 		batch.begin();
@@ -176,17 +174,18 @@ public abstract class Player extends Entity {
 	}
 	
 	private void handleInput() {
+		TextureRegion texture = sprite.getFrame();
 		if (input.getSwitch()) {
 			if (shipMode) {
-				this.texture = standing;
+				this.sprite = standing;
 				this.setRotation(0);
 			} else {
-				this.texture = ship;
+				this.sprite = ship;
 				deselectBuilding();
 			}
 			shipMode = !shipMode;
 			solid = !solid;
-			this.setSize(texture.getWidth(), texture.getHeight());
+			this.setSize(texture.getRegionWidth(), texture.getRegionHeight());
 		}
 
 		if (shipMode) {
@@ -281,6 +280,8 @@ public abstract class Player extends Entity {
 		}
 		
 		facingLeft = input.getFacing(facingLeft);
+		float scaleX = Math.abs(getScaleX()) * (facingLeft ? -1 : 1);
+		this.setScaleX(scaleX); 
 	}
 	
 	private void deselectBuilding() {

@@ -2,6 +2,8 @@ package thisisxanderh.turrets.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker;
+
 import thisisxanderh.turrets.Turrets;
 
 public class DesktopLauncher {
@@ -10,6 +12,7 @@ public class DesktopLauncher {
 		config.width = 720;
 		config.height = 480;
 		config.title = "Turrets";
+		TexturePacker.process("sprites", "packed", "sprites.atlas");
 		new LwjglApplication(new Turrets(), config);
 	}
 }

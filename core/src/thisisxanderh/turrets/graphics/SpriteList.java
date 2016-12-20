@@ -1,5 +1,11 @@
 package thisisxanderh.turrets.graphics;
 
+/**
+ * This is a list of sprites used in the game.
+ * 
+ * NOTE: It's very important that the enum matches the file name (sans extension), except the file
+ * will always be lowercase and these will always be uppercase.
+ */
 public enum SpriteList {
 	PLACEHOLDER,
 	
