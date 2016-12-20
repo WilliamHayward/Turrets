@@ -342,8 +342,9 @@ public abstract class Player extends Entity {
 		if (this.getYVelocity() > 0) {
 			return;
 		}
+		Rectangle other = enemy.getBounds();
 		
-		if (bounds.getY() - this.getYVelocity() <= enemy.getY() + enemy.getHeight()) {
+		if (bounds.getY() - this.getYVelocity() <= other.y + other.height) {
 			return;
 		}
 		

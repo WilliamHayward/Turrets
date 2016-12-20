@@ -28,6 +28,9 @@ public enum SpriteList {
 	SOLDIER_SHIP,
 	
 	SPIDER, 
+	SLIME,
+	SNAIL,
+	FLY,
 	
 	BASE_MACHINE_GUN, 
 	BARREL_MACHINE_GUN,

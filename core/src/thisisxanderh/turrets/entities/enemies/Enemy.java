@@ -98,8 +98,7 @@ public abstract class Enemy extends Entity {
 		shapeRenderer.begin(ShapeType.Filled);
 		shapeRenderer.setColor(Color.GREEN);
 		shapeRenderer.setProjectionMatrix(this.getStage().getCamera().combined);
-		shapeRenderer.rect(getX(), getY() + getHeight() * getScaleY() + 2, getWidth() * (health / maxHealth) * getScaleY(), 10);
-		
+		shapeRenderer.rect(getX(), getY() + getHeight() * getScaleY() + 2, getWidth() * (health / maxHealth) * getScaleY(), 10);	
 		shapeRenderer.end();
 		spriteBatch.begin();
 	}
@@ -120,5 +119,21 @@ public abstract class Enemy extends Entity {
 
 	public int getBounty() {
 		return bounty;
+	}
+	
+	public void applyModifier(EnemyModifiers modifier) {
+		switch (modifier) {
+			case GIANT:
+				float x = this.getScaleX() * 2f;
+				this.setScaleX(x);
+				float y = this.getScaleY() * 2f;
+				this.setScaleY(y);
+				// TODO: SLow down animation perhaps?
+				// TODO: Double/increase health?
+				break;
+			default:
+				break;
+			
+		}
 	}
 }

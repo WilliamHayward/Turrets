@@ -1,10 +1,9 @@
-display Hello, Elizabeth
-display Begin play
+display Hello
 wait cleared
-spawn SPIDER,GIANT_SPIDER,SPIDER 3
+spawn SPIDER,SLIME,SNAIL,FLY 5
 wait cleared
 build
-spawn GIANT_SPIDER,SPIDER
+spawn SPIDER-GIANT,SLIME-GIANT,SNAIL-GIANT,FLY-GIANT 5
 wait 1.5
 build
 spawn SPIDER,SPIDER,SPIDER,SPIDER 3
