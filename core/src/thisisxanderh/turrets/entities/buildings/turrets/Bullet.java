@@ -44,7 +44,8 @@ public abstract class Bullet extends Entity {
 	@Override
 	public void collided(Entity other) {
 		if (other instanceof Enemy) {
-			if (other.damage(damage)) {
+			other.damage(damage);
+			if (other.dead()) {
 				parent.addMoney(((Enemy) other).getBounty());
 			}
 			this.remove();

@@ -76,7 +76,8 @@ public abstract class Enemy extends Entity {
 		
 		
 		super.act(delta);
-		if (this.damage(effects.getDPS() * delta)) {
+		this.damage(effects.getDPS() * delta);
+		if (dead()) {
 			for (Player player: effects.getOwners()) {
 				player.addMoney(getBounty());
 			}
@@ -96,6 +97,11 @@ public abstract class Enemy extends Entity {
 			Trap trap = (Trap) other;
 			effects.combine(trap.getEffect());
 		}
+	}
+	
+	@Override
+	public void bop(float damage) {
+		this.damage(damage);
 	}
 
 	public int getBounty() {

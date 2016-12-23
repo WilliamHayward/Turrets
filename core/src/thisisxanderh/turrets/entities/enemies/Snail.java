@@ -1,10 +1,8 @@
 package thisisxanderh.turrets.entities.enemies;
 
 import thisisxanderh.turrets.core.commands.Commander;
-import thisisxanderh.turrets.entities.Entity;
 import thisisxanderh.turrets.entities.Modifiers;
 import thisisxanderh.turrets.entities.States;
-import thisisxanderh.turrets.entities.players.Player;
 import thisisxanderh.turrets.graphics.SpriteList;
 
 public class Snail extends Enemy {
@@ -31,16 +29,10 @@ public class Snail extends Enemy {
 	}
 	
 	@Override
-	public void collided(Entity other) {
-		if (other instanceof Player) {
-			Player player = (Player) other;
-			if (!player.bopped(this)) {
-				return;
-			}
-			this.setState(States.INVINCIBLE);
-			hideTimer = 1f;
-			resize();
-		}
+	public void bop(float damage) {
+		this.setState(States.INVINCIBLE);
+		hideTimer = 1f;
+		resize();
 	}
 
 }

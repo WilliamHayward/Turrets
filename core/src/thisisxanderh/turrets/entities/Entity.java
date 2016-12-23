@@ -213,29 +213,31 @@ public abstract class Entity extends Actor {
 	}
 	
 	public abstract void collided(Entity other);
+
+
+	public void bop(float damage) {
+		// Do nothing by default
+	}
 	
 	/**
 	 * @return true if killed
 	 */
-	public boolean damage(float damage) {
-		health -= damage;
-		if (health <= 0) {
-			die();
-			return true;
-		}
-		return false;
+	public void damage(float damage) {
+		this.damage(damage, null);
 	}
 
 	/**
 	 * @return true if killed
 	 */
-	public boolean damage(float damage, Entity cause) {
+	public void damage(float damage, Entity cause) {
 		health -= damage;
 		if (health <= 0) {
 			die(cause);
-			return true;
 		}
-		return false;
+	}
+	
+	public boolean dead() {
+		return health <= 0;
 	}
 	
 	public void die() {

@@ -23,7 +23,6 @@ import thisisxanderh.turrets.entities.buildings.turrets.Cannon;
 import thisisxanderh.turrets.entities.buildings.turrets.MachineGun;
 import thisisxanderh.turrets.entities.buildings.turrets.Turret;
 import thisisxanderh.turrets.entities.enemies.Enemy;
-import thisisxanderh.turrets.entities.enemies.Snail;
 import thisisxanderh.turrets.graphics.LayerList;
 import thisisxanderh.turrets.graphics.SpriteCache;
 import thisisxanderh.turrets.graphics.SpriteList;
@@ -345,11 +344,9 @@ public abstract class Player extends Entity {
 		
 		float damage = this.isState(States.POUNDING) ? highDamage : lowDamage;
 
-		if (enemy instanceof Snail) {
-			damage = 0;
-		}
+		enemy.bop(damage);
 		
-		if (enemy.damage(damage, this)) {
+		if (enemy.dead()) {
 			addMoney(enemy.getBounty());
 		}
 		
