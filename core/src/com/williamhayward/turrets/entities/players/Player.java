@@ -128,9 +128,11 @@ public abstract class Player extends Entity {
 			handleInput();
 		}
 		
+		// NOTE: Sonar throws a Bug over this, without it several animation features glitch out
+		onGround = false;
+		
 		super.act(delta);
 		Rectangle bounds = this.getBounds();
-    	onGround = false;
     	
         if (stage.getTerrain().overlaps(bounds)) {
         	this.moveToContact();
@@ -264,9 +266,8 @@ public abstract class Player extends Entity {
 		float horizontalSpeed = input.getHorizontal();
 		
 		this.setXVelocity(horizontalSpeed * speed);
-		
 		if (onGround) {
-			if (horizontalSpeed == 0) {
+			if (Float.compare(horizontalSpeed, 0f) == 0) {
 				this.setState(States.STANDING);
 			} else {
 				this.setState(States.WALKING);

@@ -7,7 +7,7 @@ public class WaitCommand extends Command {
 	private boolean cleared = false;
 	public WaitCommand(Spawner parent, String string) {
 		super(parent);
-		if (string.equals("cleared")) {
+		if ("cleared".equals(string)) {
 			cleared = true;
 		} else {
 			timer = Float.parseFloat(string);
@@ -17,7 +17,7 @@ public class WaitCommand extends Command {
 	@Override
 	public void tick(float delta) {
 		if (cleared) {
-			if (parent.getChildren().size() == 0) {
+			if (parent.getChildren().isEmpty()) {
 				finish();
 			}
 		} else {

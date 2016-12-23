@@ -129,7 +129,7 @@ public class GameController {
 				return false;
 			}
 		}
-		if (game.getActors(Enemy.class).size() > 0) {
+		if (!game.getActors(Enemy.class).isEmpty()) {
 			return false;
 		}
 		return true;

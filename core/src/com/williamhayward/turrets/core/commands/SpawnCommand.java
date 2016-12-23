@@ -53,6 +53,7 @@ public class SpawnCommand extends Command {
 					child = new Fly(parent);
 					break;
 				default:
+					child = new Spider(parent);
 					break;
 				
 			}
@@ -70,19 +71,19 @@ public class SpawnCommand extends Command {
 	@Override
 	public void tick(float delta) {
 		if (paced) {
-			if (children.size() == 0) {
+			if (children.isEmpty()) {
 				finish();
 			}
 			timer += delta;
 			int spawnCount = (int) Math.floor(timer / gap); //Find out how many should be spawned
-			if (children.size() == 0) {
+			if (children.isEmpty()) {
 				return;
 			}
 			for (int i = 0; i < spawnCount; i++) {
 				Enemy child = children.get(0);
 				parent.spawn(child);
 				children.remove(0);
-				if (children.size() == 0) {
+				if (children.isEmpty()) {
 					finish();
 				}
 			}
